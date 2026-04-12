@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GMI HostelKu | Warden Login</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-dark: #0f1638;
+            --accent-lime: #ccff00;
+            --accent-red: #ff3131;
+            --text-white: #ffffff;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Poppins', sans-serif;
+            height: 100vh;
+            display: flex;
+            overflow: hidden;
+        }
+
+        .image-section {
+            flex: 1.5; 
+            position: relative;
+            background-color: var(--bg-dark);
+            animation: alternateWardenBG 10s infinite ease-in-out;
+        }
+
+        @keyframes alternateWardenBG {
+            0%, 45% { 
+                background-image: linear-gradient(rgba(15, 22, 56, 0.45), rgba(15, 22, 56, 0.45)), url('images/photo_2026-03-14_11-20-42.jpg'); 
+            }
+            55%, 100% { 
+                background-image: linear-gradient(rgba(15, 22, 56, 0.45), rgba(15, 22, 56, 0.45)), url('images/photo_2026-03-14_11-20-43 (2).jpg'); 
+            }
+        }
+
+        .image-section {
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+
+        .back-arrow {
+            position: absolute;
+            top: 25px;
+            left: 25px;
+            cursor: pointer;
+            z-index: 10;
+        }
+
+        .back-arrow svg path {
+            stroke: white;
+        }
+
+        .login-section {
+            flex: 1;
+            background-color: var(--bg-dark);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 40px;
+            color: var(--text-white);
+        }
+
+        .login-container {
+            width: 100%;
+            max-width: 350px;
+            text-align: center;
+        }
+
+        .brand-logo {
+            font-size: 32px;
+            margin-bottom: 5px;
+            display: flex;
+            align-items: center; 
+            justify-content: center;
+        }
+        
+        .brand-blue { 
+            color: #2d72d2; 
+            font-weight: 800;
+            letter-spacing: -1px;
+        }
+
+        .brand-dot { 
+            color: #ff3131; 
+            font-size: 45px;
+            line-height: 0;
+            position: relative;
+            top: -20px; 
+            margin-left: -13px; 
+            margin-right: 4px;
+        }
+
+        .brand-lime { 
+            color: var(--accent-lime);
+            font-weight: 600;
+        }
+
+        h2 { font-weight: 300; font-size: 24px; margin-bottom: 40px; }
+
+        .form-group { margin-bottom: 20px; }
+
+        input {
+            width: 100%;
+            padding: 15px;
+            border-radius: 5px;
+            border: none;
+            outline: none;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+            font-size: 14px;
+        }
+
+        .forgot-password {
+            display: block;
+            text-align: right;
+            color: #3b82f6;
+            font-size: 12px;
+            text-decoration: none;
+            margin-bottom: 30px;
+            cursor: pointer;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 12px;
+            border-radius: 25px;
+            border: none;
+            font-weight: 600;
+            font-size: 16px;
+            cursor: pointer;
+            margin-bottom: 15px;
+            font-family: 'Poppins', sans-serif;
+            transition: transform 0.2s;
+        }
+
+        .btn-login { background-color: var(--accent-red); color: white; }
+        .btn-create { background-color: transparent; color: var(--accent-lime); border: 2px solid var(--accent-lime); }
+
+        .btn:hover { transform: scale(1.02); }
+
+        @media (max-width: 768px) {
+            body { flex-direction: column; }
+            .image-section { display: none; } 
+            .login-section { height: 100vh; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="image-section">
+        <a href="index.html" class="back-arrow">
+           <svg width="40" height="40" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M10 19l-7-7m0 0l7-7m-7 7h18" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+        </a>
+    </div>
+
+    <div class="login-section">
+        <div class="login-container">
+            <div class="brand-logo">
+                <span class="brand-blue">GMI</span><span class="brand-dot">&bull;</span><span class="brand-lime">HostelKu.</span>
+            </div>
+            <h2>Warden Login</h2>
+
+            <form id="loginForm">
+                <div class="form-group">
+                    <input type="email" id="email" placeholder="warden@gmi.edu.my" required>
+                </div>
+                <div class="form-group">
+                    <input type="password" id="password" placeholder="Enter your password" required>
+                </div>
+
+                <a id="forgotPasswordBtn" class="forgot-password">Forgot Password?</a>
+
+                <button type="submit" class="btn btn-login">Login</button>
+            </form>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getAuth, signInWithEmailAndPassword, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyBUIG4ZIanXbeEPeqaBO5ifkH_KiAg5M8w",
+            authDomain: "gmi-hostelku.firebaseapp.com",
+            projectId: "gmi-hostelku",
+            storageBucket: "gmi-hostelku.firebasestorage.app",
+            messagingSenderId: "556053021509",
+            appId: "1:556053021509:web:d64966c34ae18e3d12f42c"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+
+        // --- Handle Login with Domain Validation ---
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            // Validate email domain - warden must use @gmi.edu.my (not @student.gmi.edu.my)
+            if (!email.endsWith('@gmi.edu.my') || email.includes('@student.')) {
+                alert("Invalid email format! Please use your @gmi.edu.my email address.");
+                return;
+            }
+
+            try {
+                await signInWithEmailAndPassword(auth, email, password);
+                window.location.href = "warden-dashboard.html";
+            } catch (error) {
+                alert("Login Failed: " + error.message);
+            }
+        });
+
+        // --- Handle Forgot Password with Domain Validation ---
+        document.getElementById('forgotPasswordBtn').addEventListener('click', () => {
+            const emailField = document.getElementById('email');
+            const emailAddress = emailField.value;
+
+            if (!emailAddress) {
+                alert("Please type your email into the email field first to reset your password.");
+                emailField.focus();
+                return;
+            }
+
+            // Validate email domain
+            if (!emailAddress.endsWith('@gmi.edu.my') || emailAddress.includes('@student.')) {
+                alert("Invalid email format! Please use your @gmi.edu.my email address.");
+                return;
+            }
+
+            sendPasswordResetEmail(auth, emailAddress)
+                .then(() => {
+                    alert("Password reset email sent! Please check your inbox at " + emailAddress);
+                })
+                .catch((error) => {
+                    alert("Error: " + error.message);
+                });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,1154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GMI HostelKu - Room Management</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Poppins', sans-serif; display: flex; flex-direction: column; height: 100vh; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); overflow: hidden; }
+        
+        /* Header Styling */
+        header { background: rgba(15, 22, 56, 0.95); backdrop-filter: blur(10px); color: white; padding: 0 25px; display: flex; align-items: center; justify-content: space-between; z-index: 1000; flex-shrink: 0; height: 70px; box-shadow: 0 2px 20px rgba(0,0,0,0.1); }
+
+        .brand-container { display: flex; align-items: center; font-size: 28px; font-weight: 700; cursor: pointer; position: relative; margin-left: 10px; }
+        .brand-blue { color: #2d72d2; text-shadow: 0 2px 10px rgba(45, 114, 210, 0.3); }
+        .brand-lime { color: #ccff00; margin-left: 5px; text-shadow: 0 2px 10px rgba(204, 255, 0, 0.3); }
+        .brand-dot { color: #ff3131; font-size: 28px; position: absolute; top: -16px; left: 42px; text-shadow: 0 2px 10px rgba(255, 49, 49, 0.3); }
+
+        .menu-toggle { cursor: pointer; font-size: 22px; color: white; margin-right: 15px; transition: transform 0.3s; }
+        .menu-toggle:hover { transform: scale(1.1); }
+
+        /* Avatar in Header */
+        .avatar-container {
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .avatar-container:hover {
+            transform: scale(1.1);
+        }
+        .avatar-container i {
+            font-size: 36px;
+            color: #f44336;
+            background: rgba(255,255,255,0.1);
+            border-radius: 50%;
+            padding: 5px;
+            box-shadow: 0 0 20px rgba(244, 67, 54, 0.3);
+        }
+
+        .container { display: flex; flex: 1; overflow: hidden; position: relative; }
+        
+        /* Sidebar */
+        nav { width: 280px; background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); border-right: 1px solid rgba(255,255,255,0.2); padding: 25px 0; display: flex; flex-direction: column; transition: transform 0.3s ease; z-index: 900; overflow-y: auto; box-shadow: 5px 0 25px rgba(0,0,0,0.1); }
+
+        .nav-menu { padding: 0 20px; flex: 1; }
+        .nav-item { display: flex; align-items: center; padding: 14px 20px; margin-bottom: 8px; text-decoration: none; color: #333; border-radius: 12px; font-size: 15px; font-weight: 500; transition: all 0.3s; }
+        .nav-item:hover { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; transform: translateX(5px); box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4); }
+        .nav-item.active { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4); }
+        .nav-item i { margin-right: 12px; font-size: 20px; width: 24px; text-align: center; }
+        
+        .logout-btn { margin: 20px 20px 15px 20px; color: #f44336; border: 2px solid #f44336; background: transparent; }
+        .logout-btn:hover { background: #f44336; color: white; border-color: #f44336; transform: translateX(5px); }
+        
+        main { flex: 1; padding: 30px; overflow-y: auto; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+
+        /* Loading Spinner */
+        .loading-spinner {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 50px;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid rgba(102, 126, 234, 0.2);
+            border-radius: 50%;
+            border-top-color: #667eea;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Refresh Button */
+        .refresh-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 10px 20px;
+            font-size: 14px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s;
+        }
+
+        .refresh-btn:hover {
+            background: #764ba2;
+            transform: translateY(-2px);
+        }
+
+        /* Page Header */
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(10px);
+            padding: 20px 25px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+
+        .page-header h2 {
+            font-size: 24px;
+            color: #0f1638;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .page-header h2 i {
+            color: #667eea;
+        }
+
+        .stats-badge {
+            display: flex;
+            gap: 15px;
+        }
+
+        .stat-badge-item {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 50px;
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        /* Block Tabs */
+        .block-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 25px;
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(10px);
+            padding: 10px;
+            border-radius: 12px;
+        }
+
+        .block-tab {
+            flex: 1;
+            padding: 15px;
+            border: none;
+            border-radius: 10px;
+            background: transparent;
+            color: #666;
+            font-weight: 600;
+            font-size: 15px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .block-tab i { font-size: 18px; }
+        .block-tab.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        /* Summary Cards */
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+
+        .summary-card {
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .summary-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+
+        .summary-details h3 {
+            font-size: 24px;
+            font-weight: 700;
+            color: #0f1638;
+            line-height: 1.2;
+        }
+
+        .summary-details p {
+            font-size: 13px;
+            color: #666;
+        }
+
+        /* Filters */
+        .filters-section {
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(10px);
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 25px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .search-box {
+            flex: 2;
+            min-width: 300px;
+            position: relative;
+        }
+
+        .search-box i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #999;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 12px 15px 12px 45px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+
+        .search-box input:focus {
+            border-color: #667eea;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .filter-group {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            flex: 1;
+        }
+
+        .filter-select {
+            flex: 1;
+            padding: 10px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 14px;
+            background: white;
+            cursor: pointer;
+            min-width: 130px;
+        }
+
+        .filter-select:focus {
+            border-color: #667eea;
+            outline: none;
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 50px;
+            color: #999;
+        }
+
+        .empty-state i {
+            font-size: 60px;
+            margin-bottom: 20px;
+            color: #667eea;
+        }
+
+        /* Floor Sections */
+        .floor-section {
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 25px;
+        }
+
+        .floor-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .floor-header h3 {
+            font-size: 18px;
+            font-weight: 600;
+            color: #0f1638;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .floor-header h3 i {
+            color: #667eea;
+        }
+
+        .floor-stats {
+            display: flex;
+            gap: 15px;
+            font-size: 13px;
+        }
+
+        .floor-stats span {
+            padding: 5px 10px;
+            border-radius: 5px;
+            background: #f5f5f5;
+        }
+
+        /* Room Grid */
+        .room-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 15px;
+        }
+
+        .room-card {
+            background: white;
+            border-radius: 12px;
+            padding: 15px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+            transition: all 0.3s;
+            border-left: 4px solid;
+            cursor: pointer;
+        }
+
+        .room-card.available { border-left-color: #4caf50; }
+        .room-card.occupied { border-left-color: #667eea; }
+        .room-card.maintenance { border-left-color: #ff9800; }
+        .room-card.reserved { border-left-color: #2196f3; }
+
+        .room-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+        }
+
+        .room-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 12px;
+        }
+
+        .room-number {
+            font-size: 18px;
+            font-weight: 700;
+            color: #0f1638;
+        }
+
+        .room-type {
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+            background: #f0f0f0;
+            color: #666;
+        }
+
+        .room-details {
+            margin-bottom: 15px;
+        }
+
+        .detail-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+            color: #666;
+            margin-bottom: 5px;
+        }
+
+        .detail-row i {
+            width: 16px;
+            color: #667eea;
+            font-size: 12px;
+        }
+
+        .occupant-info {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 10px;
+            margin-bottom: 12px;
+        }
+
+        .occupant-name {
+            font-weight: 600;
+            font-size: 13px;
+            color: #0f1638;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .occupant-name i {
+            color: #667eea;
+            font-size: 12px;
+        }
+
+        .occupant-meta {
+            font-size: 11px;
+            color: #999;
+            margin-top: 3px;
+        }
+
+        .status-badge {
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+            display: inline-block;
+        }
+
+        .status-available { background: #e8f5e9; color: #4caf50; }
+        .status-occupied { background: #e3f2fd; color: #667eea; }
+        .status-maintenance { background: #fff3e0; color: #ff9800; }
+        .status-reserved { background: #e3f2fd; color: #2196f3; }
+
+        .room-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px solid #f0f0f0;
+        }
+
+        .room-price {
+            font-weight: 700;
+            color: #0f1638;
+        }
+
+        .room-price span {
+            font-size: 11px;
+            color: #999;
+            font-weight: 400;
+        }
+
+        .room-actions {
+            display: flex;
+            gap: 5px;
+        }
+
+        .room-action-btn {
+            width: 30px;
+            height: 30px;
+            border-radius: 6px;
+            border: none;
+            background: #f5f5f5;
+            color: #666;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .room-action-btn:hover {
+            background: #667eea;
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        /* Add Room Button */
+        .add-room-btn {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+            transition: all 0.3s;
+            z-index: 100;
+        }
+
+        .add-room-btn:hover {
+            transform: scale(1.1) rotate(90deg);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.6);
+        }
+
+        .add-room-btn i {
+            font-size: 24px;
+        }
+
+        @media (max-width: 768px) {
+            nav { position: absolute; left: 0; top: 0; bottom: 0; transform: translateX(-100%); width: 280px; }
+            nav.open { transform: translateX(0); }
+            .menu-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 800; backdrop-filter: blur(3px); }
+            .menu-overlay.active { display: block; }
+            .filters-section { flex-direction: column; }
+            .search-box { width: 100%; }
+            .filter-group { width: 100%; }
+            .filter-select { width: 100%; }
+            .stats-badge { flex-direction: column; width: 100%; }
+            .stat-badge-item { text-align: center; }
+            .block-tabs { flex-direction: column; }
+            .summary-grid { grid-template-columns: 1fr; }
+            .floor-stats { flex-direction: column; gap: 5px; }
+            .add-room-btn { bottom: 20px; right: 20px; width: 50px; height: 50px; }
+            .add-room-btn i { font-size: 20px; }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div style="display: flex; align-items: center;">
+            <i class="fas fa-bars menu-toggle" id="hamburger"></i>
+            <div class="brand-container">
+                <span class="brand-dot">•</span> <span class="brand-blue">GMI</span>
+                <span class="brand-lime">-HK</span>
+            </div>
+        </div>
+        <div style="display: flex; align-items: center; gap: 10px;">
+            <a href="warden-profile.html" class="avatar-container" id="profileLink">
+                <i class="fas fa-user-circle"></i>
+            </a>
+        </div>
+    </header>
+
+    <div class="menu-overlay" id="menuOverlay"></div>
+
+    <div class="container">
+        <nav id="sidebar">
+            <div class="nav-menu">
+                <a href="warden-dashboard.html" class="nav-item"><i class="fas fa-home"></i> Dashboard</a>
+                <a href="warden-applications.html" class="nav-item"><i class="fas fa-file-alt"></i> Applications</a>
+                <a href="warden-moveout.html" class="nav-item"><i class="fas fa-box-open"></i> Move-Out</a>
+                <a href="warden-maintenance.html" class="nav-item"><i class="fas fa-tools"></i> Maintenance</a>
+                <a href="warden-students.html" class="nav-item"><i class="fas fa-users"></i> Students</a>
+                <a href="warden-rooms.html" class="nav-item active"><i class="fas fa-bed"></i> Rooms</a>
+                <a href="warden-reports.html" class="nav-item"><i class="fas fa-chart-bar"></i> Reports</a>
+            </div>
+            <a href="#" class="nav-item logout-btn" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Logout</a>
+        </nav>
+
+        <main id="mainContent">
+            <div class="page-header">
+                <h2>
+                    <i class="fas fa-bed"></i>
+                    Room Management
+                </h2>
+                <div class="stats-badge" id="statsBadge">
+                    <span class="stat-badge-item"><i class="fas fa-door-open"></i> Total: <span id="totalRooms">0</span></span>
+                    <span class="stat-badge-item"><i class="fas fa-user-check"></i> Occupied: <span id="occupiedCount">0</span></span>
+                    <span class="stat-badge-item"><i class="fas fa-clock"></i> Available: <span id="availableCount">0</span></span>
+                    <span class="stat-badge-item"><i class="fas fa-tools"></i> Maintenance: <span id="maintenanceCount">0</span></span>
+                </div>
+            </div>
+
+            <!-- Summary Cards -->
+            <div class="summary-grid">
+                <div class="summary-card">
+                    <div class="summary-icon">
+                        <i class="fas fa-door-open"></i>
+                    </div>
+                    <div class="summary-details">
+                        <h3 id="totalSummary">0</h3>
+                        <p>Total Rooms</p>
+                    </div>
+                </div>
+                <div class="summary-card">
+                    <div class="summary-icon">
+                        <i class="fas fa-user-check"></i>
+                    </div>
+                    <div class="summary-details">
+                        <h3 id="occupiedSummary">0</h3>
+                        <p>Occupied</p>
+                    </div>
+                </div>
+                <div class="summary-card">
+                    <div class="summary-icon">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <div class="summary-details">
+                        <h3 id="availableSummary">0</h3>
+                        <p>Available</p>
+                    </div>
+                </div>
+                <div class="summary-card">
+                    <div class="summary-icon">
+                        <i class="fas fa-tools"></i>
+                    </div>
+                    <div class="summary-details">
+                        <h3 id="maintenanceSummary">0</h3>
+                        <p>Maintenance</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Block Tabs -->
+            <div class="block-tabs">
+                <button class="block-tab active" onclick="filterBlock('all')">
+                    <i class="fas fa-building"></i> All Blocks
+                </button>
+                <button class="block-tab" onclick="filterBlock('A')">
+                    <i class="fas fa-door-open"></i> Block A
+                </button>
+                <button class="block-tab" onclick="filterBlock('B')">
+                    <i class="fas fa-door-open"></i> Block B
+                </button>
+                <button class="block-tab" onclick="filterBlock('C')">
+                    <i class="fas fa-door-open"></i> Block C
+                </button>
+            </div>
+
+            <!-- Filters -->
+            <div class="filters-section">
+                <div class="search-box">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="searchInput" placeholder="Search by room number or occupant name...">
+                </div>
+                <div class="filter-group">
+                    <select class="filter-select" id="statusFilter">
+                        <option value="all">All Status</option>
+                        <option value="available">Available</option>
+                        <option value="occupied">Occupied</option>
+                        <option value="maintenance">Maintenance</option>
+                        <option value="reserved">Reserved</option>
+                    </select>
+                    <select class="filter-select" id="typeFilter">
+                        <option value="all">All Types</option>
+                        <option value="single">Single</option>
+                        <option value="double">Double</option>
+                        <option value="quad">Quad</option>
+                    </select>
+                    <select class="filter-select" id="floorFilter">
+                        <option value="all">All Floors</option>
+                        <option value="1">Floor 1</option>
+                        <option value="2">Floor 2</option>
+                        <option value="3">Floor 3</option>
+                        <option value="4">Floor 4</option>
+                        <option value="5">Floor 5</option>
+                    </select>
+                    <button class="refresh-btn" id="refreshBtn">
+                        <i class="fas fa-sync-alt"></i> Refresh
+                    </button>
+                </div>
+            </div>
+
+            <!-- Loading Spinner -->
+            <div id="loadingSpinner" class="loading-spinner">
+                <div class="spinner"></div>
+            </div>
+
+            <!-- Empty State -->
+            <div id="emptyState" class="empty-state" style="display: none;">
+                <i class="fas fa-bed"></i>
+                <h3>No Room Data</h3>
+                <p>Room data will appear here once added to the database.</p>
+                <p style="margin-top: 15px;">Click the + button to add your first room.</p>
+            </div>
+
+            <!-- Floor Sections Container -->
+            <div id="floorSectionsContainer" style="display: none;"></div>
+        </main>
+    </div>
+
+    <!-- Add Room Button -->
+    <button class="add-room-btn" onclick="addNewRoom()">
+        <i class="fas fa-plus"></i>
+    </button>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getAuth, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { getFirestore, collection, query, where, getDocs, onSnapshot, doc, updateDoc, addDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyBUIG4ZIanXbeEPeqaBO5ifkH_KiAg5M8w",
+            authDomain: "gmi-hostelku.firebaseapp.com",
+            projectId: "gmi-hostelku",
+            storageBucket: "gmi-hostelku.firebasestorage.app",
+            messagingSenderId: "556053021509",
+            appId: "1:556053021509:web:d64966c34ae18e3d12f42c"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        const hamburger = document.getElementById('hamburger');
+        const sidebar = document.getElementById('sidebar');
+        const mainContent = document.getElementById('mainContent');
+        const menuOverlay = document.getElementById('menuOverlay');
+
+        let allRooms = [];
+        let currentBlock = 'all';
+
+        function closeSidebar() { sidebar.classList.remove('open'); menuOverlay.classList.remove('active'); }
+        function openSidebar() { sidebar.classList.add('open'); menuOverlay.classList.add('active'); }
+
+        hamburger.addEventListener('click', (e) => {
+            e.preventDefault();
+            sidebar.classList.contains('open') ? closeSidebar() : openSidebar();
+        });
+
+        menuOverlay.addEventListener('click', closeSidebar);
+        mainContent.addEventListener('click', () => { if (window.innerWidth <= 768 && sidebar.classList.contains('open')) closeSidebar(); });
+        window.addEventListener('resize', () => { if (window.innerWidth > 768) closeSidebar(); });
+
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                if (!user.email.endsWith('@gmi.edu.my') || user.email.includes('@student.')) {
+                    alert("Access Denied: This portal is for wardens only.");
+                    signOut(auth).then(() => window.location.href = "warden-login.html");
+                    return;
+                }
+                loadRooms();
+                setupRealtimeListener();
+            } else { window.location.href = "warden-login.html"; }
+        });
+
+        document.getElementById('logoutBtn').addEventListener('click', (e) => {
+            e.preventDefault();
+            signOut(auth).then(() => window.location.href = "index.html");
+        });
+
+        // Setup real-time listener
+        function setupRealtimeListener() {
+            const roomsCollection = collection(db, "rooms");
+            
+            onSnapshot(roomsCollection, (snapshot) => {
+                allRooms = [];
+                snapshot.forEach((doc) => {
+                    allRooms.push({
+                        id: doc.id,
+                        ...doc.data()
+                    });
+                });
+                updateStats();
+                renderRooms();
+            }, (error) => {
+                console.error("Error listening to rooms:", error);
+            });
+        }
+
+        // Load rooms from Firestore
+        async function loadRooms() {
+            try {
+                document.getElementById('loadingSpinner').style.display = 'flex';
+                document.getElementById('emptyState').style.display = 'none';
+                document.getElementById('floorSectionsContainer').style.display = 'none';
+                
+                const roomsCollection = collection(db, "rooms");
+                const querySnapshot = await getDocs(roomsCollection);
+                
+                allRooms = [];
+                querySnapshot.forEach((doc) => {
+                    allRooms.push({
+                        id: doc.id,
+                        ...doc.data()
+                    });
+                });
+                
+                if (allRooms.length === 0) {
+                    document.getElementById('loadingSpinner').style.display = 'none';
+                    document.getElementById('emptyState').style.display = 'block';
+                    document.getElementById('floorSectionsContainer').style.display = 'none';
+                } else {
+                    updateStats();
+                    renderRooms();
+                }
+                
+            } catch (error) {
+                console.error("Error loading rooms:", error);
+                document.getElementById('loadingSpinner').style.display = 'none';
+                document.getElementById('emptyState').style.display = 'block';
+            }
+        }
+
+        // Update statistics
+        function updateStats() {
+            const total = allRooms.length;
+            const occupied = allRooms.filter(room => room.status === 'occupied').length;
+            const available = allRooms.filter(room => room.status === 'available').length;
+            const maintenance = allRooms.filter(room => room.status === 'maintenance').length;
+            
+            document.getElementById('totalRooms').textContent = total;
+            document.getElementById('occupiedCount').textContent = occupied;
+            document.getElementById('availableCount').textContent = available;
+            document.getElementById('maintenanceCount').textContent = maintenance;
+            
+            document.getElementById('totalSummary').textContent = total;
+            document.getElementById('occupiedSummary').textContent = occupied;
+            document.getElementById('availableSummary').textContent = available;
+            document.getElementById('maintenanceSummary').textContent = maintenance;
+        }
+
+        // Render rooms grouped by block and floor
+        function renderRooms() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const statusFilter = document.getElementById('statusFilter').value;
+            const typeFilter = document.getElementById('typeFilter').value;
+            const floorFilter = document.getElementById('floorFilter').value;
+            
+            let filteredRooms = allRooms.filter(room => {
+                // Block filter (handled separately)
+                if (currentBlock !== 'all' && room.block !== currentBlock) return false;
+                
+                // Search filter
+                if (searchTerm) {
+                    const matchesRoom = room.roomNumber?.toLowerCase().includes(searchTerm) || false;
+                    const matchesOccupant = room.occupantName?.toLowerCase().includes(searchTerm) || false;
+                    if (!matchesRoom && !matchesOccupant) return false;
+                }
+                
+                // Status filter
+                if (statusFilter !== 'all' && room.status !== statusFilter) return false;
+                
+                // Type filter
+                if (typeFilter !== 'all' && room.type !== typeFilter) return false;
+                
+                // Floor filter
+                if (floorFilter !== 'all' && room.floor?.toString() !== floorFilter) return false;
+                
+                return true;
+            });
+            
+            // Group rooms by block and floor
+            const blocks = ['A', 'B', 'C'];
+            const container = document.getElementById('floorSectionsContainer');
+            container.innerHTML = '';
+            
+            let hasRooms = false;
+            
+            for (const block of blocks) {
+                if (currentBlock !== 'all' && currentBlock !== block) continue;
+                
+                const blockRooms = filteredRooms.filter(room => room.block === block);
+                if (blockRooms.length === 0) continue;
+                hasRooms = true;
+                
+                // Group by floor
+                const floors = [...new Set(blockRooms.map(room => room.floor))].sort((a,b) => a-b);
+                
+                for (const floor of floors) {
+                    const floorRooms = blockRooms.filter(room => room.floor === floor);
+                    const floorCount = floorRooms.length;
+                    const occupiedCount = floorRooms.filter(r => r.status === 'occupied').length;
+                    const availableCount = floorRooms.filter(r => r.status === 'available').length;
+                    const maintenanceCount = floorRooms.filter(r => r.status === 'maintenance').length;
+                    
+                    const floorSection = document.createElement('div');
+                    floorSection.className = 'floor-section';
+                    floorSection.dataset.block = block;
+                    
+                    floorSection.innerHTML = `
+                        <div class="floor-header">
+                            <h3><i class="fas fa-building"></i> Block ${block} - ${getFloorName(floor)}</h3>
+                            <div class="floor-stats">
+                                <span><i class="fas fa-door-open"></i> ${floorCount} rooms</span>
+                                <span><i class="fas fa-user-check"></i> ${occupiedCount} occupied</span>
+                                <span><i class="fas fa-clock"></i> ${availableCount} available</span>
+                                <span><i class="fas fa-tools"></i> ${maintenanceCount} maintenance</span>
+                            </div>
+                        </div>
+                        <div class="room-grid" id="roomGrid-${block}-${floor}"></div>
+                    `;
+                    
+                    container.appendChild(floorSection);
+                    
+                    // Add room cards
+                    const roomGrid = floorSection.querySelector(`#roomGrid-${block}-${floor}`);
+                    floorRooms.forEach(room => {
+                        roomGrid.appendChild(createRoomCard(room));
+                    });
+                }
+            }
+            
+            document.getElementById('loadingSpinner').style.display = 'none';
+            
+            if (!hasRooms && filteredRooms.length === 0) {
+                document.getElementById('emptyState').style.display = 'block';
+                document.getElementById('floorSectionsContainer').style.display = 'none';
+            } else {
+                document.getElementById('emptyState').style.display = 'none';
+                document.getElementById('floorSectionsContainer').style.display = 'block';
+            }
+        }
+
+        function getFloorName(floor) {
+            const floorNames = {
+                1: 'Ground Floor',
+                2: 'First Floor',
+                3: 'Second Floor',
+                4: 'Third Floor',
+                5: 'Fourth Floor'
+            };
+            return floorNames[floor] || `Floor ${floor}`;
+        }
+
+        function createRoomCard(room) {
+            const card = document.createElement('div');
+            card.className = `room-card ${room.status}`;
+            card.dataset.status = room.status;
+            card.dataset.type = room.type;
+            card.dataset.floor = room.floor;
+            card.dataset.block = room.block;
+            
+            const typeNames = { single: 'Single', double: 'Double', quad: 'Quad' };
+            
+            let occupantHtml = '';
+            if (room.status === 'occupied' && room.occupantName) {
+                occupantHtml = `
+                    <div class="occupant-info">
+                        <div class="occupant-name">
+                            <i class="fas fa-user"></i> ${room.occupantName}
+                        </div>
+                        <div class="occupant-meta">${room.occupantId || ''} • ${room.occupantPhone || ''}</div>
+                    </div>
+                `;
+            } else if (room.status === 'reserved' && room.reservedFor) {
+                occupantHtml = `
+                    <div class="occupant-info">
+                        <div class="occupant-name">
+                            <i class="fas fa-user"></i> Reserved for: ${room.reservedFor}
+                        </div>
+                        <div class="occupant-meta">Move-in: ${room.reservedMoveIn || 'TBA'}</div>
+                    </div>
+                `;
+            }
+            
+            let actionButtons = '';
+            if (room.status === 'available') {
+                actionButtons = `
+                    <button class="room-action-btn" onclick="assignRoom('${room.id}')" title="Assign Student"><i class="fas fa-user-plus"></i></button>
+                    <button class="room-action-btn" onclick="editRoom('${room.id}')" title="Edit Room"><i class="fas fa-edit"></i></button>
+                    <button class="room-action-btn" onclick="markMaintenance('${room.id}')" title="Mark Maintenance"><i class="fas fa-tools"></i></button>
+                `;
+            } else if (room.status === 'occupied') {
+                actionButtons = `
+                    <button class="room-action-btn" onclick="viewOccupant('${room.id}')" title="View Occupant"><i class="fas fa-eye"></i></button>
+                    <button class="room-action-btn" onclick="editRoom('${room.id}')" title="Edit Room"><i class="fas fa-edit"></i></button>
+                    <button class="room-action-btn" onclick="vacateRoom('${room.id}')" title="Vacate Room"><i class="fas fa-user-slash"></i></button>
+                `;
+            } else if (room.status === 'maintenance') {
+                actionButtons = `
+                    <button class="room-action-btn" onclick="editRoom('${room.id}')" title="Edit Room"><i class="fas fa-edit"></i></button>
+                    <button class="room-action-btn" onclick="completeMaintenance('${room.id}')" title="Complete Maintenance"><i class="fas fa-check"></i></button>
+                `;
+            } else if (room.status === 'reserved') {
+                actionButtons = `
+                    <button class="room-action-btn" onclick="editRoom('${room.id}')" title="Edit"><i class="fas fa-edit"></i></button>
+                    <button class="room-action-btn" onclick="cancelReservation('${room.id}')" title="Cancel Reservation"><i class="fas fa-times"></i></button>
+                `;
+            }
+            
+            card.innerHTML = `
+                <div class="room-header">
+                    <span class="room-number">${room.roomNumber}</span>
+                    <span class="room-type">${typeNames[room.type] || room.type}</span>
+                </div>
+                <div class="room-details">
+                    <div class="detail-row">
+                        <i class="fas fa-ruler-combined"></i>
+                        <span>${room.size || '180'} sq ft • ${room.beds || 1} bed${room.beds !== 1 ? 's' : ''} • ${room.hasAC ? 'AC' : 'No AC'}</span>
+                    </div>
+                </div>
+                ${occupantHtml}
+                <div class="status-badge status-${room.status}">${room.status.charAt(0).toUpperCase() + room.status.slice(1)}</div>
+                <div class="room-footer">
+                    <div class="room-price">RM ${room.price || 350} <span>/month</span></div>
+                    <div class="room-actions">
+                        ${actionButtons}
+                    </div>
+                </div>
+            `;
+            
+            return card;
+        }
+
+        // Filter functions
+        window.filterBlock = (block) => {
+            document.querySelectorAll('.block-tab').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            currentBlock = block;
+            renderRooms();
+        };
+
+        // Room action functions
+        window.assignRoom = async (roomId) => {
+            const occupantName = prompt("Enter student name:");
+            if (!occupantName) return;
+            const occupantId = prompt("Enter student ID:");
+            const occupantPhone = prompt("Enter student phone number:");
+            
+            try {
+                await updateDoc(doc(db, "rooms", roomId), {
+                    status: "occupied",
+                    occupantName: occupantName,
+                    occupantId: occupantId,
+                    occupantPhone: occupantPhone,
+                    occupiedAt: new Date().toISOString()
+                });
+                alert(`✅ Student assigned to room successfully!`);
+            } catch (error) {
+                alert("Error assigning student: " + error.message);
+            }
+        };
+
+        window.editRoom = (roomId) => {
+            alert(`✏️ Editing Room ${roomId}\n\nThis feature will be available soon.`);
+        };
+
+        window.markMaintenance = async (roomId) => {
+            if (confirm(`Mark this room for maintenance?`)) {
+                try {
+                    await updateDoc(doc(db, "rooms", roomId), {
+                        status: "maintenance",
+                        maintenanceReason: prompt("Enter maintenance reason:")
+                    });
+                    alert(`🔧 Room marked for maintenance`);
+                } catch (error) {
+                    alert("Error: " + error.message);
+                }
+            }
+        };
+
+        window.vacateRoom = async (roomId) => {
+            if (confirm(`Vacate this room? This will remove the current occupant.`)) {
+                try {
+                    await updateDoc(doc(db, "rooms", roomId), {
+                        status: "available",
+                        occupantName: null,
+                        occupantId: null,
+                        occupantPhone: null,
+                        vacatedAt: new Date().toISOString()
+                    });
+                    alert(`✅ Room vacated successfully`);
+                } catch (error) {
+                    alert("Error: " + error.message);
+                }
+            }
+        };
+
+        window.viewOccupant = (roomId) => {
+            const room = allRooms.find(r => r.id === roomId);
+            if (room && room.occupantName) {
+                alert(`👤 Occupant Details:\n\nName: ${room.occupantName}\nID: ${room.occupantId || 'N/A'}\nPhone: ${room.occupantPhone || 'N/A'}\nRoom: ${room.roomNumber}`);
+            } else {
+                alert("No occupant information available.");
+            }
+        };
+
+        window.completeMaintenance = async (roomId) => {
+            if (confirm(`Complete maintenance for this room?`)) {
+                try {
+                    await updateDoc(doc(db, "rooms", roomId), {
+                        status: "available",
+                        maintenanceReason: null,
+                        maintenanceCompletedAt: new Date().toISOString()
+                    });
+                    alert(`✅ Maintenance completed. Room is now available.`);
+                } catch (error) {
+                    alert("Error: " + error.message);
+                }
+            }
+        };
+
+        window.cancelReservation = async (roomId) => {
+            if (confirm(`Cancel reservation for this room?`)) {
+                try {
+                    await updateDoc(doc(db, "rooms", roomId), {
+                        status: "available",
+                        reservedFor: null,
+                        reservedMoveIn: null
+                    });
+                    alert(`❌ Reservation cancelled. Room is now available.`);
+                } catch (error) {
+                    alert("Error: " + error.message);
+                }
+            }
+        };
+
+        window.addNewRoom = async () => {
+            const roomNumber = prompt("Enter room number (e.g., A-1-01):");
+            if (!roomNumber) return;
+            
+            const block = roomNumber.charAt(0);
+            const floor = parseInt(roomNumber.split('-')[1]);
+            const type = prompt("Enter room type (single/double/quad):", "single");
+            const price = prompt("Enter monthly price (RM):", "350");
+            
+            try {
+                await addDoc(collection(db, "rooms"), {
+                    roomNumber: roomNumber,
+                    block: block,
+                    floor: floor,
+                    type: type,
+                    price: parseInt(price),
+                    status: "available",
+                    size: type === 'single' ? 180 : (type === 'double' ? 250 : 400),
+                    beds: type === 'single' ? 1 : (type === 'double' ? 2 : 4),
+                    hasAC: true,
+                    createdAt: new Date().toISOString()
+                });
+                alert(`➕ Room ${roomNumber} added successfully!`);
+            } catch (error) {
+                alert("Error adding room: " + error.message);
+            }
+        };
+
+        // Event listeners for filters
+        document.getElementById('searchInput').addEventListener('input', () => {
+            renderRooms();
+        });
+
+        document.getElementById('statusFilter').addEventListener('change', () => {
+            renderRooms();
+        });
+
+        document.getElementById('typeFilter').addEventListener('change', () => {
+            renderRooms();
+        });
+
+        document.getElementById('floorFilter').addEventListener('change', () => {
+            renderRooms();
+        });
+
+        document.getElementById('refreshBtn').addEventListener('click', () => {
+            loadRooms();
+        });
+    </script>
+</body>
+</html>

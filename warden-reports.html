@@ -1,0 +1,976 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GMI HostelKu - Reports & Analytics</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Poppins', sans-serif; display: flex; flex-direction: column; height: 100vh; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); overflow: hidden; }
+        
+        /* Header Styling */
+        header { background: rgba(15, 22, 56, 0.95); backdrop-filter: blur(10px); color: white; padding: 0 25px; display: flex; align-items: center; justify-content: space-between; z-index: 1000; flex-shrink: 0; height: 70px; box-shadow: 0 2px 20px rgba(0,0,0,0.1); }
+
+        .brand-container { display: flex; align-items: center; font-size: 28px; font-weight: 700; cursor: pointer; position: relative; margin-left: 10px; }
+        .brand-blue { color: #2d72d2; text-shadow: 0 2px 10px rgba(45, 114, 210, 0.3); }
+        .brand-lime { color: #ccff00; margin-left: 5px; text-shadow: 0 2px 10px rgba(204, 255, 0, 0.3); }
+        .brand-dot { color: #ff3131; font-size: 28px; position: absolute; top: -16px; left: 42px; text-shadow: 0 2px 10px rgba(255, 49, 49, 0.3); }
+
+        .menu-toggle { cursor: pointer; font-size: 22px; color: white; margin-right: 15px; transition: transform 0.3s; }
+        .menu-toggle:hover { transform: scale(1.1); }
+
+        /* Avatar in Header */
+        .avatar-container {
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .avatar-container:hover {
+            transform: scale(1.1);
+        }
+        .avatar-container i {
+            font-size: 36px;
+            color: #f44336;
+            background: rgba(255,255,255,0.1);
+            border-radius: 50%;
+            padding: 5px;
+            box-shadow: 0 0 20px rgba(244, 67, 54, 0.3);
+        }
+
+        .container { display: flex; flex: 1; overflow: hidden; position: relative; }
+        
+        /* Sidebar */
+        nav { width: 280px; background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); border-right: 1px solid rgba(255,255,255,0.2); padding: 25px 0; display: flex; flex-direction: column; transition: transform 0.3s ease; z-index: 900; overflow-y: auto; box-shadow: 5px 0 25px rgba(0,0,0,0.1); }
+
+        .nav-menu { padding: 0 20px; flex: 1; }
+        .nav-item { display: flex; align-items: center; padding: 14px 20px; margin-bottom: 8px; text-decoration: none; color: #333; border-radius: 12px; font-size: 15px; font-weight: 500; transition: all 0.3s; }
+        .nav-item:hover { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; transform: translateX(5px); box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4); }
+        .nav-item.active { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4); }
+        .nav-item i { margin-right: 12px; font-size: 20px; width: 24px; text-align: center; }
+        
+        .logout-btn { margin: 20px 20px 15px 20px; color: #f44336; border: 2px solid #f44336; background: transparent; }
+        .logout-btn:hover { background: #f44336; color: white; border-color: #f44336; transform: translateX(5px); }
+        
+        main { flex: 1; padding: 30px; overflow-y: auto; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+
+        /* Page Header */
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(10px);
+            padding: 20px 25px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+
+        .page-header h2 {
+            font-size: 24px;
+            color: #0f1638;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .page-header h2 i {
+            color: #667eea;
+        }
+
+        /* Stats Badge */
+        .stats-badge {
+            display: flex;
+            gap: 15px;
+        }
+        .stat-badge-item {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 50px;
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        /* Date Range Selector */
+        .date-range {
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(10px);
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 25px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .range-presets {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .range-btn {
+            padding: 8px 20px;
+            border: 2px solid #e0e0e0;
+            border-radius: 30px;
+            background: white;
+            color: #666;
+            font-weight: 500;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .range-btn.active {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+
+        .range-btn:hover {
+            border-color: #667eea;
+        }
+
+        .custom-range {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .date-input {
+            padding: 8px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 13px;
+        }
+
+        .generate-btn {
+            padding: 8px 25px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .generate-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        /* Report Cards Grid */
+        .report-cards {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+
+        .report-card {
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .report-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.2);
+        }
+
+        .report-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+
+        .report-info h4 {
+            font-size: 16px;
+            font-weight: 600;
+            color: #0f1638;
+            margin-bottom: 5px;
+        }
+
+        .report-info p {
+            font-size: 13px;
+            color: #667eea;
+            font-weight: 500;
+        }
+
+        /* Charts Grid */
+        .charts-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 25px;
+            margin-bottom: 25px;
+        }
+
+        .chart-card {
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .chart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .chart-header h3 {
+            font-size: 16px;
+            font-weight: 600;
+            color: #0f1638;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .chart-header h3 i {
+            color: #667eea;
+        }
+
+        .chart-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .chart-action-btn {
+            padding: 5px 10px;
+            border: 1px solid #e0e0e0;
+            border-radius: 5px;
+            background: white;
+            color: #666;
+            font-size: 11px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .chart-action-btn:hover {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+
+        .chart-container {
+            height: 250px;
+            position: relative;
+        }
+
+        /* Bar Chart Simulation - Updated with percentage at bottom */
+        .bar-chart {
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-around;
+            height: 200px;
+            margin-top: 20px;
+        }
+
+        .bar-group {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 60px;
+            position: relative;
+        }
+
+        .bar-label {
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        .bar {
+            width: 40px;
+            background: linear-gradient(to top, #667eea, #9f7aea);
+            border-radius: 8px 8px 0 0;
+            transition: height 0.3s;
+            margin-bottom: 5px;
+        }
+
+        .bar-percentage {
+            font-size: 11px;
+            font-weight: 600;
+            color: #667eea;
+            margin-top: 5px;
+        }
+
+        /* Pie Chart Simulation */
+        .pie-chart {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 40px;
+            height: 200px;
+        }
+
+        .pie {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            background: conic-gradient(#667eea 0% 75%, #ff9800 75% 85%, #4caf50 85% 95%, #2196f3 95% 100%);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .pie-legend {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+        }
+
+        .legend-color {
+            width: 12px;
+            height: 12px;
+            border-radius: 4px;
+        }
+
+        .legend-color.occupied { background: #667eea; }
+        .legend-color.available { background: #4caf50; }
+        .legend-color.maintenance { background: #ff9800; }
+        .legend-color.reserved { background: #2196f3; }
+
+        /* Tables Grid */
+        .tables-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+            margin-bottom: 25px;
+        }
+
+        .table-card {
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .table-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .table-header h3 {
+            font-size: 16px;
+            font-weight: 600;
+            color: #0f1638;
+        }
+
+        .table-header h3 i {
+            color: #667eea !important;
+        }
+
+        .mini-table {
+            width: 100%;
+            font-size: 13px;
+        }
+
+        .mini-table td {
+            padding: 10px 5px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .mini-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .mini-table .amount {
+            font-weight: 600;
+            color: #0f1638;
+        }
+
+        /* Export Section */
+        .export-section {
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 25px;
+        }
+
+        .export-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #0f1638;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .export-title i {
+            color: #667eea !important;
+        }
+
+        .export-buttons {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .export-btn {
+            flex: 1;
+            min-width: 150px;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            background: white;
+            color: #666;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .export-btn:hover {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+
+        .export-btn i { font-size: 18px; }
+
+        @media (max-width: 768px) {
+            nav { position: absolute; left: 0; top: 0; bottom: 0; transform: translateX(-100%); width: 280px; }
+            nav.open { transform: translateX(0); }
+            .menu-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 800; backdrop-filter: blur(3px); }
+            .menu-overlay.active { display: block; }
+            
+            .report-cards { grid-template-columns: 1fr; }
+            .charts-grid { grid-template-columns: 1fr; }
+            .tables-grid { grid-template-columns: 1fr; }
+            .date-range { flex-direction: column; }
+            .custom-range { flex-direction: column; width: 100%; }
+            .date-input { width: 100%; }
+            .generate-btn { width: 100%; }
+            .export-buttons { flex-direction: column; }
+            .pie-chart { flex-direction: column; gap: 20px; }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div style="display: flex; align-items: center;">
+            <i class="fas fa-bars menu-toggle" id="hamburger"></i>
+            <div class="brand-container">
+                <span class="brand-dot">•</span> <span class="brand-blue">GMI</span>
+                <span class="brand-lime">-HK</span>
+            </div>
+        </div>
+        <div style="display: flex; align-items: center; gap: 10px;">
+            <a href="warden-profile.html" class="avatar-container" id="profileLink">
+                <i class="fas fa-user-circle"></i>
+            </a>
+        </div>
+    </header>
+
+    <div class="menu-overlay" id="menuOverlay"></div>
+
+    <div class="container">
+        <nav id="sidebar">
+            <div class="nav-menu">
+                <a href="warden-dashboard.html" class="nav-item"><i class="fas fa-home"></i> Dashboard</a>
+                <a href="warden-applications.html" class="nav-item"><i class="fas fa-file-alt"></i> Applications</a>
+                <a href="warden-moveout.html" class="nav-item"><i class="fas fa-box-open"></i> Move-Out</a>
+                <a href="warden-maintenance.html" class="nav-item"><i class="fas fa-tools"></i> Maintenance</a>
+                <a href="warden-students.html" class="nav-item"><i class="fas fa-users"></i> Students</a>
+                <a href="warden-rooms.html" class="nav-item"><i class="fas fa-bed"></i> Rooms</a>
+                <a href="warden-reports.html" class="nav-item active"><i class="fas fa-chart-bar"></i> Reports</a>
+            </div>
+            <a href="#" class="nav-item logout-btn" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Logout</a>
+        </nav>
+
+        <main id="mainContent">
+            <div class="page-header">
+                <h2>
+                    <i class="fas fa-chart-bar"></i>
+                    Reports & Analytics
+                </h2>
+                <div class="stats-badge">
+                    <span class="stat-badge-item"><i class="fas fa-calendar-alt"></i> March 2026</span>
+                </div>
+            </div>
+
+            <!-- Date Range Selector -->
+            <div class="date-range">
+                <div class="range-presets">
+                    <button class="range-btn active" onclick="setRange('today')">Today</button>
+                    <button class="range-btn" onclick="setRange('week')">This Week</button>
+                    <button class="range-btn" onclick="setRange('month')">This Month</button>
+                    <button class="range-btn" onclick="setRange('quarter')">This Quarter</button>
+                    <button class="range-btn" onclick="setRange('year')">This Year</button>
+                </div>
+                <div class="custom-range">
+                    <input type="date" class="date-input" id="startDate" value="2026-03-01">
+                    <span style="color: #666;">to</span>
+                    <input type="date" class="date-input" id="endDate" value="2026-03-31">
+                    <button class="generate-btn" onclick="generateReport()">
+                        <i class="fas fa-sync-alt"></i> Generate
+                    </button>
+                </div>
+            </div>
+
+            <!-- Quick Report Cards -->
+            <div class="report-cards">
+                <div class="report-card" onclick="generateQuickReport('occupancy')">
+                    <div class="report-icon">
+                        <i class="fas fa-door-open"></i>
+                    </div>
+                    <div class="report-info">
+                        <h4>Occupancy Report</h4>
+                        <p>View Details →</p>
+                    </div>
+                </div>
+                <div class="report-card" onclick="generateQuickReport('financial')">
+                    <div class="report-icon">
+                        <i class="fas fa-money-bill-wave"></i>
+                    </div>
+                    <div class="report-info">
+                        <h4>Financial Report</h4>
+                        <p>View Details →</p>
+                    </div>
+                </div>
+                <div class="report-card" onclick="generateQuickReport('maintenance')">
+                    <div class="report-icon">
+                        <i class="fas fa-tools"></i>
+                    </div>
+                    <div class="report-info">
+                        <h4>Maintenance Report</h4>
+                        <p>View Details →</p>
+                    </div>
+                </div>
+                <div class="report-card" onclick="generateQuickReport('applications')">
+                    <div class="report-icon">
+                        <i class="fas fa-file-alt"></i>
+                    </div>
+                    <div class="report-info">
+                        <h4>Applications Report</h4>
+                        <p>View Details →</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Charts Grid -->
+            <div class="charts-grid">
+                <!-- Occupancy Chart - Updated with percentage at bottom -->
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h3><i class="fas fa-door-open"></i> Occupancy Rate by Block</h3>
+                        <div class="chart-actions">
+                            <button class="chart-action-btn" onclick="exportChart('occupancy', 'png')">
+                                <i class="fas fa-download"></i> PNG
+                            </button>
+                            <button class="chart-action-btn" onclick="exportChart('occupancy', 'pdf')">
+                                <i class="fas fa-file-pdf"></i> PDF
+                            </button>
+                        </div>
+                    </div>
+                    <div class="chart-container">
+                        <div class="bar-chart">
+                            <div class="bar-group">
+                                <span class="bar-label">Block A</span>
+                                <div class="bar" style="height: 120px;"></div>
+                                <span class="bar-percentage">75%</span>
+                            </div>
+                            <div class="bar-group">
+                                <span class="bar-label">Block B</span>
+                                <div class="bar" style="height: 140px;"></div>
+                                <span class="bar-percentage">82%</span>
+                            </div>
+                            <div class="bar-group">
+                                <span class="bar-label">Block C</span>
+                                <div class="bar" style="height: 110px;"></div>
+                                <span class="bar-percentage">68%</span>
+                            </div>
+                            <div class="bar-group">
+                                <span class="bar-label">Block D</span>
+                                <div class="bar" style="height: 95px;"></div>
+                                <span class="bar-percentage">58%</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Room Status Distribution -->
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h3><i class="fas fa-chart-pie"></i> Room Status Distribution</h3>
+                        <div class="chart-actions">
+                            <button class="chart-action-btn" onclick="exportChart('distribution', 'png')">
+                                <i class="fas fa-download"></i> PNG
+                            </button>
+                            <button class="chart-action-btn" onclick="exportChart('distribution', 'pdf')">
+                                <i class="fas fa-file-pdf"></i> PDF
+                            </button>
+                        </div>
+                    </div>
+                    <div class="chart-container">
+                        <div class="pie-chart">
+                            <div class="pie"></div>
+                            <div class="pie-legend">
+                                <div class="legend-item">
+                                    <span class="legend-color occupied"></span>
+                                    <span>Occupied: 125 (76%)</span>
+                                </div>
+                                <div class="legend-item">
+                                    <span class="legend-color available"></span>
+                                    <span>Available: 28 (17%)</span>
+                                </div>
+                                <div class="legend-item">
+                                    <span class="legend-color maintenance"></span>
+                                    <span>Maintenance: 8 (5%)</span>
+                                </div>
+                                <div class="legend-item">
+                                    <span class="legend-color reserved"></span>
+                                    <span>Reserved: 4 (2%)</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tables Grid -->
+            <div class="tables-grid">
+                <!-- Top Performing Blocks -->
+                <div class="table-card">
+                    <div class="table-header">
+                        <h3><i class="fas fa-trophy" style="color: #667eea;"></i> Top Performing Blocks</h3>
+                        <button class="chart-action-btn" onclick="exportTable('top-blocks')">
+                            <i class="fas fa-download"></i> Export
+                        </button>
+                    </div>
+                    <table class="mini-table">
+                        <tr>
+                            <td><strong>Block A</strong></td>
+                            <td>45/60 rooms</td>
+                            <td class="amount">75% occupied</td>
+                            <td><i class="fas fa-arrow-up" style="color: #4caf50;"></i> +5%</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Block B</strong></td>
+                            <td>38/50 rooms</td>
+                            <td class="amount">76% occupied</td>
+                            <td><i class="fas fa-arrow-up" style="color: #4caf50;"></i> +3%</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Block C</strong></td>
+                            <td>42/55 rooms</td>
+                            <td class="amount">76% occupied</td>
+                            <td><i class="fas fa-minus" style="color: #ff9800;"></i> 0%</td>
+                        </tr>
+                    </table>
+                </div>
+
+                <!-- Revenue Summary -->
+                <div class="table-card">
+                    <div class="table-header">
+                        <h3><i class="fas fa-coins" style="color: #667eea;"></i> Revenue Summary</h3>
+                        <button class="chart-action-btn" onclick="exportTable('revenue')">
+                            <i class="fas fa-download"></i> Export
+                        </button>
+                    </div>
+                    <table class="mini-table">
+                        <tr>
+                            <td><strong>Monthly Revenue</strong></td>
+                            <td class="amount">RM 45,000</td>
+                            <td><i class="fas fa-arrow-up" style="color: #4caf50;"></i> +8%</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Quarterly Revenue</strong></td>
+                            <td class="amount">RM 132,000</td>
+                            <td><i class="fas fa-arrow-up" style="color: #4caf50;"></i> +12%</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Yearly Revenue</strong></td>
+                            <td class="amount">RM 520,000</td>
+                            <td><i class="fas fa-arrow-up" style="color: #4caf50;"></i> +15%</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Pending Payments</strong></td>
+                            <td class="amount">RM 3,500</td>
+                            <td><i class="fas fa-exclamation-circle" style="color: #f44336;"></i> 5 students</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+
+            <!-- More Tables Grid -->
+            <div class="tables-grid">
+                <!-- Maintenance Summary -->
+                <div class="table-card">
+                    <div class="table-header">
+                        <h3><i class="fas fa-tools" style="color: #667eea;"></i> Maintenance Summary</h3>
+                        <button class="chart-action-btn" onclick="exportTable('maintenance')">
+                            <i class="fas fa-download"></i> Export
+                        </button>
+                    </div>
+                    <table class="mini-table">
+                        <tr>
+                            <td><strong>Total Requests</strong></td>
+                            <td>45</td>
+                            <td class="amount">This month</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Completed</strong></td>
+                            <td>38</td>
+                            <td><i class="fas fa-check-circle" style="color: #4caf50;"></i> 84%</td>
+                        </tr>
+                        <tr>
+                            <td><strong>In Progress</strong></td>
+                            <td>5</td>
+                            <td><i class="fas fa-clock" style="color: #ff9800;"></i> 11%</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Pending</strong></td>
+                            <td>2</td>
+                            <td><i class="fas fa-exclamation-circle" style="color: #f44336;"></i> 5%</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Avg Response Time</strong></td>
+                            <td colspan="2">4.2 hours</td>
+                        </tr>
+                    </table>
+                </div>
+
+                <!-- Application Summary -->
+                <div class="table-card">
+                    <div class="table-header">
+                        <h3><i class="fas fa-file-alt" style="color: #667eea;"></i> Application Summary</h3>
+                        <button class="chart-action-btn" onclick="exportTable('applications')">
+                            <i class="fas fa-download"></i> Export
+                        </button>
+                    </div>
+                    <table class="mini-table">
+                        <tr>
+                            <td><strong>Total Applications</strong></td>
+                            <td>28</td>
+                            <td class="amount">This month</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Approved</strong></td>
+                            <td>20</td>
+                            <td><i class="fas fa-check-circle" style="color: #4caf50;"></i> 71%</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Pending</strong></td>
+                            <td>6</td>
+                            <td><i class="fas fa-clock" style="color: #ff9800;"></i> 21%</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Rejected</strong></td>
+                            <td>2</td>
+                            <td><i class="fas fa-times-circle" style="color: #f44336;"></i> 8%</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Avg Processing Time</strong></td>
+                            <td colspan="2">2.5 days</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Export Section -->
+            <div class="export-section">
+                <div class="export-title">
+                    <i class="fas fa-download" style="color: #667eea;"></i>
+                    Export Full Report
+                </div>
+                <div class="export-buttons">
+                    <button class="export-btn" onclick="exportReport('pdf')">
+                        <i class="fas fa-file-pdf"></i> Export as PDF
+                    </button>
+                    <button class="export-btn" onclick="exportReport('excel')">
+                        <i class="fas fa-file-excel"></i> Export as Excel
+                    </button>
+                    <button class="export-btn" onclick="exportReport('csv')">
+                        <i class="fas fa-file-csv"></i> Export as CSV
+                    </button>
+                    <button class="export-btn" onclick="printReport()">
+                        <i class="fas fa-print"></i> Print Report
+                    </button>
+                </div>
+            </div>
+
+            <!-- Report Summary -->
+            <div style="background: rgba(255,255,255,0.95); backdrop-filter: blur(10px); border-radius: 15px; padding: 20px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                    <h3 style="font-size: 16px; color: #0f1638;">
+                        <i class="fas fa-info-circle" style="color: #667eea; margin-right: 8px;"></i>
+                        Report Summary
+                    </h3>
+                    <span style="font-size: 12px; color: #999;">Last updated: 15 Mar 2026, 10:30 AM</span>
+                </div>
+                <p style="font-size: 13px; color: #666; line-height: 1.6;">
+                    This report covers the period from <strong>1 March 2026</strong> to <strong>31 March 2026</strong>. 
+                    Overall hostel occupancy is at <strong>76%</strong> with 125 occupied rooms out of 165 total rooms. 
+                    Block B has the highest occupancy rate at 82%, while Block D has the lowest at 58%. 
+                    There are currently <strong>8 maintenance requests</strong> in progress with an average response time of 4.2 hours. 
+                    Total revenue for this period is <strong>RM 45,000</strong>, showing an 8% increase from last month.
+                </p>
+            </div>
+        </main>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getAuth, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyBUIG4ZIanXbeEPeqaBO5ifkH_KiAg5M8w",
+            authDomain: "gmi-hostelku.firebaseapp.com",
+            projectId: "gmi-hostelku",
+            storageBucket: "gmi-hostelku.firebasestorage.app",
+            messagingSenderId: "556053021509",
+            appId: "1:556053021509:web:d64966c34ae18e3d12f42c"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+
+        const hamburger = document.getElementById('hamburger');
+        const sidebar = document.getElementById('sidebar');
+        const mainContent = document.getElementById('mainContent');
+        const menuOverlay = document.getElementById('menuOverlay');
+
+        function closeSidebar() { sidebar.classList.remove('open'); menuOverlay.classList.remove('active'); }
+        function openSidebar() { sidebar.classList.add('open'); menuOverlay.classList.add('active'); }
+
+        hamburger.addEventListener('click', (e) => {
+            e.preventDefault();
+            sidebar.classList.contains('open') ? closeSidebar() : openSidebar();
+        });
+
+        menuOverlay.addEventListener('click', closeSidebar);
+        mainContent.addEventListener('click', () => { if (window.innerWidth <= 768 && sidebar.classList.contains('open')) closeSidebar(); });
+        window.addEventListener('resize', () => { if (window.innerWidth > 768) closeSidebar(); });
+
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                if (!user.email.endsWith('@gmi.edu.my') || user.email.includes('@student.')) {
+                    alert("Access Denied: This portal is for wardens only.");
+                    signOut(auth).then(() => window.location.href = "warden-login.html");
+                    return;
+                }
+            } else { window.location.href = "warden-login.html"; }
+        });
+
+        document.getElementById('logoutBtn').addEventListener('click', (e) => {
+            e.preventDefault();
+            signOut(auth).then(() => window.location.href = "index.html");
+        });
+
+        // Date range functions
+        window.setRange = (range) => {
+            document.querySelectorAll('.range-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            const today = new Date();
+            let startDate, endDate;
+            
+            switch(range) {
+                case 'today':
+                    startDate = today.toISOString().split('T')[0];
+                    endDate = today.toISOString().split('T')[0];
+                    break;
+                case 'week':
+                    const weekAgo = new Date(today.setDate(today.getDate() - 7));
+                    startDate = weekAgo.toISOString().split('T')[0];
+                    endDate = new Date().toISOString().split('T')[0];
+                    break;
+                case 'month':
+                    const monthAgo = new Date(today.setMonth(today.getMonth() - 1));
+                    startDate = monthAgo.toISOString().split('T')[0];
+                    endDate = new Date().toISOString().split('T')[0];
+                    break;
+                case 'quarter':
+                    const quarterAgo = new Date(today.setMonth(today.getMonth() - 3));
+                    startDate = quarterAgo.toISOString().split('T')[0];
+                    endDate = new Date().toISOString().split('T')[0];
+                    break;
+                case 'year':
+                    const yearAgo = new Date(today.setFullYear(today.getFullYear() - 1));
+                    startDate = yearAgo.toISOString().split('T')[0];
+                    endDate = new Date().toISOString().split('T')[0];
+                    break;
+            }
+            
+            document.getElementById('startDate').value = startDate;
+            document.getElementById('endDate').value = endDate;
+        };
+
+        window.generateReport = () => {
+            const start = document.getElementById('startDate').value;
+            const end = document.getElementById('endDate').value;
+            alert(`📊 Generating report from ${start} to ${end}`);
+        };
+
+        window.generateQuickReport = (type) => {
+            const reportNames = {
+                'occupancy': 'Occupancy Report',
+                'financial': 'Financial Report',
+                'maintenance': 'Maintenance Report',
+                'applications': 'Applications Report'
+            };
+            alert(`📈 Generating ${reportNames[type]}...`);
+        };
+
+        window.exportChart = (chart, format) => {
+            alert(`📥 Exporting ${chart} chart as ${format.toUpperCase()}`);
+        };
+
+        window.exportTable = (table) => {
+            alert(`📥 Exporting ${table} table data`);
+        };
+
+        window.exportReport = (format) => {
+            alert(`📥 Exporting full report as ${format.toUpperCase()}`);
+        };
+
+        window.printReport = () => {
+            alert("🖨️ Preparing report for printing...");
+        };
+    </script>
+</body>
+</html>

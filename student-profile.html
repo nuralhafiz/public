@@ -1,0 +1,768 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GMI HostelKu - My Profile</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body { 
+            font-family: 'Poppins', sans-serif; 
+            margin: 0; 
+            display: flex; 
+            flex-direction: column; 
+            height: 100vh; 
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            overflow: hidden; 
+        }
+        
+        /* Header Styling */
+        header { 
+            background: rgba(15, 22, 56, 0.95);
+            backdrop-filter: blur(10px);
+            color: white; 
+            padding: 0 25px; 
+            display: flex; 
+            align-items: center; 
+            justify-content: space-between; 
+            z-index: 1000; 
+            flex-shrink: 0; 
+            height: 70px;
+            box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+        }
+
+        /* Logo Branding */
+        .brand-container { 
+            display: flex; 
+            align-items: center; 
+            font-size: 28px; 
+            font-weight: 700; 
+            cursor: pointer; 
+            position: relative; 
+            margin-left: 10px;
+        }
+        .brand-blue { 
+            color: #2d72d2; 
+            text-shadow: 0 2px 10px rgba(45, 114, 210, 0.3);
+        }
+        .brand-lime { 
+            color: #ccff00; 
+            margin-left: 5px;
+            text-shadow: 0 2px 10px rgba(204, 255, 0, 0.3);
+        }
+        .brand-dot { 
+            color: #ff3131; 
+            font-size: 28px; 
+            position: absolute; 
+            top: -16px; 
+            left: 42px;
+            text-shadow: 0 2px 10px rgba(255, 49, 49, 0.3);
+        }
+
+        .menu-toggle { 
+            cursor: pointer; 
+            font-size: 22px; 
+            color: white; 
+            margin-right: 15px;
+            transition: transform 0.3s;
+        }
+        .menu-toggle:hover {
+            transform: scale(1.1);
+        }
+
+        /* Avatar in Header */
+        .avatar-container {
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .avatar-container:hover {
+            transform: scale(1.1);
+        }
+        .avatar-container i {
+            font-size: 36px;
+            color: #ccff00;
+            background: rgba(255,255,255,0.1);
+            border-radius: 50%;
+            padding: 5px;
+            box-shadow: 0 0 20px rgba(204, 255, 0, 0.3);
+        }
+
+        .container { 
+            display: flex; 
+            flex: 1; 
+            overflow: hidden; 
+            position: relative; 
+        }
+        
+        /* Sidebar Styling */
+        nav { 
+            width: 280px; 
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-right: 1px solid rgba(255,255,255,0.2); 
+            padding: 25px 0;
+            display: flex; 
+            flex-direction: column; 
+            transition: transform 0.3s ease; 
+            z-index: 900; 
+            overflow-y: auto;
+            box-shadow: 5px 0 25px rgba(0,0,0,0.1);
+        }
+
+        .nav-menu {
+            padding: 0 20px;
+            flex: 1;
+        }
+
+        .nav-item { 
+            display: flex; 
+            align-items: center; 
+            padding: 14px 20px; 
+            margin-bottom: 8px; 
+            text-decoration: none; 
+            color: #333; 
+            border-radius: 12px; 
+            font-size: 15px; 
+            font-weight: 500;
+            transition: all 0.3s; 
+            cursor: pointer; 
+        }
+        .nav-item:hover { 
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white; 
+            transform: translateX(5px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+        .nav-item.active { 
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white; 
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+        .nav-item i { 
+            margin-right: 12px; 
+            font-size: 20px; 
+            width: 24px; 
+            text-align: center; 
+        }
+        
+        .logout-btn { 
+            margin: 20px 20px 15px 20px;
+            color: #f44336; 
+            border: 2px solid #f44336;
+            background: transparent;
+        }
+        .logout-btn:hover { 
+            background: #f44336; 
+            color: white; 
+            border-color: #f44336;
+            transform: translateX(5px);
+        }
+        
+        main { 
+            flex: 1; 
+            padding: 30px; 
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            overflow-y: auto; 
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .profile-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 30px;
+            padding: 40px;
+            width: 100%;
+            max-width: 600px;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.2);
+            animation: slideUp 0.5s ease;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .profile-header {
+            text-align: center;
+            margin-bottom: 30px;
+            position: relative;
+        }
+
+        .profile-header:after {
+            content: '';
+            display: block;
+            width: 60px;
+            height: 4px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin: 20px auto 0;
+            border-radius: 2px;
+        }
+
+        .profile-avatar {
+            font-size: 100px;
+            color: #0f1638;
+            margin-bottom: 15px;
+            position: relative;
+            display: inline-block;
+        }
+
+        .profile-avatar i {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 50%;
+            padding: 20px;
+            color: white;
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+        }
+
+        .profile-avatar:after {
+            content: '👤';
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            background: #ccff00;
+            border-radius: 50%;
+            padding: 5px;
+            font-size: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
+
+        .profile-name {
+            font-size: 28px;
+            font-weight: 700;
+            color: #0f1638;
+            margin-bottom: 5px;
+            text-transform: capitalize;
+            word-break: break-word;
+        }
+
+        .profile-role {
+            color: #666;
+            font-size: 16px;
+            font-weight: 500;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            display: inline-block;
+        }
+
+        .profile-details {
+            margin-top: 30px;
+        }
+
+        .detail-item {
+            display: flex;
+            align-items: flex-start;
+            padding: 18px;
+            border-bottom: 1px solid rgba(0,0,0,0.1);
+            transition: all 0.3s;
+            border-radius: 12px;
+            gap: 15px;
+        }
+
+        .detail-item:hover {
+            background: rgba(102, 126, 234, 0.05);
+            transform: translateX(5px);
+        }
+
+        .detail-item i {
+            width: 24px;
+            color: #667eea;
+            font-size: 20px;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        .detail-label {
+            width: 100px;
+            font-size: 14px;
+            color: #666;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            flex-shrink: 0;
+        }
+
+        .detail-value {
+            flex: 1;
+            font-weight: 600;
+            color: #333;
+            font-size: 15px;
+            word-break: break-word;
+            line-height: 1.5;
+        }
+
+        /* Email-specific styling */
+        .email-value {
+            font-size: 14px;
+            background: rgba(102, 126, 234, 0.1);
+            padding: 8px 12px;
+            border-radius: 8px;
+            display: inline-block;
+            max-width: 100%;
+            border: 1px solid rgba(102, 126, 234, 0.2);
+        }
+
+        .email-value i {
+            margin-right: 8px;
+            color: #667eea;
+        }
+
+        /* Copy button for email */
+        .email-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .copy-btn {
+            background: none;
+            border: 1px solid #667eea;
+            color: #667eea;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            white-space: nowrap;
+        }
+
+        .copy-btn:hover {
+            background: #667eea;
+            color: white;
+        }
+
+        .copy-btn i {
+            font-size: 12px;
+            margin: 0;
+        }
+
+        /* Truncated email for mobile */
+        .email-truncated {
+            display: none;
+        }
+
+        .email-full {
+            display: inline-block;
+        }
+
+        /* Status Badge */
+        .status-badge {
+            display: inline-block;
+            padding: 5px 15px;
+            background: linear-gradient(135deg, #4caf50 0%, #45a049 100%);
+            color: white;
+            border-radius: 50px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-left: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            box-shadow: 0 2px 10px rgba(76, 175, 80, 0.3);
+        }
+
+        .edit-profile-btn {
+            width: 100%;
+            padding: 16px 30px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 40px;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .edit-profile-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 30px rgba(102, 126, 234, 0.4);
+        }
+
+        .edit-profile-btn:active {
+            transform: translateY(-1px);
+        }
+
+        .edit-profile-btn i {
+            font-size: 18px;
+            transition: transform 0.3s;
+        }
+
+        .edit-profile-btn:hover i {
+            transform: rotate(180deg);
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            nav { 
+                position: absolute; 
+                left: 0; 
+                top: 0; 
+                bottom: 0; 
+                transform: translateX(-100%); 
+                box-shadow: 5px 0 25px rgba(0,0,0,0.2);
+                width: 280px;
+            }
+            nav.open { 
+                transform: translateX(0); 
+            }
+            
+            .menu-overlay {
+                display: none;
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: rgba(0,0,0,0.5);
+                z-index: 800;
+                backdrop-filter: blur(3px);
+            }
+            .menu-overlay.active {
+                display: block;
+            }
+
+            .profile-card {
+                padding: 20px;
+            }
+
+            .profile-name {
+                font-size: 22px;
+            }
+
+            .detail-item {
+                padding: 15px;
+                flex-wrap: wrap;
+                gap: 10px;
+            }
+
+            .detail-label {
+                width: 100%;
+                font-size: 12px;
+                margin-bottom: 5px;
+            }
+
+            .detail-value {
+                width: 100%;
+                margin-left: 0;
+                padding-left: 30px;
+            }
+
+            .email-container {
+                width: 100%;
+            }
+
+            .email-value {
+                width: 100%;
+                word-break: break-all;
+                font-size: 13px;
+            }
+
+            .copy-btn {
+                margin-left: 30px;
+            }
+
+            /* Show truncated email on mobile */
+            .email-full {
+                display: none;
+            }
+            
+            .email-truncated {
+                display: inline-block;
+            }
+        }
+
+        /* Small mobile devices */
+        @media (max-width: 480px) {
+            .profile-card {
+                padding: 15px;
+            }
+
+            .profile-avatar {
+                font-size: 70px;
+            }
+
+            .profile-avatar i {
+                padding: 15px;
+            }
+
+            .detail-item {
+                padding: 12px;
+            }
+
+            .email-value {
+                font-size: 12px;
+                padding: 6px 10px;
+            }
+
+            .copy-btn {
+                padding: 4px 10px;
+                font-size: 11px;
+            }
+        }
+
+        /* Desktop email handling */
+        @media (min-width: 769px) {
+            .detail-item {
+                align-items: center;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div style="display: flex; align-items: center;">
+        <i class="fas fa-bars menu-toggle" id="hamburger"></i>
+        <div class="brand-container">
+            <span class="brand-dot">•</span> <span class="brand-blue">GMI</span>
+            <span class="brand-lime">-HK</span>
+        </div>
+    </div>
+    <div style="display: flex; align-items: center; gap: 10px;">
+        <a href="student-profile.html" class="avatar-container">
+            <i class="fas fa-user-circle"></i>
+        </a>
+    </div>
+</header>
+
+<div class="menu-overlay" id="menuOverlay"></div>
+
+<div class="container">
+    <nav id="sidebar">
+        <!-- Navigation Menu - My Profile at the top -->
+        <div class="nav-menu">
+            <a href="student-profile.html" class="nav-item active"><i class="fas fa-user"></i> My Profile</a>
+            <a href="student-dashboard.html" class="nav-item"><i class="fas fa-home"></i> Dashboard</a>
+            <a href="room-apply.html" class="nav-item"><i class="fas fa-check-circle"></i> Room Apply</a>
+            <a href="move-out.html" class="nav-item"><i class="fas fa-box-open"></i> Move-Out</a>
+            <a href="maintenance.html" class="nav-item"><i class="fas fa-tools"></i> Room Maintenance</a>
+        </div>
+
+        <!-- Logout Button at Bottom -->
+        <a href="#" class="nav-item logout-btn" id="logoutBtn">
+            <i class="fas fa-sign-out-alt"></i> Logout
+        </a>
+    </nav>
+
+    <main id="mainContent">
+        <div class="profile-card">
+            <div class="profile-header">
+                <div class="profile-avatar">
+                    <i class="fas fa-user-circle"></i>
+                </div>
+                <div class="profile-name" id="profileName">Loading...</div>
+                <div class="profile-role">
+                    Student
+                    <span class="status-badge">Active</span>
+                </div>
+            </div>
+
+            <div class="profile-details">
+                <!-- Email with copy button -->
+                <div class="detail-item">
+                    <i class="fas fa-envelope"></i>
+                    <span class="detail-label">Email</span>
+                    <div class="detail-value">
+                        <div class="email-container">
+                            <span class="email-value" id="profileEmail">-</span>
+                            <button class="copy-btn" id="copyEmailBtn" title="Copy email to clipboard">
+                                <i class="far fa-copy"></i> Copy
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="detail-item">
+                    <i class="fas fa-id-card"></i>
+                    <span class="detail-label">Student ID</span>
+                    <span class="detail-value" id="studentId">-</span>
+                </div>
+                <div class="detail-item">
+                    <i class="fas fa-phone"></i>
+                    <span class="detail-label">Phone</span>
+                    <span class="detail-value" id="phoneNumber">Not set</span>
+                </div>
+                <div class="detail-item">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <span class="detail-label">Room</span>
+                    <span class="detail-value" id="roomNumber">Not assigned</span>
+                </div>
+                <div class="detail-item">
+                    <i class="fas fa-calendar-alt"></i>
+                    <span class="detail-label">Joined</span>
+                    <span class="detail-value" id="joinDate">-</span>
+                </div>
+            </div>
+
+            <button class="edit-profile-btn" id="editProfileBtn">
+                <i class="fas fa-edit"></i> Edit Profile
+            </button>
+        </div>
+    </main>
+</div>
+
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getAuth, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyBUIG4ZIanXbeEPeqaBO5ifkH_KiAg5M8w",
+        authDomain: "gmi-hostelku.firebaseapp.com",
+        projectId: "gmi-hostelku",
+        storageBucket: "gmi-hostelku.firebasestorage.app",
+        messagingSenderId: "556053021509",
+        appId: "1:556053021509:web:d64966c34ae18e3d12f42c"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
+    const hamburger = document.getElementById('hamburger');
+    const sidebar = document.getElementById('sidebar');
+    const mainContent = document.getElementById('mainContent');
+    const menuOverlay = document.getElementById('menuOverlay');
+
+    function closeSidebar() {
+        sidebar.classList.remove('open');
+        menuOverlay.classList.remove('active');
+    }
+
+    function openSidebar() {
+        sidebar.classList.add('open');
+        menuOverlay.classList.add('active');
+    }
+
+    hamburger.addEventListener('click', (e) => {
+        e.stopPropagation();
+        e.preventDefault();
+        if (sidebar.classList.contains('open')) {
+            closeSidebar();
+        } else {
+            openSidebar();
+        }
+    });
+
+    menuOverlay.addEventListener('click', () => {
+        closeSidebar();
+    });
+
+    mainContent.addEventListener('click', () => {
+        if (window.innerWidth <= 768 && sidebar.classList.contains('open')) {
+            closeSidebar();
+        }
+    });
+
+    window.addEventListener('resize', () => {
+        if (window.innerWidth > 768) {
+            sidebar.classList.remove('open');
+            menuOverlay.classList.remove('active');
+        }
+    });
+
+    // Copy email function
+    function copyEmailToClipboard(email) {
+        navigator.clipboard.writeText(email).then(() => {
+            const copyBtn = document.getElementById('copyEmailBtn');
+            const originalText = copyBtn.innerHTML;
+            copyBtn.innerHTML = '<i class="fas fa-check"></i> Copied!';
+            copyBtn.style.background = '#4caf50';
+            copyBtn.style.color = 'white';
+            copyBtn.style.borderColor = '#4caf50';
+            
+            setTimeout(() => {
+                copyBtn.innerHTML = '<i class="far fa-copy"></i> Copy';
+                copyBtn.style.background = 'none';
+                copyBtn.style.color = '#667eea';
+                copyBtn.style.borderColor = '#667eea';
+            }, 2000);
+        }).catch(err => {
+            alert('Failed to copy email');
+        });
+    }
+
+    // Load user profile
+    onAuthStateChanged(auth, (user) => {
+        if (user) {
+            // Format join date
+            const joinDate = user.metadata.creationTime ? new Date(user.metadata.creationTime) : new Date();
+            const formattedDate = joinDate.toLocaleDateString('en-MY', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
+
+            // Display user info
+            document.getElementById('profileName').textContent = user.email.split('@')[0];
+            
+            // Set email with proper display
+            const emailElement = document.getElementById('profileEmail');
+            emailElement.textContent = user.email;
+            emailElement.title = user.email; // Show full email on hover
+            
+            document.getElementById('joinDate').textContent = formattedDate;
+            
+            // Generate a simple student ID from email or use UID
+            const studentId = 'STU' + user.uid.substring(0, 8).toUpperCase();
+            document.getElementById('studentId').textContent = studentId;
+            
+            // You can load additional profile data from Firestore here
+            // For now, set some demo data
+            document.getElementById('phoneNumber').textContent = "+60 12-345 6789";
+            document.getElementById('roomNumber').textContent = "A-3-12";
+
+            // Add copy email functionality
+            document.getElementById('copyEmailBtn').addEventListener('click', () => {
+                copyEmailToClipboard(user.email);
+            });
+        } else {
+            window.location.href = "student-login.html";
+        }
+    });
+
+    // Logout button functionality
+    document.getElementById('logoutBtn').addEventListener('click', (e) => {
+        e.preventDefault();
+        signOut(auth).then(() => {
+            sessionStorage.clear();
+            window.location.href = "index.html";
+        }).catch((error) => {
+            alert("Logout failed: " + error.message);
+        });
+    });
+
+    // Edit profile button
+    document.getElementById('editProfileBtn').addEventListener('click', () => {
+        alert('✨ Profile editing will be available soon!\n\nYou will be able to update your:\n• Phone number\n• Address\n• Profile picture\n• And more...');
+    });
+</script>
+
+</body>
+</html>

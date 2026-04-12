@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GMI HostelKu - Student Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body { 
+            font-family: 'Poppins', sans-serif; 
+            margin: 0; 
+            display: flex; 
+            flex-direction: column; 
+            height: 100vh; 
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            overflow: hidden; 
+        }
+        
+        /* Header Styling */
+        header { 
+            background: rgba(15, 22, 56, 0.95);
+            backdrop-filter: blur(10px);
+            color: white; 
+            padding: 0 25px; 
+            display: flex; 
+            align-items: center; 
+            justify-content: space-between; 
+            z-index: 1000; 
+            flex-shrink: 0; 
+            height: 70px;
+            box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+        }
+
+        /* Logo Branding */
+        .brand-container { 
+            display: flex; 
+            align-items: center; 
+            font-size: 28px; 
+            font-weight: 700; 
+            cursor: pointer; 
+            position: relative; 
+            margin-left: 10px;
+        }
+        .brand-blue { 
+            color: #2d72d2; 
+            text-shadow: 0 2px 10px rgba(45, 114, 210, 0.3);
+        }
+        .brand-lime { 
+            color: #ccff00; 
+            margin-left: 5px;
+            text-shadow: 0 2px 10px rgba(204, 255, 0, 0.3);
+        }
+        .brand-dot { 
+            color: #ff3131; 
+            font-size: 28px; 
+            position: absolute; 
+            top: -16px; 
+            left: 42px;
+            text-shadow: 0 2px 10px rgba(255, 49, 49, 0.3);
+        }
+        
+        .menu-toggle { 
+            cursor: pointer; 
+            font-size: 22px; 
+            color: white; 
+            margin-right: 15px;
+            transition: transform 0.3s;
+        }
+        .menu-toggle:hover {
+            transform: scale(1.1);
+        }
+
+        /* Avatar in Header */
+        .avatar-container {
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .avatar-container:hover {
+            transform: scale(1.1);
+        }
+        .avatar-container i {
+            font-size: 36px;
+            color: #ccff00;
+            background: rgba(255,255,255,0.1);
+            border-radius: 50%;
+            padding: 5px;
+            box-shadow: 0 0 20px rgba(204, 255, 0, 0.3);
+        }
+
+        /* Layout */
+        .container { 
+            display: flex; 
+            flex: 1; 
+            overflow: hidden; 
+            position: relative; 
+        }
+        
+        /* Sidebar Styling */
+        nav { 
+            width: 280px; 
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-right: 1px solid rgba(255,255,255,0.2); 
+            padding: 25px 0;
+            display: flex; 
+            flex-direction: column; 
+            transition: transform 0.3s ease; 
+            z-index: 900; 
+            overflow-y: auto;
+            box-shadow: 5px 0 25px rgba(0,0,0,0.1);
+        }
+
+        .nav-menu {
+            padding: 0 20px;
+            flex: 1;
+        }
+
+        .nav-item { 
+            display: flex; 
+            align-items: center; 
+            padding: 14px 20px; 
+            margin-bottom: 8px; 
+            text-decoration: none; 
+            color: #333; 
+            border-radius: 12px; 
+            font-size: 15px; 
+            font-weight: 500;
+            transition: all 0.3s; 
+            cursor: pointer; 
+        }
+        .nav-item:hover { 
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white; 
+            transform: translateX(5px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+        .nav-item.active { 
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white; 
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+        .nav-item i { 
+            margin-right: 12px; 
+            font-size: 20px; 
+            width: 24px; 
+            text-align: center; 
+        }
+        
+        .logout-btn { 
+            margin: 20px 20px 15px 20px;
+            color: #f44336; 
+            border: 2px solid #f44336;
+            background: transparent;
+        }
+        .logout-btn:hover { 
+            background: #f44336; 
+            color: white; 
+            border-color: #f44336;
+            transform: translateX(5px);
+        }
+        
+        main { 
+            flex: 1; 
+            padding: 30px; 
+            display: flex; 
+            gap: 25px; 
+            flex-wrap: wrap; 
+            overflow-y: auto; 
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        /* Dashboard Cards */
+        .card-section { 
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px; 
+            padding: 25px; 
+            flex: 1; 
+            min-width: 320px; 
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2); 
+            height: fit-content;
+            animation: slideUp 0.5s ease;
+            transition: transform 0.3s;
+        }
+
+        .card-section:hover {
+            transform: translateY(-5px);
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        h2 { 
+            border-bottom: 3px solid transparent;
+            border-image: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-image-slice: 1;
+            padding-bottom: 15px; 
+            margin-top: 0; 
+            margin-bottom: 20px;
+            font-size: 20px; 
+            font-weight: 600;
+            color: #0f1638;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        h2 i {
+            color: #667eea;
+            font-size: 24px;
+        }
+        
+        .alert-item { 
+            background: rgba(248, 249, 250, 0.8);
+            backdrop-filter: blur(5px);
+            min-height: 60px; 
+            margin-bottom: 15px; 
+            border-radius: 12px; 
+            display: flex; 
+            align-items: center; 
+            padding: 15px 20px; 
+            border-left: 4px solid; 
+            font-size: 14px; 
+            color: #333;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .alert-item:hover {
+            transform: translateX(5px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.2);
+            background: white;
+        }
+
+        .alert-item i { 
+            margin-right: 15px; 
+            font-size: 18px;
+        }
+
+        .alert-item.info {
+            border-left-color: #2196F3;
+        }
+        .alert-item.warning {
+            border-left-color: #ff9800;
+        }
+        .alert-item.success {
+            border-left-color: #4caf50;
+        }
+        .alert-item.danger {
+            border-left-color: #f44336;
+        }
+
+        .alert-item.info i { color: #2196F3; }
+        .alert-item.warning i { color: #ff9800; }
+        .alert-item.success i { color: #4caf50; }
+        .alert-item.danger i { color: #f44336; }
+
+        /* Quick Action Buttons */
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .action-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 20px;
+            border: none;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            text-decoration: none;
+            text-align: center;
+        }
+
+        .action-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        .action-btn i {
+            font-size: 18px;
+        }
+
+        /* Recent Activity */
+        .activity-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+            padding: 15px 0;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+        }
+
+        .activity-item:last-child {
+            border-bottom: none;
+        }
+
+        .activity-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+        }
+
+        .activity-icon.success {
+            background: rgba(76, 175, 80, 0.1);
+            color: #4caf50;
+        }
+        .activity-icon.warning {
+            background: rgba(255, 152, 0, 0.1);
+            color: #ff9800;
+        }
+        .activity-icon.info {
+            background: rgba(33, 150, 243, 0.1);
+            color: #2196F3;
+        }
+        .activity-icon.danger {
+            background: rgba(244, 67, 54, 0.1);
+            color: #f44336;
+        }
+
+        .activity-content {
+            flex: 1;
+        }
+
+        .activity-title {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .activity-time {
+            font-size: 12px;
+            color: #999;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            nav { 
+                position: absolute; 
+                left: 0; 
+                top: 0; 
+                bottom: 0; 
+                transform: translateX(-100%); 
+                box-shadow: 5px 0 25px rgba(0,0,0,0.2);
+                width: 280px;
+            }
+            nav.open { 
+                transform: translateX(0); 
+            }
+            
+            .menu-overlay {
+                display: none;
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: rgba(0,0,0,0.5);
+                z-index: 800;
+                backdrop-filter: blur(3px);
+            }
+            .menu-overlay.active {
+                display: block;
+            }
+
+            main {
+                padding: 20px;
+            }
+
+            .card-section {
+                min-width: 100%;
+            }
+
+            .quick-actions {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div style="display: flex; align-items: center;">
+        <i class="fas fa-bars menu-toggle" id="hamburger"></i>
+        <div class="brand-container">
+            <span class="brand-dot">•</span> <span class="brand-blue">GMI</span>
+            <span class="brand-lime">-HK</span>
+        </div>
+    </div>
+    <div style="display: flex; align-items: center; gap: 10px;">
+        <!-- Avatar Icon that links to profile page -->
+        <a href="student-profile.html" class="avatar-container" id="profileLink">
+            <i class="fas fa-user-circle"></i>
+        </a>
+    </div>
+</header>
+
+<!-- Overlay for mobile menu -->
+<div class="menu-overlay" id="menuOverlay"></div>
+
+<div class="container">
+    <nav id="sidebar">
+        <!-- Navigation Menu - My Profile at the top -->
+        <div class="nav-menu">
+            <a href="student-profile.html" class="nav-item"><i class="fas fa-user"></i> My Profile</a>
+            <a href="student-dashboard.html" class="nav-item active"><i class="fas fa-home"></i> Dashboard</a>
+            <a href="room-apply.html" class="nav-item"><i class="fas fa-check-circle"></i> Room Apply</a>
+            <a href="move-out.html" class="nav-item"><i class="fas fa-box-open"></i> Move-Out</a>
+            <a href="maintenance.html" class="nav-item"><i class="fas fa-tools"></i> Room Maintenance</a>
+        </div>
+
+        <!-- Logout Button at Bottom -->
+        <a href="#" class="nav-item logout-btn" id="logoutBtn">
+            <i class="fas fa-sign-out-alt"></i> Logout
+        </a>
+    </nav>
+
+    <main id="mainContent">
+        <!-- Section 1: Alerts & Reminders -->
+        <section class="card-section">
+            <h2>
+                <i class="fas fa-bell"></i>
+                Alerts & Reminders
+            </h2>
+            <div class="alert-item info">
+                <i class="fas fa-info-circle"></i>
+                <div>
+                    <strong>Welcome back!</strong> Check your application status below.
+                </div>
+            </div>
+            <div class="alert-item warning">
+                <i class="fas fa-clock"></i>
+                <div>
+                    <strong>Payment Due:</strong> Room rent payment by 15th of each month
+                </div>
+            </div>
+            <div class="alert-item success">
+                <i class="fas fa-calendar-check"></i>
+                <div>
+                    <strong>Room Inspection:</strong> Scheduled for next week
+                </div>
+            </div>
+            <div class="alert-item danger">
+                <i class="fas fa-exclamation-triangle"></i>
+                <div>
+                    <strong>Maintenance Required:</strong> AC repair pending
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 2: Quick Actions -->
+        <section class="card-section">
+            <h2>
+                <i class="fas fa-rocket"></i>
+                Quick Actions
+            </h2>
+            <div class="quick-actions">
+                <a href="room-apply.html" class="action-btn">
+                    <i class="fas fa-bed"></i> Apply for Room
+                </a>
+                <a href="maintenance.html" class="action-btn">
+                    <i class="fas fa-tools"></i> Report Issue
+                </a>
+                <a href="move-out.html" class="action-btn">
+                    <i class="fas fa-box-open"></i> Move-Out
+                </a>
+                <a href="student-profile.html" class="action-btn">
+                    <i class="fas fa-user"></i> View Profile
+                </a>
+            </div>
+        </section>
+
+        <!-- Section 3: Recent Activity -->
+        <section class="card-section">
+            <h2>
+                <i class="fas fa-history"></i>
+                Recent Activity
+            </h2>
+            
+            <div class="activity-item">
+                <div class="activity-icon success">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <div class="activity-content">
+                    <div class="activity-title">Room application submitted</div>
+                    <div class="activity-time">
+                        <i class="fas fa-clock"></i> 2 days ago
+                    </div>
+                </div>
+            </div>
+
+            <div class="activity-item">
+                <div class="activity-icon warning">
+                    <i class="fas fa-tools"></i>
+                </div>
+                <div class="activity-content">
+                    <div class="activity-title">Maintenance request #1234</div>
+                    <div class="activity-time">
+                        <i class="fas fa-clock"></i> 3 days ago
+                    </div>
+                </div>
+            </div>
+
+            <div class="activity-item">
+                <div class="activity-icon info">
+                    <i class="fas fa-file-alt"></i>
+                </div>
+                <div class="activity-content">
+                    <div class="activity-title">Application status updated</div>
+                    <div class="activity-time">
+                        <i class="fas fa-clock"></i> 5 days ago
+                    </div>
+                </div>
+            </div>
+
+            <div class="activity-item">
+                <div class="activity-icon success">
+                    <i class="fas fa-credit-card"></i>
+                </div>
+                <div class="activity-content">
+                    <div class="activity-title">Payment confirmed</div>
+                    <div class="activity-time">
+                        <i class="fas fa-clock"></i> 1 week ago
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+</div>
+
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getAuth, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyBUIG4ZIanXbeEPeqaBO5ifkH_KiAg5M8w",
+        authDomain: "gmi-hostelku.firebaseapp.com",
+        projectId: "gmi-hostelku",
+        storageBucket: "gmi-hostelku.firebasestorage.app",
+        messagingSenderId: "556053021509",
+        appId: "1:556053021509:web:d64966c34ae18e3d12f42c"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
+    const hamburger = document.getElementById('hamburger');
+    const sidebar = document.getElementById('sidebar');
+    const mainContent = document.getElementById('mainContent');
+    const menuOverlay = document.getElementById('menuOverlay');
+
+    // Function to close sidebar
+    function closeSidebar() {
+        sidebar.classList.remove('open');
+        menuOverlay.classList.remove('active');
+    }
+
+    // Function to open sidebar
+    function openSidebar() {
+        sidebar.classList.add('open');
+        menuOverlay.classList.add('active');
+    }
+
+    // Toggle sidebar on hamburger click
+    hamburger.addEventListener('click', (e) => {
+        e.stopPropagation();
+        e.preventDefault();
+        if (sidebar.classList.contains('open')) {
+            closeSidebar();
+        } else {
+            openSidebar();
+        }
+    });
+
+    // Close sidebar when clicking on overlay
+    menuOverlay.addEventListener('click', () => {
+        closeSidebar();
+    });
+
+    // Close sidebar when clicking on main content (mobile only)
+    mainContent.addEventListener('click', () => {
+        if (window.innerWidth <= 768 && sidebar.classList.contains('open')) {
+            closeSidebar();
+        }
+    });
+
+    // Handle window resize
+    window.addEventListener('resize', () => {
+        if (window.innerWidth > 768) {
+            // On desktop, ensure sidebar is visible and overlay is hidden
+            sidebar.classList.remove('open');
+            menuOverlay.classList.remove('active');
+        }
+    });
+
+    // Check if user is logged in
+    onAuthStateChanged(auth, (user) => {
+        if (user) {
+            // Store user email in session storage for profile page to use
+            sessionStorage.setItem('userEmail', user.email);
+            sessionStorage.setItem('userName', user.email.split('@')[0]);
+        } else {
+            // No user logged in, redirect to login page
+            window.location.href = "student-login.html";
+        }
+    });
+
+    // Logout button functionality
+    document.getElementById('logoutBtn').addEventListener('click', (e) => {
+        e.preventDefault();
+        signOut(auth).then(() => {
+            // Clear session storage
+            sessionStorage.clear();
+            // Sign-out successful, redirect to index page
+            window.location.href = "index.html";
+        }).catch((error) => {
+            // An error happened
+            alert("Logout failed: " + error.message);
+        });
+    });
+
+    // Add click handlers for alert items
+    document.querySelectorAll('.alert-item').forEach(item => {
+        item.addEventListener('click', function() {
+            const title = this.querySelector('strong')?.textContent || 'Alert';
+            alert(`📢 ${title}\n\nMore details will be available soon!`);
+        });
+    });
+
+    // Add click handlers for activity items
+    document.querySelectorAll('.activity-item').forEach(item => {
+        item.addEventListener('click', function() {
+            const title = this.querySelector('.activity-title')?.textContent || 'Activity';
+            alert(`📋 ${title}\n\nView full details coming soon!`);
+        });
+    });
+</script>
+
+</body>
+</html>
