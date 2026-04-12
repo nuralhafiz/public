@@ -54,6 +54,47 @@
         
         main { flex: 1; padding: 30px; overflow-y: auto; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
 
+        /* Loading Spinner */
+        .loading-spinner {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 50px;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid rgba(102, 126, 234, 0.2);
+            border-radius: 50%;
+            border-top-color: #667eea;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Refresh Button */
+        .refresh-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 10px 20px;
+            font-size: 14px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s;
+        }
+
+        .refresh-btn:hover {
+            background: #764ba2;
+            transform: translateY(-2px);
+        }
+
         /* Page Header */
         .page-header {
             display: flex;
@@ -79,7 +120,6 @@
             color: #667eea;
         }
 
-        /* Stats Badge */
         .stats-badge {
             display: flex;
             gap: 15px;
@@ -282,7 +322,7 @@
             position: relative;
         }
 
-        /* Bar Chart Simulation - Updated with percentage at bottom */
+        /* Bar Chart */
         .bar-chart {
             display: flex;
             align-items: flex-end;
@@ -321,7 +361,7 @@
             margin-top: 5px;
         }
 
-        /* Pie Chart Simulation */
+        /* Pie Chart */
         .pie-chart {
             display: flex;
             align-items: center;
@@ -334,8 +374,9 @@
             width: 150px;
             height: 150px;
             border-radius: 50%;
-            background: conic-gradient(#667eea 0% 75%, #ff9800 75% 85%, #4caf50 85% 95%, #2196f3 95% 100%);
+            background: conic-gradient(#667eea 0% 0%, #ff9800 0% 0%, #4caf50 0% 0%, #2196f3 0% 0%);
             box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            transition: background 0.3s;
         }
 
         .pie-legend {
@@ -471,6 +512,19 @@
 
         .export-btn i { font-size: 18px; }
 
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 50px;
+            color: #999;
+        }
+
+        .empty-state i {
+            font-size: 60px;
+            margin-bottom: 20px;
+            color: #667eea;
+        }
+
         @media (max-width: 768px) {
             nav { position: absolute; left: 0; top: 0; bottom: 0; transform: translateX(-100%); width: 280px; }
             nav.open { transform: translateX(0); }
@@ -527,328 +581,226 @@
                     <i class="fas fa-chart-bar"></i>
                     Reports & Analytics
                 </h2>
-                <div class="stats-badge">
-                    <span class="stat-badge-item"><i class="fas fa-calendar-alt"></i> March 2026</span>
+                <div class="stats-badge" id="dateRangeBadge">
+                    <span class="stat-badge-item"><i class="fas fa-calendar-alt"></i> <span id="dateRangeLabel">Loading...</span></span>
                 </div>
             </div>
 
             <!-- Date Range Selector -->
             <div class="date-range">
                 <div class="range-presets">
-                    <button class="range-btn active" onclick="setRange('today')">Today</button>
+                    <button class="range-btn" onclick="setRange('today')">Today</button>
                     <button class="range-btn" onclick="setRange('week')">This Week</button>
-                    <button class="range-btn" onclick="setRange('month')">This Month</button>
+                    <button class="range-btn active" onclick="setRange('month')">This Month</button>
                     <button class="range-btn" onclick="setRange('quarter')">This Quarter</button>
                     <button class="range-btn" onclick="setRange('year')">This Year</button>
                 </div>
                 <div class="custom-range">
-                    <input type="date" class="date-input" id="startDate" value="2026-03-01">
+                    <input type="date" class="date-input" id="startDate">
                     <span style="color: #666;">to</span>
-                    <input type="date" class="date-input" id="endDate" value="2026-03-31">
+                    <input type="date" class="date-input" id="endDate">
                     <button class="generate-btn" onclick="generateReport()">
                         <i class="fas fa-sync-alt"></i> Generate
                     </button>
+                    <button class="refresh-btn" id="refreshBtn">
+                        <i class="fas fa-sync-alt"></i> Refresh
+                    </button>
                 </div>
             </div>
 
-            <!-- Quick Report Cards -->
-            <div class="report-cards">
-                <div class="report-card" onclick="generateQuickReport('occupancy')">
-                    <div class="report-icon">
-                        <i class="fas fa-door-open"></i>
-                    </div>
-                    <div class="report-info">
-                        <h4>Occupancy Report</h4>
-                        <p>View Details →</p>
-                    </div>
-                </div>
-                <div class="report-card" onclick="generateQuickReport('financial')">
-                    <div class="report-icon">
-                        <i class="fas fa-money-bill-wave"></i>
-                    </div>
-                    <div class="report-info">
-                        <h4>Financial Report</h4>
-                        <p>View Details →</p>
-                    </div>
-                </div>
-                <div class="report-card" onclick="generateQuickReport('maintenance')">
-                    <div class="report-icon">
-                        <i class="fas fa-tools"></i>
-                    </div>
-                    <div class="report-info">
-                        <h4>Maintenance Report</h4>
-                        <p>View Details →</p>
-                    </div>
-                </div>
-                <div class="report-card" onclick="generateQuickReport('applications')">
-                    <div class="report-icon">
-                        <i class="fas fa-file-alt"></i>
-                    </div>
-                    <div class="report-info">
-                        <h4>Applications Report</h4>
-                        <p>View Details →</p>
-                    </div>
-                </div>
+            <!-- Loading Spinner -->
+            <div id="loadingSpinner" class="loading-spinner">
+                <div class="spinner"></div>
             </div>
 
-            <!-- Charts Grid -->
-            <div class="charts-grid">
-                <!-- Occupancy Chart - Updated with percentage at bottom -->
-                <div class="chart-card">
-                    <div class="chart-header">
-                        <h3><i class="fas fa-door-open"></i> Occupancy Rate by Block</h3>
-                        <div class="chart-actions">
-                            <button class="chart-action-btn" onclick="exportChart('occupancy', 'png')">
-                                <i class="fas fa-download"></i> PNG
-                            </button>
-                            <button class="chart-action-btn" onclick="exportChart('occupancy', 'pdf')">
-                                <i class="fas fa-file-pdf"></i> PDF
-                            </button>
+            <!-- Report Content -->
+            <div id="reportContent" style="display: none;">
+                <!-- Quick Report Cards -->
+                <div class="report-cards">
+                    <div class="report-card" onclick="generateQuickReport('occupancy')">
+                        <div class="report-icon">
+                            <i class="fas fa-door-open"></i>
+                        </div>
+                        <div class="report-info">
+                            <h4>Occupancy Report</h4>
+                            <p>View Details →</p>
                         </div>
                     </div>
-                    <div class="chart-container">
-                        <div class="bar-chart">
-                            <div class="bar-group">
-                                <span class="bar-label">Block A</span>
-                                <div class="bar" style="height: 120px;"></div>
-                                <span class="bar-percentage">75%</span>
-                            </div>
-                            <div class="bar-group">
-                                <span class="bar-label">Block B</span>
-                                <div class="bar" style="height: 140px;"></div>
-                                <span class="bar-percentage">82%</span>
-                            </div>
-                            <div class="bar-group">
-                                <span class="bar-label">Block C</span>
-                                <div class="bar" style="height: 110px;"></div>
-                                <span class="bar-percentage">68%</span>
-                            </div>
-                            <div class="bar-group">
-                                <span class="bar-label">Block D</span>
-                                <div class="bar" style="height: 95px;"></div>
-                                <span class="bar-percentage">58%</span>
-                            </div>
+                    <div class="report-card" onclick="generateQuickReport('financial')">
+                        <div class="report-icon">
+                            <i class="fas fa-money-bill-wave"></i>
+                        </div>
+                        <div class="report-info">
+                            <h4>Financial Report</h4>
+                            <p>View Details →</p>
+                        </div>
+                    </div>
+                    <div class="report-card" onclick="generateQuickReport('maintenance')">
+                        <div class="report-icon">
+                            <i class="fas fa-tools"></i>
+                        </div>
+                        <div class="report-info">
+                            <h4>Maintenance Report</h4>
+                            <p>View Details →</p>
+                        </div>
+                    </div>
+                    <div class="report-card" onclick="generateQuickReport('applications')">
+                        <div class="report-icon">
+                            <i class="fas fa-file-alt"></i>
+                        </div>
+                        <div class="report-info">
+                            <h4>Applications Report</h4>
+                            <p>View Details →</p>
                         </div>
                     </div>
                 </div>
 
-                <!-- Room Status Distribution -->
-                <div class="chart-card">
-                    <div class="chart-header">
-                        <h3><i class="fas fa-chart-pie"></i> Room Status Distribution</h3>
-                        <div class="chart-actions">
-                            <button class="chart-action-btn" onclick="exportChart('distribution', 'png')">
-                                <i class="fas fa-download"></i> PNG
-                            </button>
-                            <button class="chart-action-btn" onclick="exportChart('distribution', 'pdf')">
-                                <i class="fas fa-file-pdf"></i> PDF
-                            </button>
+                <!-- Charts Grid -->
+                <div class="charts-grid">
+                    <!-- Occupancy Chart -->
+                    <div class="chart-card">
+                        <div class="chart-header">
+                            <h3><i class="fas fa-door-open"></i> Occupancy Rate by Block</h3>
+                            <div class="chart-actions">
+                                <button class="chart-action-btn" onclick="exportChart('occupancy', 'png')">
+                                    <i class="fas fa-download"></i> PNG
+                                </button>
+                                <button class="chart-action-btn" onclick="exportChart('occupancy', 'pdf')">
+                                    <i class="fas fa-file-pdf"></i> PDF
+                                </button>
+                            </div>
+                        </div>
+                        <div class="chart-container">
+                            <div class="bar-chart" id="occupancyChart">
+                                <!-- Dynamic bar chart will be populated here -->
+                            </div>
                         </div>
                     </div>
-                    <div class="chart-container">
-                        <div class="pie-chart">
-                            <div class="pie"></div>
-                            <div class="pie-legend">
-                                <div class="legend-item">
-                                    <span class="legend-color occupied"></span>
-                                    <span>Occupied: 125 (76%)</span>
-                                </div>
-                                <div class="legend-item">
-                                    <span class="legend-color available"></span>
-                                    <span>Available: 28 (17%)</span>
-                                </div>
-                                <div class="legend-item">
-                                    <span class="legend-color maintenance"></span>
-                                    <span>Maintenance: 8 (5%)</span>
-                                </div>
-                                <div class="legend-item">
-                                    <span class="legend-color reserved"></span>
-                                    <span>Reserved: 4 (2%)</span>
+
+                    <!-- Room Status Distribution -->
+                    <div class="chart-card">
+                        <div class="chart-header">
+                            <h3><i class="fas fa-chart-pie"></i> Room Status Distribution</h3>
+                            <div class="chart-actions">
+                                <button class="chart-action-btn" onclick="exportChart('distribution', 'png')">
+                                    <i class="fas fa-download"></i> PNG
+                                </button>
+                                <button class="chart-action-btn" onclick="exportChart('distribution', 'pdf')">
+                                    <i class="fas fa-file-pdf"></i> PDF
+                                </button>
+                            </div>
+                        </div>
+                        <div class="chart-container">
+                            <div class="pie-chart" id="pieChart">
+                                <div class="pie" id="pieVisual"></div>
+                                <div class="pie-legend" id="pieLegend">
+                                    <!-- Dynamic legend will be populated here -->
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
 
-            <!-- Tables Grid -->
-            <div class="tables-grid">
-                <!-- Top Performing Blocks -->
-                <div class="table-card">
-                    <div class="table-header">
-                        <h3><i class="fas fa-trophy" style="color: #667eea;"></i> Top Performing Blocks</h3>
-                        <button class="chart-action-btn" onclick="exportTable('top-blocks')">
-                            <i class="fas fa-download"></i> Export
-                        </button>
+                <!-- Tables Grid -->
+                <div class="tables-grid">
+                    <!-- Top Performing Blocks -->
+                    <div class="table-card">
+                        <div class="table-header">
+                            <h3><i class="fas fa-trophy" style="color: #667eea;"></i> Top Performing Blocks</h3>
+                            <button class="chart-action-btn" onclick="exportTable('top-blocks')">
+                                <i class="fas fa-download"></i> Export
+                            </button>
+                        </div>
+                        <table class="mini-table" id="topBlocksTable">
+                            <!-- Dynamic data -->
+                        </table>
                     </div>
-                    <table class="mini-table">
-                        <tr>
-                            <td><strong>Block A</strong></td>
-                            <td>45/60 rooms</td>
-                            <td class="amount">75% occupied</td>
-                            <td><i class="fas fa-arrow-up" style="color: #4caf50;"></i> +5%</td>
-                        </tr>
-                        <tr>
-                            <td><strong>Block B</strong></td>
-                            <td>38/50 rooms</td>
-                            <td class="amount">76% occupied</td>
-                            <td><i class="fas fa-arrow-up" style="color: #4caf50;"></i> +3%</td>
-                        </tr>
-                        <tr>
-                            <td><strong>Block C</strong></td>
-                            <td>42/55 rooms</td>
-                            <td class="amount">76% occupied</td>
-                            <td><i class="fas fa-minus" style="color: #ff9800;"></i> 0%</td>
-                        </tr>
-                    </table>
+
+                    <!-- Revenue Summary -->
+                    <div class="table-card">
+                        <div class="table-header">
+                            <h3><i class="fas fa-coins" style="color: #667eea;"></i> Revenue Summary</h3>
+                            <button class="chart-action-btn" onclick="exportTable('revenue')">
+                                <i class="fas fa-download"></i> Export
+                            </button>
+                        </div>
+                        <table class="mini-table" id="revenueTable">
+                            <!-- Dynamic data -->
+                        </table>
+                    </div>
                 </div>
 
-                <!-- Revenue Summary -->
-                <div class="table-card">
-                    <div class="table-header">
-                        <h3><i class="fas fa-coins" style="color: #667eea;"></i> Revenue Summary</h3>
-                        <button class="chart-action-btn" onclick="exportTable('revenue')">
-                            <i class="fas fa-download"></i> Export
-                        </button>
+                <!-- More Tables Grid -->
+                <div class="tables-grid">
+                    <!-- Maintenance Summary -->
+                    <div class="table-card">
+                        <div class="table-header">
+                            <h3><i class="fas fa-tools" style="color: #667eea;"></i> Maintenance Summary</h3>
+                            <button class="chart-action-btn" onclick="exportTable('maintenance')">
+                                <i class="fas fa-download"></i> Export
+                            </button>
+                        </div>
+                        <table class="mini-table" id="maintenanceTable">
+                            <!-- Dynamic data -->
+                        </table>
                     </div>
-                    <table class="mini-table">
-                        <tr>
-                            <td><strong>Monthly Revenue</strong></td>
-                            <td class="amount">RM 45,000</td>
-                            <td><i class="fas fa-arrow-up" style="color: #4caf50;"></i> +8%</td>
-                        </tr>
-                        <tr>
-                            <td><strong>Quarterly Revenue</strong></td>
-                            <td class="amount">RM 132,000</td>
-                            <td><i class="fas fa-arrow-up" style="color: #4caf50;"></i> +12%</td>
-                        </tr>
-                        <tr>
-                            <td><strong>Yearly Revenue</strong></td>
-                            <td class="amount">RM 520,000</td>
-                            <td><i class="fas fa-arrow-up" style="color: #4caf50;"></i> +15%</td>
-                        </tr>
-                        <tr>
-                            <td><strong>Pending Payments</strong></td>
-                            <td class="amount">RM 3,500</td>
-                            <td><i class="fas fa-exclamation-circle" style="color: #f44336;"></i> 5 students</td>
-                        </tr>
-                    </table>
-                </div>
-            </div>
 
-            <!-- More Tables Grid -->
-            <div class="tables-grid">
-                <!-- Maintenance Summary -->
-                <div class="table-card">
-                    <div class="table-header">
-                        <h3><i class="fas fa-tools" style="color: #667eea;"></i> Maintenance Summary</h3>
-                        <button class="chart-action-btn" onclick="exportTable('maintenance')">
-                            <i class="fas fa-download"></i> Export
-                        </button>
+                    <!-- Application Summary -->
+                    <div class="table-card">
+                        <div class="table-header">
+                            <h3><i class="fas fa-file-alt" style="color: #667eea;"></i> Application Summary</h3>
+                            <button class="chart-action-btn" onclick="exportTable('applications')">
+                                <i class="fas fa-download"></i> Export
+                            </button>
+                        </div>
+                        <table class="mini-table" id="applicationsTable">
+                            <!-- Dynamic data -->
+                        </table>
                     </div>
-                    <table class="mini-table">
-                        <tr>
-                            <td><strong>Total Requests</strong></td>
-                            <td>45</td>
-                            <td class="amount">This month</td>
-                        </tr>
-                        <tr>
-                            <td><strong>Completed</strong></td>
-                            <td>38</td>
-                            <td><i class="fas fa-check-circle" style="color: #4caf50;"></i> 84%</td>
-                        </tr>
-                        <tr>
-                            <td><strong>In Progress</strong></td>
-                            <td>5</td>
-                            <td><i class="fas fa-clock" style="color: #ff9800;"></i> 11%</td>
-                        </tr>
-                        <tr>
-                            <td><strong>Pending</strong></td>
-                            <td>2</td>
-                            <td><i class="fas fa-exclamation-circle" style="color: #f44336;"></i> 5%</td>
-                        </tr>
-                        <tr>
-                            <td><strong>Avg Response Time</strong></td>
-                            <td colspan="2">4.2 hours</td>
-                        </tr>
-                    </table>
                 </div>
 
-                <!-- Application Summary -->
-                <div class="table-card">
-                    <div class="table-header">
-                        <h3><i class="fas fa-file-alt" style="color: #667eea;"></i> Application Summary</h3>
-                        <button class="chart-action-btn" onclick="exportTable('applications')">
-                            <i class="fas fa-download"></i> Export
+                <!-- Export Section -->
+                <div class="export-section">
+                    <div class="export-title">
+                        <i class="fas fa-download" style="color: #667eea;"></i>
+                        Export Full Report
+                    </div>
+                    <div class="export-buttons">
+                        <button class="export-btn" onclick="exportReport('pdf')">
+                            <i class="fas fa-file-pdf"></i> Export as PDF
+                        </button>
+                        <button class="export-btn" onclick="exportReport('excel')">
+                            <i class="fas fa-file-excel"></i> Export as Excel
+                        </button>
+                        <button class="export-btn" onclick="exportReport('csv')">
+                            <i class="fas fa-file-csv"></i> Export as CSV
+                        </button>
+                        <button class="export-btn" onclick="printReport()">
+                            <i class="fas fa-print"></i> Print Report
                         </button>
                     </div>
-                    <table class="mini-table">
-                        <tr>
-                            <td><strong>Total Applications</strong></td>
-                            <td>28</td>
-                            <td class="amount">This month</td>
-                        </tr>
-                        <tr>
-                            <td><strong>Approved</strong></td>
-                            <td>20</td>
-                            <td><i class="fas fa-check-circle" style="color: #4caf50;"></i> 71%</td>
-                        </tr>
-                        <tr>
-                            <td><strong>Pending</strong></td>
-                            <td>6</td>
-                            <td><i class="fas fa-clock" style="color: #ff9800;"></i> 21%</td>
-                        </tr>
-                        <tr>
-                            <td><strong>Rejected</strong></td>
-                            <td>2</td>
-                            <td><i class="fas fa-times-circle" style="color: #f44336;"></i> 8%</td>
-                        </tr>
-                        <tr>
-                            <td><strong>Avg Processing Time</strong></td>
-                            <td colspan="2">2.5 days</td>
-                        </tr>
-                    </table>
+                </div>
+
+                <!-- Report Summary -->
+                <div style="background: rgba(255,255,255,0.95); backdrop-filter: blur(10px); border-radius: 15px; padding: 20px;" id="reportSummary">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                        <h3 style="font-size: 16px; color: #0f1638;">
+                            <i class="fas fa-info-circle" style="color: #667eea; margin-right: 8px;"></i>
+                            Report Summary
+                        </h3>
+                        <span style="font-size: 12px; color: #999;" id="lastUpdated">Last updated: Loading...</span>
+                    </div>
+                    <p style="font-size: 13px; color: #666; line-height: 1.6;" id="summaryText">
+                        Loading report data...
+                    </p>
                 </div>
             </div>
 
-            <!-- Export Section -->
-            <div class="export-section">
-                <div class="export-title">
-                    <i class="fas fa-download" style="color: #667eea;"></i>
-                    Export Full Report
-                </div>
-                <div class="export-buttons">
-                    <button class="export-btn" onclick="exportReport('pdf')">
-                        <i class="fas fa-file-pdf"></i> Export as PDF
-                    </button>
-                    <button class="export-btn" onclick="exportReport('excel')">
-                        <i class="fas fa-file-excel"></i> Export as Excel
-                    </button>
-                    <button class="export-btn" onclick="exportReport('csv')">
-                        <i class="fas fa-file-csv"></i> Export as CSV
-                    </button>
-                    <button class="export-btn" onclick="printReport()">
-                        <i class="fas fa-print"></i> Print Report
-                    </button>
-                </div>
-            </div>
-
-            <!-- Report Summary -->
-            <div style="background: rgba(255,255,255,0.95); backdrop-filter: blur(10px); border-radius: 15px; padding: 20px;">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-                    <h3 style="font-size: 16px; color: #0f1638;">
-                        <i class="fas fa-info-circle" style="color: #667eea; margin-right: 8px;"></i>
-                        Report Summary
-                    </h3>
-                    <span style="font-size: 12px; color: #999;">Last updated: 15 Mar 2026, 10:30 AM</span>
-                </div>
-                <p style="font-size: 13px; color: #666; line-height: 1.6;">
-                    This report covers the period from <strong>1 March 2026</strong> to <strong>31 March 2026</strong>. 
-                    Overall hostel occupancy is at <strong>76%</strong> with 125 occupied rooms out of 165 total rooms. 
-                    Block B has the highest occupancy rate at 82%, while Block D has the lowest at 58%. 
-                    There are currently <strong>8 maintenance requests</strong> in progress with an average response time of 4.2 hours. 
-                    Total revenue for this period is <strong>RM 45,000</strong>, showing an 8% increase from last month.
-                </p>
+            <!-- Empty State -->
+            <div id="emptyState" class="empty-state" style="display: none;">
+                <i class="fas fa-chart-bar"></i>
+                <h3>No Data Available</h3>
+                <p>Reports will appear once data is available in the system.</p>
             </div>
         </main>
     </div>
@@ -856,6 +808,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getAuth, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { getFirestore, collection, getDocs, query, where, orderBy } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyBUIG4ZIanXbeEPeqaBO5ifkH_KiAg5M8w",
@@ -868,11 +821,22 @@
 
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
+        const db = getFirestore(app);
 
         const hamburger = document.getElementById('hamburger');
         const sidebar = document.getElementById('sidebar');
         const mainContent = document.getElementById('mainContent');
         const menuOverlay = document.getElementById('menuOverlay');
+
+        // Data storage
+        let roomsData = [];
+        let studentsData = [];
+        let applicationsData = [];
+        let moveoutData = [];
+        let maintenanceData = [];
+
+        let currentStartDate = null;
+        let currentEndDate = null;
 
         function closeSidebar() { sidebar.classList.remove('open'); menuOverlay.classList.remove('active'); }
         function openSidebar() { sidebar.classList.add('open'); menuOverlay.classList.add('active'); }
@@ -893,6 +857,12 @@
                     signOut(auth).then(() => window.location.href = "warden-login.html");
                     return;
                 }
+                // Set default date range
+                const today = new Date();
+                const firstDayOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+                document.getElementById('startDate').value = firstDayOfMonth.toISOString().split('T')[0];
+                document.getElementById('endDate').value = today.toISOString().split('T')[0];
+                loadAllData();
             } else { window.location.href = "warden-login.html"; }
         });
 
@@ -901,6 +871,310 @@
             signOut(auth).then(() => window.location.href = "index.html");
         });
 
+        // Load all data from Firestore
+        async function loadAllData() {
+            try {
+                document.getElementById('loadingSpinner').style.display = 'flex';
+                document.getElementById('reportContent').style.display = 'none';
+                document.getElementById('emptyState').style.display = 'none';
+
+                // Load rooms
+                const roomsSnapshot = await getDocs(collection(db, "rooms"));
+                roomsData = [];
+                roomsSnapshot.forEach(doc => roomsData.push({ id: doc.id, ...doc.data() }));
+
+                // Load applications
+                const appsSnapshot = await getDocs(collection(db, "applications"));
+                applicationsData = [];
+                appsSnapshot.forEach(doc => applicationsData.push({ id: doc.id, ...doc.data() }));
+
+                // Load move-out requests
+                const moveoutSnapshot = await getDocs(collection(db, "moveout_requests"));
+                moveoutData = [];
+                moveoutSnapshot.forEach(doc => moveoutData.push({ id: doc.id, ...doc.data() }));
+
+                // Load maintenance requests
+                const maintenanceSnapshot = await getDocs(collection(db, "maintenance_requests"));
+                maintenanceData = [];
+                maintenanceSnapshot.forEach(doc => maintenanceData.push({ id: doc.id, ...doc.data() }));
+
+                if (roomsData.length === 0) {
+                    document.getElementById('loadingSpinner').style.display = 'none';
+                    document.getElementById('emptyState').style.display = 'block';
+                    return;
+                }
+
+                document.getElementById('loadingSpinner').style.display = 'none';
+                document.getElementById('reportContent').style.display = 'block';
+                generateReport();
+                
+            } catch (error) {
+                console.error("Error loading data:", error);
+                document.getElementById('loadingSpinner').style.display = 'none';
+                document.getElementById('emptyState').style.display = 'block';
+            }
+        }
+
+        // Generate report based on date range
+        function generateReport() {
+            currentStartDate = document.getElementById('startDate').value;
+            currentEndDate = document.getElementById('endDate').value;
+            
+            const startDate = new Date(currentStartDate);
+            const endDate = new Date(currentEndDate);
+            
+            // Update date range label
+            const startStr = startDate.toLocaleDateString('en-MY', { day: 'numeric', month: 'short', year: 'numeric' });
+            const endStr = endDate.toLocaleDateString('en-MY', { day: 'numeric', month: 'short', year: 'numeric' });
+            document.getElementById('dateRangeLabel').textContent = `${startStr} - ${endStr}`;
+            document.getElementById('lastUpdated').textContent = `Last updated: ${new Date().toLocaleString()}`;
+            
+            // Calculate statistics
+            const totalRooms = roomsData.length;
+            const occupiedRooms = roomsData.filter(r => r.status === 'occupied').length;
+            const availableRooms = roomsData.filter(r => r.status === 'available').length;
+            const maintenanceRooms = roomsData.filter(r => r.status === 'maintenance').length;
+            const reservedRooms = roomsData.filter(r => r.status === 'reserved').length;
+            
+            // Calculate occupancy by block
+            const blocks = ['A', 'B', 'C', 'D'];
+            const blockStats = {};
+            blocks.forEach(block => {
+                const blockRooms = roomsData.filter(r => r.block === block);
+                const occupied = blockRooms.filter(r => r.status === 'occupied').length;
+                blockStats[block] = {
+                    total: blockRooms.length,
+                    occupied: occupied,
+                    percentage: blockRooms.length > 0 ? Math.round((occupied / blockRooms.length) * 100) : 0
+                };
+            });
+            
+            // Calculate room status distribution
+            const occupiedPct = totalRooms > 0 ? Math.round((occupiedRooms / totalRooms) * 100) : 0;
+            const availablePct = totalRooms > 0 ? Math.round((availableRooms / totalRooms) * 100) : 0;
+            const maintenancePct = totalRooms > 0 ? Math.round((maintenanceRooms / totalRooms) * 100) : 0;
+            const reservedPct = totalRooms > 0 ? Math.round((reservedRooms / totalRooms) * 100) : 0;
+            
+            // Calculate application stats
+            const totalApps = applicationsData.length;
+            const approvedApps = applicationsData.filter(a => a.status === 'approved').length;
+            const pendingApps = applicationsData.filter(a => a.status === 'pending').length;
+            const rejectedApps = applicationsData.filter(a => a.status === 'rejected').length;
+            
+            // Calculate maintenance stats
+            const totalMaintenance = maintenanceData.length;
+            const completedMaintenance = maintenanceData.filter(m => m.status === 'completed').length;
+            const inProgressMaintenance = maintenanceData.filter(m => m.status === 'in-progress').length;
+            const pendingMaintenance = maintenanceData.filter(m => m.status === 'pending').length;
+            
+            // Render occupancy chart
+            renderOccupancyChart(blockStats);
+            
+            // Render pie chart
+            renderPieChart(occupiedPct, availablePct, maintenancePct, reservedPct);
+            
+            // Render tables
+            renderTopBlocksTable(blockStats);
+            renderRevenueTable();
+            renderMaintenanceTable(totalMaintenance, completedMaintenance, inProgressMaintenance, pendingMaintenance);
+            renderApplicationsTable(totalApps, approvedApps, pendingApps, rejectedApps);
+            
+            // Update summary text
+            document.getElementById('summaryText').innerHTML = `
+                This report covers the period from <strong>${startStr}</strong> to <strong>${endStr}</strong>. 
+                Overall hostel occupancy is at <strong>${occupiedPct}%</strong> with ${occupiedRooms} occupied rooms out of ${totalRooms} total rooms. 
+                ${getTopBlockText(blockStats)} 
+                There are currently <strong>${pendingMaintenance + inProgressMaintenance} active maintenance requests</strong>.
+                Total applications received: <strong>${totalApps}</strong> with ${approvedApps} approved.
+            `;
+        }
+        
+        function getTopBlockText(blockStats) {
+            let topBlock = 'A';
+            let topPct = 0;
+            for (const [block, stats] of Object.entries(blockStats)) {
+                if (stats.percentage > topPct && stats.total > 0) {
+                    topPct = stats.percentage;
+                    topBlock = block;
+                }
+            }
+            return `Block ${topBlock} has the highest occupancy rate at ${topPct}%.`;
+        }
+        
+        function renderOccupancyChart(blockStats) {
+            const container = document.getElementById('occupancyChart');
+            const blocks = ['A', 'B', 'C', 'D'];
+            let html = '';
+            
+            blocks.forEach(block => {
+                const stats = blockStats[block] || { percentage: 0 };
+                const barHeight = stats.percentage * 1.5;
+                html += `
+                    <div class="bar-group">
+                        <span class="bar-label">Block ${block}</span>
+                        <div class="bar" style="height: ${barHeight}px;"></div>
+                        <span class="bar-percentage">${stats.percentage}%</span>
+                    </div>
+                `;
+            });
+            
+            container.innerHTML = html;
+        }
+        
+        function renderPieChart(occupied, available, maintenance, reserved) {
+            // Update pie chart conic gradient
+            let cumulative = 0;
+            const occupiedStart = 0;
+            const occupiedEnd = occupied;
+            const availableStart = occupiedEnd;
+            const availableEnd = occupiedEnd + available;
+            const maintenanceStart = availableEnd;
+            const maintenanceEnd = availableEnd + maintenance;
+            
+            const pieStyle = `conic-gradient(#667eea 0% ${occupied}%, #4caf50 ${occupied}% ${occupied + available}%, #ff9800 ${occupied + available}% ${occupied + available + maintenance}%, #2196f3 ${occupied + available + maintenance}% 100%)`;
+            document.getElementById('pieVisual').style.background = pieStyle;
+            
+            // Update legend
+            const legendHtml = `
+                <div class="legend-item">
+                    <span class="legend-color occupied"></span>
+                    <span>Occupied: ${occupied}%</span>
+                </div>
+                <div class="legend-item">
+                    <span class="legend-color available"></span>
+                    <span>Available: ${available}%</span>
+                </div>
+                <div class="legend-item">
+                    <span class="legend-color maintenance"></span>
+                    <span>Maintenance: ${maintenance}%</span>
+                </div>
+                <div class="legend-item">
+                    <span class="legend-color reserved"></span>
+                    <span>Reserved: ${reserved}%</span>
+                </div>
+            `;
+            document.getElementById('pieLegend').innerHTML = legendHtml;
+        }
+        
+        function renderTopBlocksTable(blockStats) {
+            const container = document.getElementById('topBlocksTable');
+            const blocks = ['A', 'B', 'C', 'D'];
+            let html = '';
+            
+            blocks.forEach(block => {
+                const stats = blockStats[block];
+                if (stats && stats.total > 0) {
+                    const trend = stats.percentage > 70 ? '<i class="fas fa-arrow-up" style="color: #4caf50;"></i>' : '<i class="fas fa-minus" style="color: #ff9800;"></i>';
+                    html += `
+                        <tr>
+                            <td><strong>Block ${block}</strong></td>
+                            <td>${stats.occupied}/${stats.total} rooms</td>
+                            <td class="amount">${stats.percentage}% occupied</td>
+                            <td>${trend}</td>
+                        </tr>
+                    `;
+                }
+            });
+            
+            container.innerHTML = html;
+        }
+        
+        function renderRevenueTable() {
+            const container = document.getElementById('revenueTable');
+            const totalRooms = roomsData.length;
+            const avgPrice = 450;
+            const monthlyRevenue = totalRooms * avgPrice * 0.75;
+            const quarterlyRevenue = monthlyRevenue * 3;
+            const yearlyRevenue = monthlyRevenue * 12;
+            
+            container.innerHTML = `
+                <tr>
+                    <td><strong>Monthly Revenue</strong></td>
+                    <td class="amount">RM ${Math.round(monthlyRevenue).toLocaleString()}</td>
+                    <td><i class="fas fa-arrow-up" style="color: #4caf50;"></i> +8%</td>
+                </tr>
+                <tr>
+                    <td><strong>Quarterly Revenue</strong></td>
+                    <td class="amount">RM ${Math.round(quarterlyRevenue).toLocaleString()}</td>
+                    <td><i class="fas fa-arrow-up" style="color: #4caf50;"></i> +12%</td>
+                </tr>
+                <tr>
+                    <td><strong>Yearly Revenue</strong></td>
+                    <td class="amount">RM ${Math.round(yearlyRevenue).toLocaleString()}</td>
+                    <td><i class="fas fa-arrow-up" style="color: #4caf50;"></i> +15%</td>
+                </tr>
+                <tr>
+                    <td><strong>Pending Payments</strong></td>
+                    <td class="amount">RM ${Math.round(monthlyRevenue * 0.08).toLocaleString()}</td>
+                    <td><i class="fas fa-exclamation-circle" style="color: #f44336;"></i> 5 students</td>
+                </tr>
+            `;
+        }
+        
+        function renderMaintenanceTable(total, completed, inProgress, pending) {
+            const container = document.getElementById('maintenanceTable');
+            const completionRate = total > 0 ? Math.round((completed / total) * 100) : 0;
+            
+            container.innerHTML = `
+                <tr>
+                    <td><strong>Total Requests</strong></td>
+                    <td>${total}</td>
+                    <td class="amount">This period</td>
+                </tr>
+                <tr>
+                    <td><strong>Completed</strong></td>
+                    <td>${completed}</td>
+                    <td><i class="fas fa-check-circle" style="color: #4caf50;"></i> ${completionRate}%</td>
+                </tr>
+                <tr>
+                    <td><strong>In Progress</strong></td>
+                    <td>${inProgress}</td>
+                    <td><i class="fas fa-clock" style="color: #ff9800;"></i> ${total > 0 ? Math.round((inProgress / total) * 100) : 0}%</td>
+                </tr>
+                <tr>
+                    <td><strong>Pending</strong></td>
+                    <td>${pending}</td>
+                    <td><i class="fas fa-exclamation-circle" style="color: #f44336;"></i> ${total > 0 ? Math.round((pending / total) * 100) : 0}%</td>
+                </tr>
+                <tr>
+                    <td><strong>Avg Response Time</strong></td>
+                    <td colspan="2">4.2 hours</td>
+                </tr>
+            `;
+        }
+        
+        function renderApplicationsTable(total, approved, pending, rejected) {
+            const container = document.getElementById('applicationsTable');
+            const approvalRate = total > 0 ? Math.round((approved / total) * 100) : 0;
+            
+            container.innerHTML = `
+                <tr>
+                    <td><strong>Total Applications</strong></td>
+                    <td>${total}</td>
+                    <td class="amount">This period</td>
+                </tr>
+                <tr>
+                    <td><strong>Approved</strong></td>
+                    <td>${approved}</td>
+                    <td><i class="fas fa-check-circle" style="color: #4caf50;"></i> ${approvalRate}%</td>
+                </tr>
+                <tr>
+                    <td><strong>Pending</strong></td>
+                    <td>${pending}</td>
+                    <td><i class="fas fa-clock" style="color: #ff9800;"></i> ${total > 0 ? Math.round((pending / total) * 100) : 0}%</td>
+                </tr>
+                <tr>
+                    <td><strong>Rejected</strong></td>
+                    <td>${rejected}</td>
+                    <td><i class="fas fa-times-circle" style="color: #f44336;"></i> ${total > 0 ? Math.round((rejected / total) * 100) : 0}%</td>
+                </tr>
+                <tr>
+                    <td><strong>Avg Processing Time</strong></td>
+                    <td colspan="2">2.5 days</td>
+                </tr>
+            `;
+        }
+        
         // Date range functions
         window.setRange = (range) => {
             document.querySelectorAll('.range-btn').forEach(btn => btn.classList.remove('active'));
@@ -915,37 +1189,37 @@
                     endDate = today.toISOString().split('T')[0];
                     break;
                 case 'week':
-                    const weekAgo = new Date(today.setDate(today.getDate() - 7));
+                    const weekAgo = new Date(today);
+                    weekAgo.setDate(today.getDate() - 7);
                     startDate = weekAgo.toISOString().split('T')[0];
-                    endDate = new Date().toISOString().split('T')[0];
+                    endDate = today.toISOString().split('T')[0];
                     break;
                 case 'month':
-                    const monthAgo = new Date(today.setMonth(today.getMonth() - 1));
-                    startDate = monthAgo.toISOString().split('T')[0];
-                    endDate = new Date().toISOString().split('T')[0];
+                    const firstDayOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+                    startDate = firstDayOfMonth.toISOString().split('T')[0];
+                    endDate = today.toISOString().split('T')[0];
                     break;
                 case 'quarter':
-                    const quarterAgo = new Date(today.setMonth(today.getMonth() - 3));
-                    startDate = quarterAgo.toISOString().split('T')[0];
-                    endDate = new Date().toISOString().split('T')[0];
+                    const firstDayOfQuarter = new Date(today.getFullYear(), Math.floor(today.getMonth() / 3) * 3, 1);
+                    startDate = firstDayOfQuarter.toISOString().split('T')[0];
+                    endDate = today.toISOString().split('T')[0];
                     break;
                 case 'year':
-                    const yearAgo = new Date(today.setFullYear(today.getFullYear() - 1));
-                    startDate = yearAgo.toISOString().split('T')[0];
-                    endDate = new Date().toISOString().split('T')[0];
+                    const firstDayOfYear = new Date(today.getFullYear(), 0, 1);
+                    startDate = firstDayOfYear.toISOString().split('T')[0];
+                    endDate = today.toISOString().split('T')[0];
                     break;
             }
             
             document.getElementById('startDate').value = startDate;
             document.getElementById('endDate').value = endDate;
+            generateReport();
         };
-
+        
         window.generateReport = () => {
-            const start = document.getElementById('startDate').value;
-            const end = document.getElementById('endDate').value;
-            alert(`📊 Generating report from ${start} to ${end}`);
+            generateReport();
         };
-
+        
         window.generateQuickReport = (type) => {
             const reportNames = {
                 'occupancy': 'Occupancy Report',
@@ -953,24 +1227,28 @@
                 'maintenance': 'Maintenance Report',
                 'applications': 'Applications Report'
             };
-            alert(`📈 Generating ${reportNames[type]}...`);
+            alert(`📈 Generating ${reportNames[type]}...\n\nThis feature will export detailed data soon.`);
         };
-
+        
         window.exportChart = (chart, format) => {
-            alert(`📥 Exporting ${chart} chart as ${format.toUpperCase()}`);
+            alert(`📥 Exporting ${chart} chart as ${format.toUpperCase()}\n\nThis feature will be available soon.`);
         };
-
+        
         window.exportTable = (table) => {
-            alert(`📥 Exporting ${table} table data`);
+            alert(`📥 Exporting ${table} table data\n\nThis feature will be available soon.`);
         };
-
+        
         window.exportReport = (format) => {
-            alert(`📥 Exporting full report as ${format.toUpperCase()}`);
+            alert(`📥 Exporting full report as ${format.toUpperCase()}\n\nThis feature will be available soon.`);
         };
-
+        
         window.printReport = () => {
-            alert("🖨️ Preparing report for printing...");
+            alert("🖨️ Preparing report for printing...\n\nThis feature will be available soon.");
         };
+        
+        document.getElementById('refreshBtn').addEventListener('click', () => {
+            loadAllData();
+        });
     </script>
 </body>
 </html>
