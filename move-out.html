@@ -19,13 +19,12 @@
             display: flex; 
             flex-direction: column; 
             height: 100vh; 
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: #f0f3fa;
             overflow: hidden; 
         }
         
         /* Header Styling */
-        header { 
-            background: rgba(15, 22, 56, 0.95);
+        header { background: linear-gradient(135deg, #1e3a8a 0%, #2d72d2 100%);
             backdrop-filter: blur(10px);
             color: white; 
             padding: 0 25px; 
@@ -39,33 +38,32 @@
         }
 
         /* Logo Branding */
+        
+        
+        
+        
+
+        
+        
+        
+        
+        
+        
+        
         .brand-container { 
             display: flex; 
             align-items: center; 
-            font-size: 28px; 
-            font-weight: 700; 
+            font-size: 24px; 
+            font-weight: 800; 
             cursor: pointer; 
             position: relative; 
             margin-left: 10px;
+            letter-spacing: -0.5px;
         }
-        .brand-blue { 
-            color: #2d72d2; 
-            text-shadow: 0 2px 10px rgba(45, 114, 210, 0.3);
-        }
-        .brand-lime { 
-            color: #ccff00; 
-            margin-left: 5px;
-            text-shadow: 0 2px 10px rgba(204, 255, 0, 0.3);
-        }
-        .brand-dot { 
-            color: #ff3131; 
-            font-size: 28px; 
-            position: absolute; 
-            top: -16px; 
-            left: 42px;
-            text-shadow: 0 2px 10px rgba(255, 49, 49, 0.3);
-        }
-
+        
+        
+        
+        
         .menu-toggle { 
             cursor: pointer; 
             font-size: 22px; 
@@ -78,20 +76,36 @@
         }
 
         /* Avatar in Header */
+                /* Premium Student Avatar */
+                /* Premium Student Avatar */
         .avatar-container {
             cursor: pointer;
-            transition: all 0.3s;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #ccff00 0%, #99cc00 100%);
+            border: 2px solid rgba(255, 255, 255, 0.9);
+            position: relative;
+            overflow: hidden;
+        }
+        .avatar-container::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.4) 0%, transparent 60%);
         }
         .avatar-container:hover {
-            transform: scale(1.1);
+            transform: scale(1.1) translateY(-2px);
+            border-color: #ffffff;
         }
         .avatar-container i {
-            font-size: 36px;
-            color: #ccff00;
-            background: rgba(255,255,255,0.1);
-            border-radius: 50%;
-            padding: 5px;
-            box-shadow: 0 0 20px rgba(204, 255, 0, 0.3);
+            font-size: 22px;
+            color: #0f1638;
+            z-index: 2;
         }
         
         .container { 
@@ -135,13 +149,13 @@
             cursor: pointer; 
         }
         .nav-item:hover { 
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #1e3a8a 0%, #2d72d2 100%);
             color: white; 
             transform: translateX(5px);
             box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
         }
         .nav-item.active { 
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #1e3a8a 0%, #2d72d2 100%);
             color: white; 
             box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
         }
@@ -169,7 +183,7 @@
             flex: 1; 
             display: flex; 
             flex-direction: column; 
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: #f0f3fa;
             overflow-y: auto; 
         }
 
@@ -218,7 +232,7 @@
             display: block;
             width: 60px;
             height: 4px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #1e3a8a 0%, #2d72d2 100%);
             margin: 15px auto 0;
             border-radius: 2px;
         }
@@ -237,7 +251,7 @@
         }
 
         .section-title i {
-            color: #667eea;
+            color: #2d72d2;
             font-size: 24px;
         }
 
@@ -265,7 +279,7 @@
 
         label i {
             margin-right: 8px;
-            color: #667eea;
+            color: #2d72d2;
         }
 
         .required:after {
@@ -301,7 +315,7 @@
 
         input:focus, select:focus, textarea:focus {
             outline: none;
-            border-color: #667eea;
+            border-color: #2d72d2;
             box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
         }
 
@@ -335,7 +349,7 @@
             height: 22px;
             margin-top: 3px;
             cursor: pointer;
-            accent-color: #667eea;
+            accent-color: #2d72d2;
             flex-shrink: 0;
         }
 
@@ -356,7 +370,7 @@
 
         /* Info Banner */
         .info-banner {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #1e3a8a 0%, #2d72d2 100%);
             color: white;
             padding: 15px 20px;
             border-radius: 12px;
@@ -381,7 +395,7 @@
         .btn-submit { 
             width: 250px; 
             padding: 16px 30px; 
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #1e3a8a 0%, #2d72d2 100%);
             color: white; 
             border: none; 
             border-radius: 50px; 
@@ -530,20 +544,60 @@
             }
         }
     </style>
+
+    <style id="unified-logo-style">
+        .gmi-wrapper {
+            position: relative;
+            display: inline-block;
+            line-height: 1;
+            padding-right: 0.05em; /* Padding for the wrapper */
+        }
+        .brand-blue {
+            color: #1118a8; /* Deep blue from image */
+            font-weight: 900;
+            font-family: 'Arial', sans-serif;
+            letter-spacing: -1px;
+            text-shadow: 
+                -0.8px -0.8px 0 #fff, 0px -0.8px 0 #fff, 0.8px -0.8px 0 #fff, 0.8px 0px 0 #fff, 0.8px 0.8px 0 #fff, 0px 0.8px 0 #fff, -0.8px 0.8px 0 #fff, -0.8px 0px 0 #fff, 0 4px 6px rgba(0,0,0,0.3);
+        }
+        .brand-dot {
+            position: absolute;
+            top: -0.24em;
+            right: 0.05em;
+            /* Shifted to perfectly align over the I */
+            width: 0.32em;
+            height: 0.32em;
+            background-color: #f93144;
+            /* Red dot from image */
+            border-radius: 50%;
+            box-shadow: 0 0 0 0.8px #fff, 0 4px 6px rgba(0, 0, 0, 0.3);
+        }
+        .brand-lime {
+            color: #ccff00;
+            margin-left: 5px;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 800;
+            text-shadow: 
+                -0.8px -0.8px 0 #000, 0px -0.8px 0 #000, 0.8px -0.8px 0 #000, 0.8px 0px 0 #000, 0.8px 0.8px 0 #000, 0px 0.8px 0 #000, -0.8px 0.8px 0 #000, -0.8px 0px 0 #000, 0 4px 6px rgba(0,0,0,0.3);
+        }
+        /* Increased font size for dashboards */
+        .brand-container {
+            font-size: 32px !important;
+        }
+    </style>
 </head>
 <body>
     <header>
         <div style="display: flex; align-items: center;">
             <i class="fas fa-bars menu-toggle" id="hamburger"></i>
-            <div class="brand-container">
-                <span class="brand-dot">•</span> <span class="brand-blue">GMI</span>
-                <span class="brand-lime">-HK</span>
-            </div>
+            <div class="brand-container" onclick="window.location.href='student-dashboard.html'">
+            <span class="gmi-wrapper"><span class="brand-blue">GMI</span><span class="brand-dot"></span></span><span class="brand-lime">HostelKu.</span>
+        </div>
         </div>
         <div style="display: flex; align-items: center; gap: 10px;">
             <!-- Avatar Icon that links to profile page -->
             <a href="student-profile.html" class="avatar-container">
-                <i class="fas fa-user-circle"></i>
+                <i class="fas fa-user-graduate"></i>
             </a>
         </div>
     </header>
@@ -572,7 +626,7 @@
             <div class="form-container">
                 <div class="apply-card">
                     <h2>
-                        <i class="fas fa-box-open" style="margin-right: 10px; color: #667eea;"></i>
+                        <i class="fas fa-box-open" style="margin-right: 10px; color: #2d72d2;"></i>
                         Move-Out Application Form
                     </h2>
 
@@ -602,7 +656,8 @@
                                     <i class="fas fa-hashtag"></i>
                                     Index Number
                                 </label>
-                                <input type="text" id="indexNumber" placeholder="e.g. STU2024001" required>
+                                <input type="text" id="indexNumber" readonly style="background: #f1f5f9; cursor: not-allowed; color: #64748b; font-weight: bold; border-color: #cbd5e1;" required>
+                                <small style="display: block; margin-top: 5px; color: #64748b; font-size: 11px;"><i class="fas fa-info-circle"></i> Auto-generated tracking number</small>
                             </div>
                         </div>
 
@@ -731,22 +786,10 @@
     </div>
 
     <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
         import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
         
-        const firebaseConfig = { 
-            apiKey: "AIzaSyBUIG4ZIanXbeEPeqaBO5ifkH_KiAg5M8w", 
-            authDomain: "gmi-hostelku.firebaseapp.com", 
-            projectId: "gmi-hostelku", 
-            storageBucket: "gmi-hostelku.firebasestorage.app", 
-            messagingSenderId: "556053021509", 
-            appId: "1:556053021509:web:d64966c34ae18e3d12f42c" 
-        };
-        
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const db = getFirestore(app);
+        import { auth, db } from "./js/firebase-config.js";
 
         const hamburger = document.getElementById('hamburger');
         const sidebar = document.getElementById('sidebar');
@@ -758,6 +801,17 @@
         const today = new Date().toISOString().split('T')[0];
         document.getElementById('moveOutDate').setAttribute('min', today);
         document.getElementById('declarationDate').value = today;
+
+        // Auto-generate Index Number
+        const generateIndexNumber = () => {
+            const date = new Date();
+            const yyyy = date.getFullYear().toString();
+            const mm = (date.getMonth() + 1).toString().padStart(2, '0');
+            const dd = date.getDate().toString().padStart(2, '0');
+            const random = Math.floor(1000 + Math.random() * 9000);
+            return `MO-${yyyy}${mm}${dd}-${random}`;
+        };
+        document.getElementById('indexNumber').value = generateIndexNumber();
 
         // Function to close sidebar
         function closeSidebar() {
@@ -803,7 +857,18 @@
         });
 
         // Check if user is logged in and pre-fill data
-        onAuthStateChanged(auth, (user) => { 
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                const email = user.email ? user.email.toLowerCase() : '';
+                const isStudent = email.endsWith('@student.gmi.edu.my');
+                
+                if (!isStudent) {
+                    alert('🛡️ Access Denied: Warden accounts cannot access Student pages.');
+                    window.location.href = 'warden-dashboard.html';
+                    return;
+                }
+                // RBAC PASS
+            }
             if (user) { 
                 // Store user info in session storage
                 sessionStorage.setItem('userEmail', user.email);

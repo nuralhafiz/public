@@ -72,24 +72,11 @@
             gap: 0;
         }
         
-        .brand-blue {
-            color: #2d72d2;
-            letter-spacing: -1px;
-        }
         
-        .brand-dot {
-            color: #ff3131;
-            font-size: 58px;
-            line-height: 0;
-            position: relative;
-            top: -28px;
-            margin-left: -19px;
-            margin-right: 4px;
-        }
         
-        .brand-lime {
-            color: var(--accent-lime);
-        }
+        
+        
+        
 
         /* Tagline directly below logo - matching original spacing */
         .tagline {
@@ -343,7 +330,7 @@
         /* responsive touches */
         @media (max-width: 780px) {
             .brand-logo { font-size: 32px; }
-            .brand-dot { font-size: 44px; top: -22px; margin-left: -14px; margin-right: 2px; }
+            
             .tagline { font-size: 0.8rem; margin-top: 8px; }
             .content h2 { font-size: 2rem; letter-spacing: 2px; }
             .btn-action { padding: 10px 30px; font-size: 12px; }
@@ -356,7 +343,7 @@
             .role-section:hover { flex: 1.1; }
             .content h2 { font-size: 1.8rem; }
             .brand-logo { font-size: 28px; }
-            .brand-dot { font-size: 38px; top: -20px; }
+            
         }
 
         /* hint tooltip - no extra blur line */
@@ -386,6 +373,47 @@
             font-size: 0.7rem;
         }
     </style>
+
+    <style id="unified-logo-style">
+        .gmi-wrapper {
+            position: relative;
+            display: inline-block;
+            line-height: 1;
+            padding-right: 0.05em; /* Padding for the wrapper */
+        }
+        .brand-blue {
+            color: #1118a8; /* Deep blue from image */
+            font-weight: 900;
+            font-family: 'Arial', sans-serif;
+            letter-spacing: -1px;
+            text-shadow: 
+                -0.8px -0.8px 0 #fff, 0px -0.8px 0 #fff, 0.8px -0.8px 0 #fff, 0.8px 0px 0 #fff, 0.8px 0.8px 0 #fff, 0px 0.8px 0 #fff, -0.8px 0.8px 0 #fff, -0.8px 0px 0 #fff, 0 4px 6px rgba(0,0,0,0.3);
+        }
+        .brand-dot {
+            position: absolute;
+            top: -0.24em;
+            right: 0.05em;
+            /* Shifted to perfectly align over the I */
+            width: 0.32em;
+            height: 0.32em;
+            background-color: #f93144;
+            /* Red dot from image */
+            border-radius: 50%;
+            box-shadow: 0 0 0 0.8px #fff, 0 4px 6px rgba(0, 0, 0, 0.3);
+        }
+        .brand-lime {
+            color: #ccff00;
+            margin-left: 5px;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 800;
+            text-shadow: 
+                -0.8px -0.8px 0 #000, 0px -0.8px 0 #000, 0.8px -0.8px 0 #000, 0.8px 0px 0 #000, 0.8px 0.8px 0 #000, 0px 0.8px 0 #000, -0.8px 0.8px 0 #000, -0.8px 0px 0 #000, 0 4px 6px rgba(0,0,0,0.3);
+        }
+        /* Increased font size for dashboards */
+        .brand-container {
+            font-size: 32px !important;
+        }
+    </style>
 </head>
 <body>
 
@@ -394,8 +422,8 @@
 <div class="header-overlay">
     <!-- EXACT original logo appearance from previous code -->
     <div class="brand-logo">
-        <span class="brand-blue">GMI</span><span class="brand-dot">&bull;</span><span class="brand-lime">HostelKu.</span>
-    </div>
+            <span class="gmi-wrapper"><span class="brand-blue">GMI</span><span class="brand-dot"></span></span><span class="brand-lime">HostelKu.</span>
+        </div>
     <!-- Tagline directly below logo as requested -->
     <div class="tagline">
         <i class="fas fa-door-open"></i> Smart Living, Seamless Management

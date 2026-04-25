@@ -6,36 +6,74 @@
     <title>GMI HostelKu - Room Management</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Poppins', sans-serif; display: flex; flex-direction: column; height: 100vh; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); overflow: hidden; }
+        body { font-family: 'Poppins', sans-serif; display: flex; flex-direction: column; height: 100vh; background: #f0f3fa; overflow: hidden; }
         
         /* Header Styling */
-        header { background: rgba(15, 22, 56, 0.95); backdrop-filter: blur(10px); color: white; padding: 0 25px; display: flex; align-items: center; justify-content: space-between; z-index: 1000; flex-shrink: 0; height: 70px; box-shadow: 0 2px 20px rgba(0,0,0,0.1); }
+        header { background: linear-gradient(135deg, #1e3a8a 0%, #2d72d2 100%); backdrop-filter: blur(10px); color: white; padding: 0 25px; display: flex; align-items: center; justify-content: space-between; z-index: 1000; flex-shrink: 0; height: 70px; box-shadow: 0 2px 20px rgba(0,0,0,0.1); }
 
-        .brand-container { display: flex; align-items: center; font-size: 28px; font-weight: 700; cursor: pointer; position: relative; margin-left: 10px; }
-        .brand-blue { color: #2d72d2; text-shadow: 0 2px 10px rgba(45, 114, 210, 0.3); }
-        .brand-lime { color: #ccff00; margin-left: 5px; text-shadow: 0 2px 10px rgba(204, 255, 0, 0.3); }
-        .brand-dot { color: #ff3131; font-size: 28px; position: absolute; top: -16px; left: 42px; text-shadow: 0 2px 10px rgba(255, 49, 49, 0.3); }
+        
+        
+        
+        
 
+        
+        
+        
+        
+        
+        
+        
+        .brand-container { 
+            display: flex; 
+            align-items: center; 
+            font-size: 24px; 
+            font-weight: 800; 
+            cursor: pointer; 
+            position: relative; 
+            margin-left: 10px;
+            letter-spacing: -0.5px;
+        }
+        
+        
+        
+        
         .menu-toggle { cursor: pointer; font-size: 22px; color: white; margin-right: 15px; transition: transform 0.3s; }
         .menu-toggle:hover { transform: scale(1.1); }
 
         /* Avatar in Header */
+                /* Premium Warden Avatar */
+                /* Premium Warden Avatar */
         .avatar-container {
             cursor: pointer;
-            transition: all 0.3s;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #ff3131 0%, #cc0000 100%);
+            border: 2px solid rgba(255, 255, 255, 0.9);
+            position: relative;
+            overflow: hidden;
+        }
+        .avatar-container::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.4) 0%, transparent 60%);
         }
         .avatar-container:hover {
-            transform: scale(1.1);
+            transform: scale(1.1) translateY(-2px);
+            border-color: #ffffff;
         }
         .avatar-container i {
-            font-size: 36px;
-            color: #f44336;
-            background: rgba(255,255,255,0.1);
-            border-radius: 50%;
-            padding: 5px;
-            box-shadow: 0 0 20px rgba(244, 67, 54, 0.3);
+            font-size: 22px;
+            color: #ffffff;
+            z-index: 2;
         }
 
         .container { display: flex; flex: 1; overflow: hidden; position: relative; }
@@ -45,14 +83,14 @@
 
         .nav-menu { padding: 0 20px; flex: 1; }
         .nav-item { display: flex; align-items: center; padding: 14px 20px; margin-bottom: 8px; text-decoration: none; color: #333; border-radius: 12px; font-size: 15px; font-weight: 500; transition: all 0.3s; }
-        .nav-item:hover { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; transform: translateX(5px); box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4); }
-        .nav-item.active { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4); }
+        .nav-item:hover { background: linear-gradient(135deg, #1e3a8a 0%, #2d72d2 100%); color: white; transform: translateX(5px); box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4); }
+        .nav-item.active { background: linear-gradient(135deg, #1e3a8a 0%, #2d72d2 100%); color: white; box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4); }
         .nav-item i { margin-right: 12px; font-size: 20px; width: 24px; text-align: center; }
         
         .logout-btn { margin: 20px 20px 15px 20px; color: #f44336; border: 2px solid #f44336; background: transparent; }
         .logout-btn:hover { background: #f44336; color: white; border-color: #f44336; transform: translateX(5px); }
         
-        main { flex: 1; padding: 30px; overflow-y: auto; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+        main { flex: 1; padding: 30px; overflow-y: auto; background: #f0f3fa; }
 
         /* Loading Spinner */
         .loading-spinner {
@@ -67,7 +105,7 @@
             height: 40px;
             border: 4px solid rgba(102, 126, 234, 0.2);
             border-radius: 50%;
-            border-top-color: #667eea;
+            border-top-color: #2d72d2;
             animation: spin 1s ease-in-out infinite;
         }
 
@@ -77,7 +115,7 @@
 
         /* Refresh Button */
         .refresh-btn {
-            background: #667eea;
+            background: #2d72d2;
             color: white;
             border: none;
             border-radius: 8px;
@@ -117,7 +155,7 @@
         }
 
         .page-header h2 i {
-            color: #667eea;
+            color: #2d72d2;
         }
 
         .stats-badge {
@@ -126,7 +164,7 @@
         }
 
         .stat-badge-item {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #1e3a8a 0%, #2d72d2 100%);
             color: white;
             padding: 8px 15px;
             border-radius: 50px;
@@ -164,7 +202,7 @@
 
         .block-tab i { font-size: 18px; }
         .block-tab.active {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #1e3a8a 0%, #2d72d2 100%);
             color: white;
             box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
         }
@@ -192,7 +230,7 @@
             width: 50px;
             height: 50px;
             border-radius: 12px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #1e3a8a 0%, #2d72d2 100%);
             color: white;
             display: flex;
             align-items: center;
@@ -220,14 +258,14 @@
             border-radius: 15px;
             margin-bottom: 25px;
             display: flex;
-            flex-wrap: wrap;
+            flex-wrap: nowrap; /* Force one line */
             gap: 15px;
             align-items: center;
         }
 
         .search-box {
-            flex: 2;
-            min-width: 300px;
+            flex: 1; /* Allow flexible shrinking/growing */
+            min-width: 200px;
             position: relative;
         }
 
@@ -250,7 +288,7 @@
         }
 
         .search-box input:focus {
-            border-color: #667eea;
+            border-color: #2d72d2;
             outline: none;
             box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
         }
@@ -258,8 +296,8 @@
         .filter-group {
             display: flex;
             gap: 10px;
-            flex-wrap: wrap;
-            flex: 1;
+            flex-wrap: nowrap; /* Force one line */
+            flex: 2; /* Give more space to filters */
         }
 
         .filter-select {
@@ -275,7 +313,7 @@
         }
 
         .filter-select:focus {
-            border-color: #667eea;
+            border-color: #2d72d2;
             outline: none;
         }
 
@@ -289,7 +327,7 @@
         .empty-state i {
             font-size: 60px;
             margin-bottom: 20px;
-            color: #667eea;
+            color: #2d72d2;
         }
 
         /* Floor Sections */
@@ -320,7 +358,7 @@
         }
 
         .floor-header h3 i {
-            color: #667eea;
+            color: #2d72d2;
         }
 
         .floor-stats {
@@ -353,7 +391,7 @@
         }
 
         .room-card.available { border-left-color: #4caf50; }
-        .room-card.occupied { border-left-color: #667eea; }
+        .room-card.occupied { border-left-color: #2d72d2; }
         .room-card.maintenance { border-left-color: #ff9800; }
         .room-card.reserved { border-left-color: #2196f3; }
 
@@ -399,7 +437,7 @@
 
         .detail-row i {
             width: 16px;
-            color: #667eea;
+            color: #2d72d2;
             font-size: 12px;
         }
 
@@ -420,7 +458,7 @@
         }
 
         .occupant-name i {
-            color: #667eea;
+            color: #2d72d2;
             font-size: 12px;
         }
 
@@ -439,7 +477,7 @@
         }
 
         .status-available { background: #e8f5e9; color: #4caf50; }
-        .status-occupied { background: #e3f2fd; color: #667eea; }
+        .status-occupied { background: #e3f2fd; color: #2d72d2; }
         .status-maintenance { background: #fff3e0; color: #ff9800; }
         .status-reserved { background: #e3f2fd; color: #2196f3; }
 
@@ -480,7 +518,7 @@
         }
 
         .room-action-btn:hover {
-            background: #667eea;
+            background: #2d72d2;
             color: white;
             transform: translateY(-2px);
         }
@@ -493,7 +531,7 @@
             width: 60px;
             height: 60px;
             border-radius: 50%;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #1e3a8a 0%, #2d72d2 100%);
             color: white;
             border: none;
             cursor: pointer;
@@ -512,16 +550,19 @@
         }
 
         @media (max-width: 768px) {
+            .page-header { flex-direction: column; align-items: flex-start; gap: 15px; }
+            .filter-select { flex: 1 1 45%; }
+            #refreshBtn { flex: 1 1 100%; }
             nav { position: absolute; left: 0; top: 0; bottom: 0; transform: translateX(-100%); width: 280px; }
             nav.open { transform: translateX(0); }
             .menu-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 800; backdrop-filter: blur(3px); }
             .menu-overlay.active { display: block; }
-            .filters-section { flex-direction: column; }
+            .filters-section { flex-wrap: wrap !important; flex-direction: column; }
             .search-box { width: 100%; }
-            .filter-group { width: 100%; }
+            .filter-group { flex-wrap: wrap !important; width: 100%; }
             .filter-select { width: 100%; }
-            .stats-badge { flex-direction: column; width: 100%; }
-            .stat-badge-item { text-align: center; }
+            .stats-badge { flex-direction: row; flex-wrap: wrap; justify-content: center; gap: 8px; width: 100%; }
+            .stat-badge-item { flex: 1 1 auto; justify-content: center; text-align: center; }
             .block-tabs { flex-direction: column; }
             .summary-grid { grid-template-columns: 1fr; }
             .floor-stats { flex-direction: column; gap: 5px; }
@@ -529,19 +570,61 @@
             .add-room-btn i { font-size: 20px; }
         }
     </style>
+
+    <style id="unified-logo-style">
+        .gmi-wrapper {
+            position: relative;
+            display: inline-block;
+            line-height: 1;
+            padding-right: 0.05em; /* Padding for the wrapper */
+        }
+        .brand-blue {
+            color: #1118a8; /* Deep blue from image */
+            font-weight: 900;
+            font-family: 'Arial', sans-serif;
+            letter-spacing: -1px;
+            text-shadow: 
+                -0.8px -0.8px 0 #fff, 0px -0.8px 0 #fff, 0.8px -0.8px 0 #fff, 0.8px 0px 0 #fff, 0.8px 0.8px 0 #fff, 0px 0.8px 0 #fff, -0.8px 0.8px 0 #fff, -0.8px 0px 0 #fff, 0 4px 6px rgba(0,0,0,0.3);
+        }
+        .brand-dot {
+            position: absolute;
+            top: -0.24em;
+            right: 0.05em;
+            /* Shifted to perfectly align over the I */
+            width: 0.32em;
+            height: 0.32em;
+            background-color: #f93144;
+            /* Red dot from image */
+            border-radius: 50%;
+            box-shadow: 0 0 0 0.8px #fff, 0 4px 6px rgba(0, 0, 0, 0.3);
+        }
+        .brand-lime {
+            color: #ccff00;
+            margin-left: 5px;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 800;
+            text-shadow: 
+                -0.8px -0.8px 0 #000, 0px -0.8px 0 #000, 0.8px -0.8px 0 #000, 0.8px 0px 0 #000, 0.8px 0.8px 0 #000, 0px 0.8px 0 #000, -0.8px 0.8px 0 #000, -0.8px 0px 0 #000, 0 4px 6px rgba(0,0,0,0.3);
+        }
+        /* Increased font size for dashboards */
+        .brand-container {
+            font-size: 32px !important;
+        }
+    </style>
+
+    
 </head>
 <body>
     <header>
         <div style="display: flex; align-items: center;">
             <i class="fas fa-bars menu-toggle" id="hamburger"></i>
-            <div class="brand-container">
-                <span class="brand-dot">•</span> <span class="brand-blue">GMI</span>
-                <span class="brand-lime">-HK</span>
-            </div>
+            <div class="brand-container" onclick="window.location.href='warden-dashboard.html'">
+            <span class="gmi-wrapper"><span class="brand-blue">GMI</span><span class="brand-dot"></span></span><span class="brand-lime">HostelKu.</span>
+        </div>
         </div>
         <div style="display: flex; align-items: center; gap: 10px;">
             <a href="warden-profile.html" class="avatar-container" id="profileLink">
-                <i class="fas fa-user-circle"></i>
+                <i class="fas fa-user-shield"></i>
             </a>
         </div>
     </header>
@@ -551,6 +634,7 @@
     <div class="container">
         <nav id="sidebar">
             <div class="nav-menu">
+                <a href="warden-profile.html" class="nav-item"><i class="fas fa-user"></i> My Profile</a>
                 <a href="warden-dashboard.html" class="nav-item"><i class="fas fa-home"></i> Dashboard</a>
                 <a href="warden-applications.html" class="nav-item"><i class="fas fa-file-alt"></i> Applications</a>
                 <a href="warden-moveout.html" class="nav-item"><i class="fas fa-box-open"></i> Move-Out</a>
@@ -617,18 +701,27 @@
             </div>
 
             <!-- Block Tabs -->
-            <div class="block-tabs">
+            <div class="block-tabs" style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 20px;">
                 <button class="block-tab active" onclick="filterBlock('all')">
                     <i class="fas fa-building"></i> All Blocks
                 </button>
-                <button class="block-tab" onclick="filterBlock('A')">
-                    <i class="fas fa-door-open"></i> Block A
+                <button class="block-tab" onclick="filterBlock('A1')">
+                    <i class="fas fa-door-open"></i> Block A1
                 </button>
-                <button class="block-tab" onclick="filterBlock('B')">
-                    <i class="fas fa-door-open"></i> Block B
+                <button class="block-tab" onclick="filterBlock('A2')">
+                    <i class="fas fa-door-open"></i> Block A2
                 </button>
-                <button class="block-tab" onclick="filterBlock('C')">
-                    <i class="fas fa-door-open"></i> Block C
+                <button class="block-tab" onclick="filterBlock('A3')">
+                    <i class="fas fa-door-open"></i> Block A3
+                </button>
+                <button class="block-tab" onclick="filterBlock('A4')">
+                    <i class="fas fa-door-open"></i> Block A4
+                </button>
+                <button class="block-tab" onclick="filterBlock('A5')">
+                    <i class="fas fa-door-open"></i> Block A5
+                </button>
+                <button class="block-tab" onclick="filterBlock('A7')">
+                    <i class="fas fa-door-open"></i> Block A7
                 </button>
             </div>
 
@@ -690,22 +783,10 @@
     </button>
 
     <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getAuth, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
         import { getFirestore, collection, query, where, getDocs, onSnapshot, doc, updateDoc, addDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-        const firebaseConfig = {
-            apiKey: "AIzaSyBUIG4ZIanXbeEPeqaBO5ifkH_KiAg5M8w",
-            authDomain: "gmi-hostelku.firebaseapp.com",
-            projectId: "gmi-hostelku",
-            storageBucket: "gmi-hostelku.firebasestorage.app",
-            messagingSenderId: "556053021509",
-            appId: "1:556053021509:web:d64966c34ae18e3d12f42c"
-        };
-
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const db = getFirestore(app);
+        import { auth, db } from "./js/firebase-config.js";
 
         const hamburger = document.getElementById('hamburger');
         const sidebar = document.getElementById('sidebar');
@@ -728,6 +809,17 @@
         window.addEventListener('resize', () => { if (window.innerWidth > 768) closeSidebar(); });
 
         onAuthStateChanged(auth, (user) => {
+            if (user) {
+                const email = user.email ? user.email.toLowerCase() : '';
+                const isStudent = email.endsWith('@student.gmi.edu.my');
+                
+                if (isStudent) {
+                    alert('🛡️ Access Denied: Student accounts cannot access Warden pages.');
+                    window.location.href = 'student-dashboard.html';
+                    return;
+                }
+                // RBAC PASS
+            }
             if (user) {
                 if (!user.email.endsWith('@gmi.edu.my') || user.email.includes('@student.')) {
                     alert("Access Denied: This portal is for wardens only.");
@@ -846,7 +938,7 @@
             });
             
             // Group rooms by block and floor
-            const blocks = ['A', 'B', 'C'];
+            const blocks = ['A1', 'A2', 'A3', 'A4', 'A5', 'A7'];
             const container = document.getElementById('floorSectionsContainer');
             container.innerHTML = '';
             

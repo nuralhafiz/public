@@ -6,6 +6,7 @@
     <title>GMI HostelKu - Room Maintenance</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
         * {
             margin: 0;
@@ -19,13 +20,12 @@
             display: flex; 
             flex-direction: column; 
             height: 100vh; 
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: #f0f3fa;
             overflow: hidden; 
         }
         
         /* Header Styling */
-        header { 
-            background: rgba(15, 22, 56, 0.95);
+        header { background: linear-gradient(135deg, #1e3a8a 0%, #2d72d2 100%);
             backdrop-filter: blur(10px);
             color: white; 
             padding: 0 25px; 
@@ -39,33 +39,32 @@
         }
 
         /* Logo Branding */
+        
+        
+        
+        
+
+        
+        
+        
+        
+        
+        
+        
         .brand-container { 
             display: flex; 
             align-items: center; 
-            font-size: 28px; 
-            font-weight: 700; 
+            font-size: 24px; 
+            font-weight: 800; 
             cursor: pointer; 
             position: relative; 
             margin-left: 10px;
+            letter-spacing: -0.5px;
         }
-        .brand-blue { 
-            color: #2d72d2; 
-            text-shadow: 0 2px 10px rgba(45, 114, 210, 0.3);
-        }
-        .brand-lime { 
-            color: #ccff00; 
-            margin-left: 5px;
-            text-shadow: 0 2px 10px rgba(204, 255, 0, 0.3);
-        }
-        .brand-dot { 
-            color: #ff3131; 
-            font-size: 28px; 
-            position: absolute; 
-            top: -16px; 
-            left: 42px;
-            text-shadow: 0 2px 10px rgba(255, 49, 49, 0.3);
-        }
-
+        
+        
+        
+        
         .menu-toggle { 
             cursor: pointer; 
             font-size: 22px; 
@@ -78,20 +77,36 @@
         }
 
         /* Avatar in Header */
+                /* Premium Student Avatar */
+                /* Premium Student Avatar */
         .avatar-container {
             cursor: pointer;
-            transition: all 0.3s;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #ccff00 0%, #99cc00 100%);
+            border: 2px solid rgba(255, 255, 255, 0.9);
+            position: relative;
+            overflow: hidden;
+        }
+        .avatar-container::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.4) 0%, transparent 60%);
         }
         .avatar-container:hover {
-            transform: scale(1.1);
+            transform: scale(1.1) translateY(-2px);
+            border-color: #ffffff;
         }
         .avatar-container i {
-            font-size: 36px;
-            color: #ccff00;
-            background: rgba(255,255,255,0.1);
-            border-radius: 50%;
-            padding: 5px;
-            box-shadow: 0 0 20px rgba(204, 255, 0, 0.3);
+            font-size: 22px;
+            color: #0f1638;
+            z-index: 2;
         }
         
         .container { 
@@ -135,13 +150,13 @@
             cursor: pointer; 
         }
         .nav-item:hover { 
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #1e3a8a 0%, #2d72d2 100%);
             color: white; 
             transform: translateX(5px);
             box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
         }
         .nav-item.active { 
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #1e3a8a 0%, #2d72d2 100%);
             color: white; 
             box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
         }
@@ -169,7 +184,7 @@
             flex: 1; 
             display: flex; 
             flex-direction: column; 
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: #f0f3fa;
             overflow-y: auto; 
         }
 
@@ -218,14 +233,14 @@
             display: block;
             width: 60px;
             height: 4px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #1e3a8a 0%, #2d72d2 100%);
             margin: 15px auto 0;
             border-radius: 2px;
         }
 
         h2 i {
             margin-right: 10px;
-            color: #667eea;
+            color: #2d72d2;
         }
 
         .form-group { 
@@ -245,7 +260,7 @@
 
         label i {
             margin-right: 8px;
-            color: #667eea;
+            color: #2d72d2;
             width: 20px;
         }
 
@@ -269,7 +284,7 @@
 
         input:focus, select:focus, textarea:focus {
             outline: none;
-            border-color: #667eea;
+            border-color: #2d72d2;
             box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
         }
 
@@ -319,7 +334,7 @@
 
         /* Info Banner */
         .info-banner {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #1e3a8a 0%, #2d72d2 100%);
             color: white;
             padding: 15px 20px;
             border-radius: 12px;
@@ -343,7 +358,7 @@
         .btn-submit { 
             width: 200px; 
             padding: 16px 30px; 
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #1e3a8a 0%, #2d72d2 100%);
             color: white; 
             border: none; 
             border-radius: 50px; 
@@ -399,7 +414,7 @@
 
         /* File Upload */
         .file-upload {
-            border: 2px dashed #667eea;
+            border: 2px dashed #2d72d2;
             border-radius: 12px;
             padding: 20px;
             text-align: center;
@@ -415,7 +430,7 @@
 
         .file-upload i {
             font-size: 30px;
-            color: #667eea;
+            color: #2d72d2;
             margin-bottom: 10px;
         }
 
@@ -518,20 +533,60 @@
             }
         }
     </style>
+
+    <style id="unified-logo-style">
+        .gmi-wrapper {
+            position: relative;
+            display: inline-block;
+            line-height: 1;
+            padding-right: 0.05em; /* Padding for the wrapper */
+        }
+        .brand-blue {
+            color: #1118a8; /* Deep blue from image */
+            font-weight: 900;
+            font-family: 'Arial', sans-serif;
+            letter-spacing: -1px;
+            text-shadow: 
+                -0.8px -0.8px 0 #fff, 0px -0.8px 0 #fff, 0.8px -0.8px 0 #fff, 0.8px 0px 0 #fff, 0.8px 0.8px 0 #fff, 0px 0.8px 0 #fff, -0.8px 0.8px 0 #fff, -0.8px 0px 0 #fff, 0 4px 6px rgba(0,0,0,0.3);
+        }
+        .brand-dot {
+            position: absolute;
+            top: -0.24em;
+            right: 0.05em;
+            /* Shifted to perfectly align over the I */
+            width: 0.32em;
+            height: 0.32em;
+            background-color: #f93144;
+            /* Red dot from image */
+            border-radius: 50%;
+            box-shadow: 0 0 0 0.8px #fff, 0 4px 6px rgba(0, 0, 0, 0.3);
+        }
+        .brand-lime {
+            color: #ccff00;
+            margin-left: 5px;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 800;
+            text-shadow: 
+                -0.8px -0.8px 0 #000, 0px -0.8px 0 #000, 0.8px -0.8px 0 #000, 0.8px 0px 0 #000, 0.8px 0.8px 0 #000, 0px 0.8px 0 #000, -0.8px 0.8px 0 #000, -0.8px 0px 0 #000, 0 4px 6px rgba(0,0,0,0.3);
+        }
+        /* Increased font size for dashboards */
+        .brand-container {
+            font-size: 32px !important;
+        }
+    </style>
 </head>
 <body>
     <header>
         <div style="display: flex; align-items: center;">
             <i class="fas fa-bars menu-toggle" id="hamburger"></i>
-            <div class="brand-container">
-                <span class="brand-dot">•</span> <span class="brand-blue">GMI</span>
-                <span class="brand-lime">-HK</span>
-            </div>
+            <div class="brand-container" onclick="window.location.href='student-dashboard.html'">
+            <span class="gmi-wrapper"><span class="brand-blue">GMI</span><span class="brand-dot"></span></span><span class="brand-lime">HostelKu.</span>
+        </div>
         </div>
         <div style="display: flex; align-items: center; gap: 10px;">
             <!-- Avatar Icon that links to profile page -->
             <a href="student-profile.html" class="avatar-container">
-                <i class="fas fa-user-circle"></i>
+                <i class="fas fa-user-graduate"></i>
             </a>
         </div>
     </header>
@@ -648,22 +703,10 @@
     </div>
 
     <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
         import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
         
-        const firebaseConfig = { 
-            apiKey: "AIzaSyBUIG4ZIanXbeEPeqaBO5ifkH_KiAg5M8w", 
-            authDomain: "gmi-hostelku.firebaseapp.com", 
-            projectId: "gmi-hostelku", 
-            storageBucket: "gmi-hostelku.firebasestorage.app", 
-            messagingSenderId: "556053021509", 
-            appId: "1:556053021509:web:d64966c34ae18e3d12f42c" 
-        };
-        
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const db = getFirestore(app);
+        import { auth, db } from "./js/firebase-config.js";
 
         const hamburger = document.getElementById('hamburger');
         const sidebar = document.getElementById('sidebar');
@@ -715,7 +758,18 @@
         });
 
         // Check if user is logged in
-        onAuthStateChanged(auth, (user) => { 
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                const email = user.email ? user.email.toLowerCase() : '';
+                const isStudent = email.endsWith('@student.gmi.edu.my');
+                
+                if (!isStudent) {
+                    alert('🛡️ Access Denied: Warden accounts cannot access Student pages.');
+                    window.location.href = 'warden-dashboard.html';
+                    return;
+                }
+                // RBAC PASS
+            }
             if (user) { 
                 // Store user info in session storage
                 sessionStorage.setItem('userEmail', user.email);
@@ -775,7 +829,12 @@
             // Get current user
             const user = auth.currentUser;
             if (!user) {
-                alert("You must be logged in to submit a maintenance report.");
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Authentication Error',
+                    text: 'You must be logged in to submit a maintenance report.',
+                    confirmButtonColor: '#2d72d2'
+                });
                 return;
             }
 
@@ -789,7 +848,12 @@
             
             // Simple validation
             if (!category || !description || !room) {
-                alert("Please fill in all required fields");
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Missing Information',
+                    text: 'Please fill in all required fields (Category, Description, Room Number).',
+                    confirmButtonColor: '#2d72d2'
+                });
                 return;
             }
             
@@ -829,15 +893,24 @@
                     });
                 }
                 
-                // Show success message with details
-                alert("✅ Maintenance report submitted successfully!\n\n" +
-                      "📋 Request ID: " + docRef.id + "\n" +
-                      "📋 Category: " + category + "\n" +
-                      "🔧 Priority: " + priority.toUpperCase() + "\n" +
-                      "🚪 Room: " + room + "\n" +
-                      "📅 Preferred Time: " + formattedTime + "\n" +
-                      "📎 Photo: " + (photo ? photo.name : "No photo attached") + "\n\n" +
-                      "The maintenance team will contact you within 24 hours.");
+                // Show success message
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Report Submitted!',
+                    html: `
+                        <div style="text-align: left; padding: 10px;">
+                            <p><b>Ticket ID:</b> ${docRef.id}</p>
+                            <p><b>Room:</b> ${formData.room}</p>
+                            <p><b>Category:</b> ${formData.category}</p>
+                            <p><b>Priority:</b> <span class="priority-badge priority-${formData.priority}">${formData.priority}</span></p>
+                        </div>
+                        <p style="margin-top:15px; font-size:14px;">Maintenance team will respond within 24 hours.</p>
+                    `,
+                    confirmButtonColor: '#2d72d2',
+                    confirmButtonText: 'Go to Dashboard'
+                }).then(() => {
+                    window.location.href = "student-dashboard.html";
+                });
                 
                 // Reset form
                 e.target.reset();
@@ -850,14 +923,14 @@
                 document.querySelector('.priority-medium').style.transform = 'scale(1.05)';
                 document.getElementById('priority').value = 'medium';
                 
-                // Optional: Redirect to dashboard after 2 seconds
-                setTimeout(() => {
-                    window.location.href = "student-dashboard.html";
-                }, 2000);
-                
             } catch (error) {
-                console.error("Error submitting maintenance request:", error);
-                alert("Failed to submit maintenance request: " + error.message);
+                console.error("Error saving report:", error);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Submission Failed',
+                    text: error.message,
+                    confirmButtonColor: '#f44336'
+                });
             } finally {
                 // Re-enable submit button
                 submitBtn.classList.remove('loading');

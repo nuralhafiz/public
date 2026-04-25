@@ -198,42 +198,14 @@
         }
         
         /* GMI wrapper with dot above I - improved positioning and dot size */
-        .gmi-wrapper {
-            position: relative;
-            display: inline-block;
-            line-height: 1;
-        }
         
-        .brand-blue {
-            color: #3b82f6;
-            background: linear-gradient(135deg, #5c9eff, #2d72d2);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: #4d8eff;
-            text-shadow: 0 2px 5px rgba(0,0,0,0.2);
-        }
+        
+        
         
         /* BIGGER & BOLDER RED DOT positioned perfectly above the letter "I" */
-        .red-dot {
-            position: absolute;
-            top: -40px;
-            right: -9px;
-            color: #ff3131;
-            font-size: 58px;
-            line-height: 1;
-            text-shadow: 0 0 12px rgba(255, 49, 49, 0.6);
-            font-weight: 800;
-            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
-        }
         
-        .brand-lime {
-            color: var(--accent-lime);
-            margin-left: 6px;
-            background: linear-gradient(135deg, #d4ff3e, #b3e600);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: #ccff00;
-        }
+        
+        
 
         /* Tagline styling - NOW POSITIONED BELOW the main logo (bottom of GMI HostelKu group) */
         .tagline {
@@ -261,8 +233,8 @@
         /* Back button */
         .back-arrow {
             position: absolute;
-            bottom: 30px;
-            left: 30px;
+            top: 25px;
+            left: 25px;
             cursor: pointer;
             z-index: 20;
             background: rgba(0, 0, 0, 0.45);
@@ -476,7 +448,7 @@
         /* Responsive fine-tune */
         @media (max-width: 900px) {
             .brand-logo { font-size: 48px; }
-            .red-dot { top: -18px; right: 7px; font-size: 34px; }
+            
             .tagline { font-size: 0.85rem; padding: 6px 20px; margin-top: 15px; }
         }
 
@@ -484,7 +456,7 @@
             .split-container { flex-direction: column; }
             .image-section { min-height: 38vh; flex: none; height: auto; }
             .brand-logo { font-size: 44px; }
-            .red-dot { top: -16px; right: 6px; font-size: 30px; }
+            
             .tagline { font-size: 0.75rem; padding: 5px 16px; margin-top: 12px; }
             .login-section { padding: 35px 24px; min-height: 62vh; }
             h2 { font-size: 26px; margin-bottom: 28px; }
@@ -497,9 +469,50 @@
             .btn { padding: 13px; }
             .image-section { min-height: 34vh; }
             .brand-logo { font-size: 36px; }
-            .red-dot { top: -13px; right: 4px; font-size: 26px; }
+            
             .tagline { font-size: 0.7rem; padding: 4px 12px; margin-top: 10px; }
             .tagline i { font-size: 0.7rem; margin-right: 6px; }
+        }
+    </style>
+
+    <style id="unified-logo-style">
+        .gmi-wrapper {
+            position: relative;
+            display: inline-block;
+            line-height: 1;
+            padding-right: 0.05em; /* Padding for the wrapper */
+        }
+        .brand-blue {
+            color: #1118a8; /* Deep blue from image */
+            font-weight: 900;
+            font-family: 'Arial', sans-serif;
+            letter-spacing: -1px;
+            text-shadow: 
+                -0.8px -0.8px 0 #fff, 0px -0.8px 0 #fff, 0.8px -0.8px 0 #fff, 0.8px 0px 0 #fff, 0.8px 0.8px 0 #fff, 0px 0.8px 0 #fff, -0.8px 0.8px 0 #fff, -0.8px 0px 0 #fff, 0 4px 6px rgba(0,0,0,0.3);
+        }
+        .brand-dot {
+            position: absolute;
+            top: -0.24em;
+            right: 0.05em;
+            /* Shifted to perfectly align over the I */
+            width: 0.32em;
+            height: 0.32em;
+            background-color: #f93144;
+            /* Red dot from image */
+            border-radius: 50%;
+            box-shadow: 0 0 0 0.8px #fff, 0 4px 6px rgba(0, 0, 0, 0.3);
+        }
+        .brand-lime {
+            color: #ccff00;
+            margin-left: 5px;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 800;
+            text-shadow: 
+                -0.8px -0.8px 0 #000, 0px -0.8px 0 #000, 0.8px -0.8px 0 #000, 0.8px 0px 0 #000, 0.8px 0.8px 0 #000, 0px 0.8px 0 #000, -0.8px 0.8px 0 #000, -0.8px 0px 0 #000, 0 4px 6px rgba(0,0,0,0.3);
+        }
+        /* Increased font size for dashboards */
+        .brand-container {
+            font-size: 32px !important;
         }
     </style>
 </head>
@@ -514,12 +527,8 @@
         <!-- LOGO AND TAGLINE - Tagline now explicitly placed at the bottom of the logo group -->
         <div class="logo-overlay">
             <div class="brand-logo">
-                <span class="gmi-wrapper">
-                    <span class="brand-blue">GMI</span>
-                    <span class="red-dot">●</span>   <!-- bigger dot symbol instead of small bullet, more prominent -->
-                </span>
-                <span class="brand-lime">HostelKu.</span>
-            </div>
+            <span class="gmi-wrapper"><span class="brand-blue">GMI</span><span class="brand-dot"></span></span><span class="brand-lime">HostelKu.</span>
+        </div>
             <!-- Tagline now directly below the brand logo, as requested: bottom of GMI HostelKu -->
             <div class="tagline">
                 <i class="fas fa-door-open"></i> Seamless Living Experience
@@ -618,21 +627,23 @@
 
 <!-- Firebase Modular SDK with all required auth methods -->
 <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getAuth, signInWithEmailAndPassword, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+    import { getAuth, signInWithEmailAndPassword, sendPasswordResetEmail, setPersistence, browserSessionPersistence } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
     // Firebase configuration (same as original but verified)
-    const firebaseConfig = {
-        apiKey: "AIzaSyBUIG4ZIanXbeEPeqaBO5ifkH_KiAg5M8w",
-        authDomain: "gmi-hostelku.firebaseapp.com",
-        projectId: "gmi-hostelku",
-        storageBucket: "gmi-hostelku.firebasestorage.app",
-        messagingSenderId: "556053021509",
-        appId: "1:556053021509:web:d64966c34ae18e3d12f42c"
-    };
+    import { auth } from "./js/firebase-config.js";
+    import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
+    // RBAC Auto-Redirect: If already logged in, redirect to correct dashboard
+    onAuthStateChanged(auth, (user) => {
+        if (user) {
+            const email = user.email ? user.email.toLowerCase() : '';
+            if (email.endsWith('@student.gmi.edu.my')) {
+                window.location.href = 'student-dashboard.html';
+            } else {
+                window.location.href = 'warden-dashboard.html';
+            }
+        }
+    });
 
     const loginBtn = document.getElementById('loginBtn');
     const emailInput = document.getElementById('email');

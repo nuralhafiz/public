@@ -6,6 +6,7 @@
     <title>GMI HostelKu - Room Application</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
         * {
             margin: 0;
@@ -19,13 +20,12 @@
             display: flex; 
             flex-direction: column; 
             height: 100vh; 
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: #f0f3fa;
             overflow: hidden; 
         }
         
         /* Header Styling */
-        header { 
-            background: rgba(15, 22, 56, 0.95);
+        header { background: linear-gradient(135deg, #1e3a8a 0%, #2d72d2 100%);
             backdrop-filter: blur(10px);
             color: white; 
             padding: 0 25px; 
@@ -39,33 +39,32 @@
         }
 
         /* Logo Branding */
+        
+        
+        
+        
+
+        
+        
+        
+        
+        
+        
+        
         .brand-container { 
             display: flex; 
             align-items: center; 
-            font-size: 28px; 
-            font-weight: 700; 
+            font-size: 24px; 
+            font-weight: 800; 
             cursor: pointer; 
             position: relative; 
             margin-left: 10px;
+            letter-spacing: -0.5px;
         }
-        .brand-blue { 
-            color: #2d72d2; 
-            text-shadow: 0 2px 10px rgba(45, 114, 210, 0.3);
-        }
-        .brand-lime { 
-            color: #ccff00; 
-            margin-left: 5px;
-            text-shadow: 0 2px 10px rgba(204, 255, 0, 0.3);
-        }
-        .brand-dot { 
-            color: #ff3131; 
-            font-size: 28px; 
-            position: absolute; 
-            top: -16px; 
-            left: 42px;
-            text-shadow: 0 2px 10px rgba(255, 49, 49, 0.3);
-        }
-
+        
+        
+        
+        
         .menu-toggle { 
             cursor: pointer; 
             font-size: 22px; 
@@ -78,20 +77,36 @@
         }
 
         /* Avatar in Header */
+                /* Premium Student Avatar */
+                /* Premium Student Avatar */
         .avatar-container {
             cursor: pointer;
-            transition: all 0.3s;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #ccff00 0%, #99cc00 100%);
+            border: 2px solid rgba(255, 255, 255, 0.9);
+            position: relative;
+            overflow: hidden;
+        }
+        .avatar-container::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.4) 0%, transparent 60%);
         }
         .avatar-container:hover {
-            transform: scale(1.1);
+            transform: scale(1.1) translateY(-2px);
+            border-color: #ffffff;
         }
         .avatar-container i {
-            font-size: 36px;
-            color: #ccff00;
-            background: rgba(255,255,255,0.1);
-            border-radius: 50%;
-            padding: 5px;
-            box-shadow: 0 0 20px rgba(204, 255, 0, 0.3);
+            font-size: 22px;
+            color: #0f1638;
+            z-index: 2;
         }
         
         .container { 
@@ -135,13 +150,13 @@
             cursor: pointer; 
         }
         .nav-item:hover { 
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #1e3a8a 0%, #2d72d2 100%);
             color: white; 
             transform: translateX(5px);
             box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
         }
         .nav-item.active { 
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #1e3a8a 0%, #2d72d2 100%);
             color: white; 
             box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
         }
@@ -169,7 +184,7 @@
             flex: 1; 
             display: flex; 
             flex-direction: column; 
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: #f0f3fa;
             overflow-y: auto; 
             padding: 30px;
         }
@@ -218,13 +233,13 @@
             display: block;
             width: 60px;
             height: 4px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #1e3a8a 0%, #2d72d2 100%);
             margin: 15px auto 0;
             border-radius: 2px;
         }
 
         .info-banner {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #1e3a8a 0%, #2d72d2 100%);
             color: white;
             padding: 15px 20px;
             border-radius: 12px;
@@ -259,12 +274,12 @@
         }
 
         .section-title i {
-            color: #667eea;
+            color: #2d72d2;
             font-size: 24px;
         }
 
         .section-title .section-letter {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #1e3a8a 0%, #2d72d2 100%);
             color: white;
             width: 30px;
             height: 30px;
@@ -300,7 +315,7 @@
 
         label i {
             margin-right: 8px;
-            color: #667eea;
+            color: #2d72d2;
         }
 
         .required:after {
@@ -322,7 +337,7 @@
 
         input:focus, select:focus, textarea:focus {
             outline: none;
-            border-color: #667eea;
+            border-color: #2d72d2;
             box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
         }
 
@@ -351,7 +366,7 @@
             height: 22px;
             margin-top: 3px;
             cursor: pointer;
-            accent-color: #667eea;
+            accent-color: #2d72d2;
             flex-shrink: 0;
         }
 
@@ -373,7 +388,7 @@
         .btn-submit { 
             width: 250px; 
             padding: 16px 30px; 
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #1e3a8a 0%, #2d72d2 100%);
             color: white; 
             border: none; 
             border-radius: 50px; 
@@ -517,20 +532,409 @@
             }
         }
     </style>
+
+    <style id="unified-logo-style">
+        .gmi-wrapper {
+            position: relative;
+            display: inline-block;
+            line-height: 1;
+            padding-right: 0.05em; /* Padding for the wrapper */
+        }
+        .brand-blue {
+            color: #1118a8; /* Deep blue from image */
+            font-weight: 900;
+            font-family: 'Arial', sans-serif;
+            letter-spacing: -1px;
+            text-shadow: 
+                -0.8px -0.8px 0 #fff, 0px -0.8px 0 #fff, 0.8px -0.8px 0 #fff, 0.8px 0px 0 #fff, 0.8px 0.8px 0 #fff, 0px 0.8px 0 #fff, -0.8px 0.8px 0 #fff, -0.8px 0px 0 #fff, 0 4px 6px rgba(0,0,0,0.3);
+        }
+        .brand-dot {
+            position: absolute;
+            top: -0.24em;
+            right: 0.05em;
+            /* Shifted to perfectly align over the I */
+            width: 0.32em;
+            height: 0.32em;
+            background-color: #f93144;
+            /* Red dot from image */
+            border-radius: 50%;
+            box-shadow: 0 0 0 0.8px #fff, 0 4px 6px rgba(0, 0, 0, 0.3);
+        }
+        .brand-lime {
+            color: #ccff00;
+            margin-left: 5px;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 800;
+            text-shadow: 
+                -0.8px -0.8px 0 #000, 0px -0.8px 0 #000, 0.8px -0.8px 0 #000, 0.8px 0px 0 #000, 0.8px 0.8px 0 #000, 0px 0.8px 0 #000, -0.8px 0.8px 0 #000, -0.8px 0px 0 #000, 0 4px 6px rgba(0,0,0,0.3);
+        }
+        /* Increased font size for dashboards */
+        .brand-container {
+            font-size: 32px !important;
+        }
+    </style>
+
+        
+        <style>
+        /* Floor Plan Styles */
+        .floor-plan-section {
+            background: #fff;
+            padding: 30px;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+            margin-bottom: 30px;
+            font-family: Arial, sans-serif;
+        }
+
+        .floor-plan-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 35px;
+        }
+
+        .type-toggle {
+            display: flex;
+            background: #f1f5f9;
+            border-radius: 8px;
+            padding: 4px;
+        }
+
+        .type-btn {
+            padding: 8px 24px;
+            border: none;
+            background: transparent;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: bold;
+            color: #64748b;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .type-btn.active {
+            background: #fff;
+            color: #000;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        
+        .floor-plan-container {
+            display: block; /* Safe for horizontal overflow */
+            background: #f8fafc;
+            padding: 20px 10px; /* Smaller padding for mobile */
+            border-radius: 16px;
+            border: 2px dashed #cbd5e1;
+            position: relative;
+            overflow-x: auto; /* Allows swiping horizontally */
+            width: 100%;
+            /* Custom scrollbar for better UI */
+            scrollbar-width: thin;
+            scrollbar-color: #cbd5e1 transparent;
+        }
+
+        .floor-plan-container::-webkit-scrollbar {
+            height: 6px;
+        }
+        .floor-plan-container::-webkit-scrollbar-thumb {
+            background-color: #cbd5e1;
+            border-radius: 10px;
+        }
+
+        .blueprint-container {
+            width: max-content; /* Critical: prevents the flex children from shrinking */
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px 20px;
+        }
+
+        .blueprint-title {
+            text-align: center;
+            font-size: 13px;
+            color: #000;
+            margin-bottom: 40px;
+            position: relative;
+        }
+
+        .blueprint-title::after {
+            content: '\f063';
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            position: absolute;
+            bottom: -25px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 14px;
+        }
+
+        .grid-layout {
+            display: grid;
+            gap: 0; /* Remove gap to prevent black lines */
+            background: transparent; /* Remove black background */
+            border: none; /* Remove container border */
+            width: 640px;
+            grid-template-columns: repeat(16, 40px);
+            grid-template-rows: 80px 40px 120px 120px;
+            position: relative;
+            margin: 0 auto;
+            padding-top: 1px;
+            padding-left: 1px;
+        }
+
+        .room-block {
+            background: #fff;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            font-size: 14px;
+            position: relative;
+            cursor: pointer;
+            border: 1px solid #64748b; /* Softer slate border */
+            margin-top: -1px; /* Collapse borders */
+            margin-left: -1px; /* Collapse borders */
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+            font-weight: 600;
+            letter-spacing: 0.05em;
+            color: #334155;
+            transition: all 0.2s ease;
+        }
+
+        .room-block.static {
+            cursor: default;
+            background: repeating-linear-gradient(
+                45deg,
+                #f8fafc,
+                #f8fafc 10px,
+                #f1f5f9 10px,
+                #f1f5f9 20px
+            );
+            color: #64748b;
+        }
+
+        .room-block.corridor {
+            cursor: default;
+            background: #f8fafc;
+        }
+
+        .room-block.foyer {
+            cursor: default;
+            background: #f8fafc;
+        }
+
+        /* Status Colors */
+        .room-block.available {
+            background: #dcfce7; /* Light Green */
+        }
+
+        .room-block.available:hover {
+            background: #bbf7d0;
+            z-index: 10;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06);
+        }
+
+        .room-block.available.selected {
+            background: #16a34a !important; /* Dark Green */
+            color: #fff;
+            font-weight: bold;
+        }
+
+        .room-block.unavailable {
+            background: #fee2e2; /* Light Red */
+            cursor: not-allowed;
+            opacity: 0.9;
+        }
+
+        /* Blueprint Annotations */
+        .annotation {
+            position: absolute;
+            font-size: 11px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            white-space: nowrap;
+            color: #475569;
+            font-weight: 500;
+            font-family: 'Inter', sans-serif;
+            letter-spacing: 0.5px;
+        }
+
+        /* Type A Specifics */
+        .layout-type-a .toilet { grid-column: 7 / span 2; grid-row: 1; }
+        .layout-type-a .shower { grid-column: 9 / span 2; grid-row: 1; }
+        .layout-type-a .foyer { grid-column: 7 / span 4; grid-row: 2; }
+        .layout-type-a .p1 { grid-column: 11 / span 4; grid-row: 1 / span 2; }
+        
+        .layout-type-a .p6 { grid-column: 1 / span 4; grid-row: 3; }
+        .layout-type-a .c1 { grid-column: 5 / span 8; grid-row: 3; }
+        .layout-type-a .p2 { grid-column: 13 / span 4; grid-row: 3; }
+        
+        .layout-type-a .p5 { grid-column: 3 / span 4; grid-row: 4; }
+        .layout-type-a .p4 { grid-column: 7 / span 4; grid-row: 4; }
+        .layout-type-a .p3 { grid-column: 11 / span 4; grid-row: 4; }
+
+        .layout-type-a .main-door {
+            top: 75px;
+            left: 200px; /* Centered in empty space above Corridor */
+            transform: translateX(-50%);
+        }
+        
+        .layout-type-a .inner-door {
+            top: 5px;
+            left: 120px; /* Centered exactly under Toilet */
+            transform: translateX(-50%);
+        }
+
+        /* Type B Specifics */
+        .layout-type-b .p1 { grid-column: 3 / span 4; grid-row: 1 / span 2; }
+        .layout-type-b .foyer { grid-column: 7 / span 4; grid-row: 2; }
+        .layout-type-b .shower { grid-column: 7 / span 2; grid-row: 1; }
+        .layout-type-b .toilet { grid-column: 9 / span 2; grid-row: 1; }
+        
+        .layout-type-b .p2 { grid-column: 1 / span 4; grid-row: 3; }
+        .layout-type-b .c1 { grid-column: 5 / span 8; grid-row: 3; }
+        .layout-type-b .p6 { grid-column: 13 / span 4; grid-row: 3; }
+        
+        .layout-type-b .p3 { grid-column: 3 / span 4; grid-row: 4; }
+        .layout-type-b .p4 { grid-column: 7 / span 4; grid-row: 4; }
+        .layout-type-b .p5 { grid-column: 11 / span 4; grid-row: 4; }
+
+        .layout-type-b .main-door {
+            top: 75px;
+            left: 440px; /* Centered in empty space above Corridor */
+            transform: translateX(-50%);
+        }
+        
+        .layout-type-b .inner-door {
+            top: 5px;
+            left: auto;
+            right: 120px; /* Centered exactly under Toilet (mirrored) */
+            transform: translateX(50%);
+        }
+
+        .selected-partition-display {
+            margin-top: 20px;
+            text-align: center;
+            font-size: 14px;
+            color: #000;
+            padding: 15px;
+            background: #f8fafc;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .selected-partition-display span {
+            font-weight: bold;
+            color: #16a34a;
+            font-size: 16px;
+            margin-left: 5px;
+        }
+
+        /* Partition block label */
+        .partition-label {
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        /* Loading state */
+        .room-block.loading {
+            background: #f1f5f9;
+            cursor: not-allowed;
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        /* Available */
+        .room-block.available {
+            background: #dcfce7;
+            cursor: pointer;
+        }
+        .room-block.available:hover { background: #bbf7d0; }
+        .room-block.available .partition-label { color: #166534; }
+
+        /* Unavailable */
+        .room-block.unavailable {
+            background: #fee2e2;
+            cursor: not-allowed;
+        }
+        .room-block.unavailable .partition-label { color: #991b1b; }
+
+        /* Selected */
+        .room-block.selected {
+            background: #16a34a !important;
+            outline: 3px solid #052e16;
+            z-index: 10;
+        }
+        .room-block.selected .partition-label { color: #fff !important; }
+
+    </style>
+        <!-- Choices.js CSS & JS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css" />
+    <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
+    <style>
+        /* Custom Choices.js Theme */
+        .choices[data-type*="select-one"] .choices__inner {
+            padding: 10px 15px;
+            border: 2px solid #eee;
+            border-radius: 10px;
+            background-color: white;
+            min-height: 48px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 14px;
+            color: #333;
+            transition: all 0.3s;
+            box-shadow: none;
+        }
+        .choices[data-type*="select-one"].is-focused .choices__inner {
+            border-color: #2d72d2;
+            box-shadow: none;
+        }
+        .choices__list--dropdown {
+            border-radius: 0;
+            box-shadow: none;
+            border: 1px solid #eee;
+            margin-top: 0;
+            z-index: 100;
+        }
+        .choices__list--dropdown .choices__item--selectable.is-highlighted {
+            background-color: rgba(45, 114, 210, 0.05);
+            color: #2d72d2;
+            font-weight: 500;
+        }
+        .choices__list--dropdown .choices__item {
+            padding: 12px 15px;
+            font-size: 14px;
+            font-family: 'Poppins', sans-serif;
+        }
+        .choices[data-type*="select-one"]::after {
+            border-color: #64748b transparent transparent transparent;
+            margin-top: -2.5px;
+            right: 15px;
+        }
+        .choices[data-type*="select-one"].is-open::after {
+            border-color: transparent transparent #2d72d2 transparent;
+            margin-top: -7.5px;
+        }
+    </style>
 </head>
 <body>
     <header>
         <div style="display: flex; align-items: center;">
             <i class="fas fa-bars menu-toggle" id="hamburger"></i>
-            <div class="brand-container">
-                <span class="brand-dot">•</span> <span class="brand-blue">GMI</span>
-                <span class="brand-lime">-HK</span>
-            </div>
+            <div class="brand-container" onclick="window.location.href='student-dashboard.html'">
+            <span class="gmi-wrapper"><span class="brand-blue">GMI</span><span class="brand-dot"></span></span><span class="brand-lime">HostelKu.</span>
+        </div>
         </div>
         <div style="display: flex; align-items: center; gap: 15px;">
             <!-- Avatar Icon that links to profile page -->
             <a href="student-profile.html" class="avatar-container">
-                <i class="fas fa-user-circle"></i>
+                <i class="fas fa-user-graduate"></i>
             </a>
         </div>
     </header>
@@ -559,7 +963,7 @@
             <div class="form-container">
                 <div class="apply-card">
                     <h2>
-                        <i class="fas fa-check-circle" style="margin-right: 10px; color: #667eea;"></i>
+                        <i class="fas fa-check-circle" style="margin-right: 10px; color: #2d72d2;"></i>
                         Room Application Form
                     </h2>
                     
@@ -577,8 +981,11 @@
                             Section A: Personal Details
                         </div>
 
+                        
+
                         <div class="form-row">
-                            <div class="form-group">
+                            
+        <div class="form-group">
                                 <label class="required">
                                     <i class="fas fa-user"></i>
                                     Full Name
@@ -679,8 +1086,96 @@
                             </label>
                             <textarea id="address" rows="3" placeholder="Enter your complete permanent address" required></textarea>
                         </div>
+                        <div class="form-row" style="margin-top: 15px;">
+                            <div class="form-group" style="max-width: 300px;">
+                                <label class="required">
+                                    <i class="fas fa-hashtag"></i>
+                                    Reference Number
+                                </label>
+                                <input type="text" id="referenceNumber" readonly style="background: #f1f5f9; cursor: not-allowed; color: #64748b; font-weight: bold; border-color: #cbd5e1;" required>
+                                <small style="display: block; margin-top: 5px; color: #64748b; font-size: 11px;"><i class="fas fa-info-circle"></i> Auto-generated application tracking ID</small>
+                            </div>
+                        </div>
 
-                        <!-- Section B: Declaration -->
+                        <!-- Section B: Choose Partition -->
+                        <div class="section-title">
+                            <span class="section-letter">B</span>
+                            <i class="fas fa-bed"></i>
+                            Section B: Choose Partition
+                        </div>
+
+                        <div class="floor-plan-section">
+                            <div class="floor-plan-header">
+                                <div>
+                                    <h3 style="font-size: 16px; color: #1e293b; margin-bottom: 4px;">Choose Partition</h3>
+                                    <p style="font-size: 12px; color: #64748b;">Select your preferred bed location (Top-Down View). <span style="color:#16a34a; font-weight:600;">Green = Available</span> &nbsp; <span style="color:#ef4444; font-weight:600;">Red = Occupied</span></p>
+                                </div>
+                                <div class="type-toggle">
+                                    <button type="button" class="type-btn active" id="btnTypeA"><i class="fas fa-layer-group"></i> Type A</button>
+                                    <button type="button" class="type-btn" id="btnTypeB"><i class="fas fa-cubes"></i> Type B</button>
+                                </div>
+                            </div>
+
+                            <div class="floor-plan-container">
+                                <div class="blueprint-container">
+                                    <div class="blueprint-title" id="blueprintTitle">
+                                        Floor Plan<br>Type A
+                                    </div>
+
+                                    <!-- TYPE A LAYOUT -->
+                                    <div class="grid-layout layout-type-a" id="floorPlanGrid">
+                                        <!-- Main Door annotation (above row 1, at column 1/2 border = left edge of toilet) -->
+                                        <div class="annotation main-door">
+                                            Main Door
+                                            <i class="fas fa-arrow-down" style="margin-top: 3px;"></i>
+                                        </div>
+
+                                        <!-- Row 1: TOILET, SHOWER, P1 -->
+                                        <div class="room-block static toilet">TOILET</div>
+                                        <div class="room-block static shower">SHOWER</div>
+                                        <!-- Row 2: Foyer -->
+                                        <div class="room-block static foyer"></div>
+                                        <div class="room-block p1 loading" data-partition="P1">
+                                            <span class="partition-label">P1</span>
+                                        </div>
+
+                                        <!-- Row 2: [P6] [corridor+door] [P2] -->
+                                        <div class="room-block p6 loading" data-partition="P6">
+                                            <span class="partition-label">P6</span>
+                                        </div>
+                                        <div class="room-block corridor c1">
+                                            <div class="annotation inner-door">
+                                                <i class="fas fa-arrow-up" style="margin-bottom: 3px;"></i>
+                                                Door
+                                            </div>
+                                        </div>
+                                        <div class="room-block p2 loading" data-partition="P2">
+                                            <span class="partition-label">P2</span>
+                                        </div>
+
+                                        <!-- Row 3: [P5] [P4] [P3] -->
+                                        <div class="room-block p5 loading" data-partition="P5">
+                                            <span class="partition-label">P5</span>
+                                        </div>
+                                        <div class="room-block p4 loading" data-partition="P4">
+                                            <span class="partition-label">P4</span>
+                                        </div>
+                                        <div class="room-block p3 loading" data-partition="P3">
+                                            <span class="partition-label">P3</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="selected-partition-display">
+                                Selected Partition: <span id="displaySelectedPartition">None</span>
+                            </div>
+                            <!-- Hidden input to store value for Firebase -->
+                            <input type="hidden" id="selectedPartitionInput">
+                        </div>
+
+                        
+                        <!-- Section C: Declaration -->
                         <div class="section-title">
                             <span class="section-letter">B</span>
                             <i class="fas fa-file-signature"></i>
@@ -724,22 +1219,10 @@
     </div>
 
     <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-        import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, serverTimestamp, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
         
-        const firebaseConfig = { 
-            apiKey: "AIzaSyBUIG4ZIanXbeEPeqaBO5ifkH_KiAg5M8w", 
-            authDomain: "gmi-hostelku.firebaseapp.com", 
-            projectId: "gmi-hostelku", 
-            storageBucket: "gmi-hostelku.firebasestorage.app", 
-            messagingSenderId: "556053021509", 
-            appId: "1:556053021509:web:d64966c34ae18e3d12f42c" 
-        };
-        
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const db = getFirestore(app);
+        import { auth, db } from "./js/firebase-config.js";
 
         const hamburger = document.getElementById('hamburger');
         const sidebar = document.getElementById('sidebar');
@@ -748,9 +1231,30 @@
         const submitBtn = document.getElementById('submitBtn');
 
         // Set today's date as default for declaration date
-        document.addEventListener('DOMContentLoaded', () => {
+                document.addEventListener('DOMContentLoaded', () => {
+            // Initialize Choices.js
+            const selectElements = document.querySelectorAll('select');
+            selectElements.forEach(el => {
+                new Choices(el, {
+                    searchEnabled: false,
+                    itemSelectText: '',
+                    shouldSort: false
+                });
+            });
+
             const today = new Date().toISOString().split('T')[0];
             document.getElementById('declarationDate').value = today;
+
+            // Auto-generate Reference Number
+            const generateRefNumber = () => {
+                const date = new Date();
+                const yyyy = date.getFullYear().toString();
+                const mm = (date.getMonth() + 1).toString().padStart(2, '0');
+                const dd = date.getDate().toString().padStart(2, '0');
+                const random = Math.floor(1000 + Math.random() * 9000);
+                return `APP-${yyyy}${mm}${dd}-${random}`;
+            };
+            document.getElementById('referenceNumber').value = generateRefNumber();
         });
 
         // Function to close sidebar
@@ -769,6 +1273,7 @@
         hamburger.addEventListener('click', (e) => {
             e.stopPropagation();
             e.preventDefault();
+    
             if (sidebar.classList.contains('open')) {
                 closeSidebar();
             } else {
@@ -797,7 +1302,18 @@
         });
 
         // Check if user is logged in and pre-fill email
-        onAuthStateChanged(auth, (user) => { 
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                const email = user.email ? user.email.toLowerCase() : '';
+                const isStudent = email.endsWith('@student.gmi.edu.my');
+                
+                if (!isStudent) {
+                    alert('🛡️ Access Denied: Warden accounts cannot access Student pages.');
+                    window.location.href = 'warden-dashboard.html';
+                    return;
+                }
+                // RBAC PASS
+            }
             if (user) { 
                 // Store user info in session storage
                 sessionStorage.setItem('userEmail', user.email);
@@ -828,19 +1344,145 @@
         });
 
         // Handle form submission with Firestore
+        
+        // ── Floor Plan Logic ──────────────────────────────────────────────
+
+        const btnTypeA = document.getElementById('btnTypeA');
+        const btnTypeB = document.getElementById('btnTypeB');
+        const floorPlanGrid = document.getElementById('floorPlanGrid');
+        const blueprintTitle = document.getElementById('blueprintTitle');
+        const displaySelectedPartition = document.getElementById('displaySelectedPartition');
+        const selectedPartitionInput = document.getElementById('selectedPartitionInput');
+
+        let currentRoomId = null;   // will be set once room is chosen
+        let availabilityMap = {};   // { 'P1': true/false, 'P2': true/false, ... }
+
+        // ── Load availability from Firestore ──────────────────────────────
+        // We query the "rooms" collection for the room that matches the selected type.
+        // For now we load ALL partitions for Type A and Type B from a single doc:
+        // Document path: rooms/{typeA|typeB}  fields: P1:true, P2:false, ...
+        async function loadAvailability(type) {
+            // Reset all partition blocks to loading
+            document.querySelectorAll('.room-block[data-partition]').forEach(b => {
+                b.classList.remove('available', 'unavailable', 'selected');
+                b.classList.add('loading');
+            });
+            clearSelection();
+
+            try {
+                const docRef = doc(db, 'rooms', type.toLowerCase()); // 'typea' or 'typeb'
+                const snap = await getDoc(docRef);
+                if (snap.exists()) {
+                    availabilityMap = snap.data();
+                } else {
+                    // If doc doesn't exist, default ALL to available
+                    availabilityMap = { P1:true, P2:true, P3:true, P4:true, P5:true, P6:true };
+                }
+            } catch (err) {
+                console.warn('Could not load room availability:', err);
+                availabilityMap = { P1:true, P2:true, P3:true, P4:true, P5:true, P6:true };
+            }
+
+            // Apply availability to blocks
+            document.querySelectorAll('.room-block[data-partition]').forEach(block => {
+                const p = block.getAttribute('data-partition');
+                block.classList.remove('loading');
+                if (availabilityMap[p] === false) {
+                    block.classList.add('unavailable');
+                } else {
+                    block.classList.add('available');
+                }
+            });
+        }
+
+        // ── Type Toggle ───────────────────────────────────────────────────
+        btnTypeA.addEventListener('click', () => {
+            btnTypeA.classList.add('active');
+            btnTypeB.classList.remove('active');
+            floorPlanGrid.className = 'grid-layout layout-type-a';
+            blueprintTitle.innerHTML = 'Floor Plan<br>Type A';
+            selectedPartitionInput.setAttribute('data-room-type', 'typeA');
+            loadAvailability('typeA');
+        });
+
+        btnTypeB.addEventListener('click', () => {
+            btnTypeB.classList.add('active');
+            btnTypeA.classList.remove('active');
+            floorPlanGrid.className = 'grid-layout layout-type-b';
+            blueprintTitle.innerHTML = 'Floor Plan<br>Type B';
+            selectedPartitionInput.setAttribute('data-room-type', 'typeB');
+            loadAvailability('typeB');
+        });
+
+        // ── Partition Click Handler ────────────────────────────────────────
+        document.addEventListener('click', (e) => {
+            const block = e.target.closest('.room-block[data-partition]');
+            if (!block) return;
+
+            if (block.classList.contains('unavailable') || block.classList.contains('loading')) {
+                Swal.fire({
+                    icon: 'error',
+                    title: block.classList.contains('loading') ? 'Loading...' : 'Partition Unavailable',
+                    text: block.classList.contains('loading')
+                        ? 'Please wait while availability is being loaded.'
+                        : 'This partition is already occupied. Please choose a green partition.',
+                    confirmButtonColor: '#ef4444'
+                });
+                return;
+            }
+
+            clearSelection();
+            block.classList.add('selected');
+            const pValue = block.getAttribute('data-partition');
+            const roomType = selectedPartitionInput.getAttribute('data-room-type') || 'typeA';
+            displaySelectedPartition.textContent = `${pValue} (${roomType === 'typeA' ? 'Type A' : 'Type B'})`;
+            selectedPartitionInput.value = `${roomType}:${pValue}`;
+        });
+
+        function clearSelection() {
+            document.querySelectorAll('.room-block[data-partition]').forEach(b => b.classList.remove('selected'));
+            displaySelectedPartition.textContent = 'None';
+            selectedPartitionInput.value = '';
+        }
+
+        // Load Type A by default on page load
+        selectedPartitionInput.setAttribute('data-room-type', 'typeA');
+        loadAvailability('typeA');
+
         document.getElementById('applyForm').addEventListener('submit', async (e) => { 
             e.preventDefault(); 
             
+            // Check if partition is selected
+            if (!selectedPartitionInput.value) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'No Partition Selected',
+                    text: 'Please select a partition from the floor plan before submitting.',
+                    confirmButtonColor: '#2d72d2'
+                });
+                return;
+            }
+
             // Check if declaration is checked
             if (!document.getElementById('declaration').checked) {
-                alert("Please confirm that all information is correct by checking the declaration box.");
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Declaration Required',
+                    text: 'Please confirm that all information is correct by checking the declaration box.',
+                    confirmButtonColor: '#2d72d2'
+                });
                 return;
             }
             
             // Get current user
             const user = auth.currentUser;
             if (!user) {
-                alert("You must be logged in to submit an application.");
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Authentication Error',
+                    text: 'You must be logged in to submit an application.',
+                    confirmButtonColor: '#2d72d2'
+                });
                 return;
             }
 
@@ -853,6 +1495,7 @@
                 const formData = {
                     userId: user.uid,
                     userEmail: user.email,
+                    referenceNumber: document.getElementById('referenceNumber').value,
                     fullName: document.getElementById('fullName').value,
                     icNumber: document.getElementById('icNumber').value,
                     studentId: document.getElementById('studentId').value,
@@ -861,6 +1504,8 @@
                     race: document.getElementById('race').value,
                     religion: document.getElementById('religion').value,
                     phone: document.getElementById('phone').value,
+                    selectedPartition: document.getElementById('selectedPartitionInput').value || '',
+                    roomType: document.getElementById('selectedPartitionInput').getAttribute('data-room-type') || 'typeA',
                     homePhone: document.getElementById('homePhone').value || '',
                     email: document.getElementById('email').value,
                     address: document.getElementById('address').value,
@@ -875,14 +1520,24 @@
                 const docRef = await addDoc(collection(db, "applications"), formData);
                 
                 // Show success message
-                alert("✅ Room Application Submitted Successfully!\n\n" +
-                      "📋 Application ID: " + docRef.id + "\n" +
-                      "👤 Name: " + formData.fullName + "\n" +
-                      "🆔 Student ID: " + formData.studentId + "\n" +
-                      "📧 Email: " + formData.email + "\n" +
-                      "📞 Phone: " + formData.phone + "\n" +
-                      "📅 Date: " + formData.declarationDate + "\n\n" +
-                      "Thank you for applying. Your application has been received and will be processed within 3-5 working days.");
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Application Submitted!',
+                    html: `
+                        <div style="text-align: left; padding: 10px;">
+                            <p><b>Ref No:</b> ${formData.referenceNumber}</p>
+                            <p><b>Name:</b> ${formData.fullName}</p>
+                            <p><b>Student ID:</b> ${formData.studentId}</p>
+                            <p><b>Email:</b> ${formData.email}</p>
+                            <p><b>Date:</b> ${formData.declarationDate}</p>
+                        </div>
+                        <p style="margin-top:15px; font-size:14px;">Your application will be processed within 3-5 working days.</p>
+                    `,
+                    confirmButtonColor: '#2d72d2',
+                    confirmButtonText: 'Go to Dashboard'
+                }).then(() => {
+                    window.location.href = "student-dashboard.html";
+                });
                 
                 // Optional: Reset form
                 e.target.reset();
@@ -895,7 +1550,12 @@
                 
             } catch (error) {
                 console.error("Error saving application:", error);
-                alert("Failed to submit application: " + error.message);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Submission Failed',
+                    text: error.message,
+                    confirmButtonColor: '#f44336'
+                });
             } finally {
                 // Re-enable submit button
                 submitBtn.classList.remove('loading');
@@ -905,3 +1565,6 @@
     </script>
 </body>
 </html>
+
+
+

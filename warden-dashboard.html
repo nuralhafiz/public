@@ -6,6 +6,13 @@
     <title>GMI HostelKu - Warden Dashboard</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+    <script type="text/javascript">
+        (function() {
+            emailjs.init("YOUR_PUBLIC_KEY"); // GANTIKAN DENGAN PUBLIC KEY ANDA
+        })();
+    </script>
     <style>
         * {
             margin: 0;
@@ -19,13 +26,12 @@
             display: flex; 
             flex-direction: column; 
             height: 100vh; 
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: #f0f3fa;
             overflow: hidden; 
         }
         
         /* Header Styling */
-        header { 
-            background: rgba(15, 22, 56, 0.95);
+        header { background: linear-gradient(135deg, #1e3a8a 0%, #2d72d2 100%);
             backdrop-filter: blur(10px);
             color: white; 
             padding: 0 25px; 
@@ -39,33 +45,32 @@
         }
 
         /* Logo Branding */
+        
+        
+        
+        
+
+        
+        
+        
+        
+        
+        
+        
         .brand-container { 
             display: flex; 
             align-items: center; 
-            font-size: 28px; 
-            font-weight: 700; 
+            font-size: 24px; 
+            font-weight: 800; 
             cursor: pointer; 
             position: relative; 
             margin-left: 10px;
+            letter-spacing: -0.5px;
         }
-        .brand-blue { 
-            color: #2d72d2; 
-            text-shadow: 0 2px 10px rgba(45, 114, 210, 0.3);
-        }
-        .brand-lime { 
-            color: #ccff00; 
-            margin-left: 5px;
-            text-shadow: 0 2px 10px rgba(204, 255, 0, 0.3);
-        }
-        .brand-dot { 
-            color: #ff3131; 
-            font-size: 28px; 
-            position: absolute; 
-            top: -16px; 
-            left: 42px;
-            text-shadow: 0 2px 10px rgba(255, 49, 49, 0.3);
-        }
-
+        
+        
+        
+        
         .menu-toggle { 
             cursor: pointer; 
             font-size: 22px; 
@@ -78,20 +83,36 @@
         }
 
         /* Avatar in Header - Exact same style as student dashboard */
+                /* Premium Warden Avatar */
+                /* Premium Warden Avatar */
         .avatar-container {
             cursor: pointer;
-            transition: all 0.3s;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #ff3131 0%, #cc0000 100%);
+            border: 2px solid rgba(255, 255, 255, 0.9);
+            position: relative;
+            overflow: hidden;
+        }
+        .avatar-container::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.4) 0%, transparent 60%);
         }
         .avatar-container:hover {
-            transform: scale(1.1);
+            transform: scale(1.1) translateY(-2px);
+            border-color: #ffffff;
         }
         .avatar-container i {
-            font-size: 36px;
-            color: #f44336;
-            background: rgba(255,255,255,0.1);
-            border-radius: 50%;
-            padding: 5px;
-            box-shadow: 0 0 20px rgba(244, 67, 54, 0.3);
+            font-size: 22px;
+            color: #ffffff;
+            z-index: 2;
         }
 
         .container { 
@@ -135,13 +156,13 @@
             cursor: pointer; 
         }
         .nav-item:hover { 
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #1e3a8a 0%, #2d72d2 100%);
             color: white; 
             transform: translateX(5px);
             box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
         }
         .nav-item.active { 
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #1e3a8a 0%, #2d72d2 100%);
             color: white; 
             box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
         }
@@ -172,12 +193,12 @@
             flex-direction: column;
             gap: 25px; 
             overflow-y: auto; 
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: #f0f3fa;
         }
 
         /* Welcome Banner */
         .welcome-banner {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #1e3a8a 0%, #2d72d2 100%);
             color: white;
             padding: 25px 30px;
             border-radius: 20px;
@@ -216,7 +237,7 @@
             margin-bottom: 10px;
         }
 
-        .stat-card {
+        .stat-card { min-width: 0; overflow: hidden; width: 100%;
             background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(10px);
             padding: 25px;
@@ -238,7 +259,7 @@
             width: 60px;
             height: 60px;
             border-radius: 15px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #1e3a8a 0%, #2d72d2 100%);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -284,7 +305,7 @@
         }
 
         /* Recent Applications Table */
-        .applications-card {
+        .applications-card { min-width: 0; overflow: hidden; width: 100%;
             background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(10px);
             border-radius: 20px;
@@ -312,12 +333,12 @@
         }
 
         .card-header h3 i {
-            color: #667eea;
+            color: #2d72d2;
             font-size: 22px;
         }
 
         .view-all {
-            color: #667eea;
+            color: #2d72d2;
             text-decoration: none;
             font-size: 13px;
             font-weight: 600;
@@ -383,31 +404,29 @@
             color: #f44336;
         }
 
+        .action-buttons {
+            display: flex;
+            gap: 5px;
+        }
+
         .action-btn {
-            padding: 6px 12px;
-            border-radius: 5px;
-            font-size: 12px;
-            font-weight: 500;
-            cursor: pointer;
+            width: 35px;
+            height: 35px;
             border: none;
-            margin: 0 3px;
+            border-radius: 8px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
             transition: all 0.3s;
+            margin: 0 3px;
         }
 
-        .action-view {
-            background: #e3f2fd;
-            color: #2196f3;
-        }
+        .action-view { background: rgba(33, 150, 243, 0.1); color: #2196F3; }
 
-        .action-approve {
-            background: #e8f5e9;
-            color: #4caf50;
-        }
+        .action-approve { background: rgba(76, 175, 80, 0.1); color: #4CAF50; }
 
-        .action-reject {
-            background: #ffebee;
-            color: #f44336;
-        }
+        .action-reject { background: rgba(244, 67, 54, 0.1); color: #F44336; }
 
         .action-btn:hover {
             transform: translateY(-2px);
@@ -421,7 +440,7 @@
             gap: 25px;
         }
 
-        .info-card {
+        .info-card { min-width: 0; overflow: hidden; width: 100%;
             background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(10px);
             border-radius: 20px;
@@ -507,7 +526,7 @@
 
         .progress-fill {
             height: 100%;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #1e3a8a 0%, #2d72d2 100%);
             border-radius: 4px;
             transition: width 0.3s;
         }
@@ -516,7 +535,7 @@
         .quick-action-btn {
             width: 100%;
             padding: 12px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #1e3a8a 0%, #2d72d2 100%);
             color: white;
             border: none;
             border-radius: 10px;
@@ -548,6 +567,9 @@
 
         /* Mobile Responsive */
         @media (max-width: 768px) {
+            main { padding: 15px; overflow-x: hidden; width: 100vw; box-sizing: border-box; }
+            .page-header { flex-direction: column; align-items: flex-start; gap: 15px; }
+            .quick-action-btn { width: 100%; box-sizing: border-box; justify-content: center; }
             nav { 
                 position: absolute; 
                 left: 0; 
@@ -595,22 +617,130 @@
                 overflow-x: auto;
             }
         }
+    
+    /* Modal Styling */
+    .profile-modal {
+        display: none;
+        position: fixed;
+        top: 0; left: 0; right: 0; bottom: 0;
+        background: rgba(0,0,0,0.5);
+        z-index: 1000;
+        justify-content: center;
+        align-items: center;
+        opacity: 0;
+        transition: opacity 0.3s;
+    }
+    .profile-modal.active {
+        display: flex;
+        opacity: 1;
+    }
+    .modal-content {
+        background: white;
+        border-radius: 15px;
+        width: 90%;
+        max-width: 500px;
+        padding: 25px;
+        transform: translateY(20px);
+        transition: transform 0.3s;
+        box-shadow: 0 15px 50px rgba(0,0,0,0.2);
+    }
+    .profile-modal.active .modal-content {
+        transform: translateY(0);
+    }
+    .modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+        border-bottom: 1px solid #eee;
+        padding-bottom: 10px;
+    }
+    .close-modal {
+        background: none;
+        border: none;
+        font-size: 20px;
+        cursor: pointer;
+        color: #666;
+    }
+    .modal-detail-row {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 15px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid #f5f5f5;
+    }
+    .modal-detail-label {
+        font-weight: 500;
+        color: #666;
+    }
+    .modal-detail-value {
+        font-weight: 600;
+        color: #0f1638;
+    }
+    .modal-actions {
+        display: flex;
+        gap: 10px;
+        margin-top: 20px;
+        justify-content: flex-end;
+    }
+\n</style>
+
+    <style id="unified-logo-style">
+        .gmi-wrapper {
+            position: relative;
+            display: inline-block;
+            line-height: 1;
+            padding-right: 0.05em; /* Padding for the wrapper */
+        }
+        .brand-blue {
+            color: #1118a8; /* Deep blue from image */
+            font-weight: 900;
+            font-family: 'Arial', sans-serif;
+            letter-spacing: -1px;
+            text-shadow: 
+                -0.8px -0.8px 0 #fff, 0px -0.8px 0 #fff, 0.8px -0.8px 0 #fff, 0.8px 0px 0 #fff, 0.8px 0.8px 0 #fff, 0px 0.8px 0 #fff, -0.8px 0.8px 0 #fff, -0.8px 0px 0 #fff, 0 4px 6px rgba(0,0,0,0.3);
+        }
+        .brand-dot {
+            position: absolute;
+            top: -0.24em;
+            right: 0.05em;
+            /* Shifted to perfectly align over the I */
+            width: 0.32em;
+            height: 0.32em;
+            background-color: #f93144;
+            /* Red dot from image */
+            border-radius: 50%;
+            box-shadow: 0 0 0 0.8px #fff, 0 4px 6px rgba(0, 0, 0, 0.3);
+        }
+        .brand-lime {
+            color: #ccff00;
+            margin-left: 5px;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 800;
+            text-shadow: 
+                -0.8px -0.8px 0 #000, 0px -0.8px 0 #000, 0.8px -0.8px 0 #000, 0.8px 0px 0 #000, 0.8px 0.8px 0 #000, 0px 0.8px 0 #000, -0.8px 0.8px 0 #000, -0.8px 0px 0 #000, 0 4px 6px rgba(0,0,0,0.3);
+        }
+        /* Increased font size for dashboards */
+        .brand-container {
+            font-size: 32px !important;
+        }
     </style>
+
+    
 </head>
 <body>
 
 <header>
     <div style="display: flex; align-items: center;">
         <i class="fas fa-bars menu-toggle" id="hamburger"></i>
-        <div class="brand-container">
-            <span class="brand-dot">•</span> <span class="brand-blue">GMI</span>
-            <span class="brand-lime">-HK</span>
+        <div class="brand-container" onclick="window.location.href='warden-dashboard.html'">
+            <span class="gmi-wrapper"><span class="brand-blue">GMI</span><span class="brand-dot"></span></span><span class="brand-lime">HostelKu.</span>
         </div>
     </div>
     <div style="display: flex; align-items: center; gap: 10px;">
         <!-- Avatar Icon with exact same style as student dashboard -->
         <a href="warden-profile.html" class="avatar-container" id="profileLink">
-            <i class="fas fa-user-circle"></i>
+            <i class="fas fa-user-shield"></i>
         </a>
     </div>
 </header>
@@ -622,6 +752,7 @@
     <nav id="sidebar">
         <!-- Navigation Menu -->
             <div class="nav-menu">
+                <a href="warden-profile.html" class="nav-item"><i class="fas fa-user"></i> My Profile</a>
                 <a href="warden-dashboard.html" class="nav-item active">
                     <i class="fas fa-home"></i> Dashboard
                 </a>
@@ -673,7 +804,7 @@
                     <div class="stat-value" id="totalStudents">0</div>
                     <div class="stat-label">Total Students</div>
                     <div class="stat-trend">
-                        <i class="fas fa-arrow-up"></i> +12 this month
+                        <span id="studentTrend"><i class="fas fa-arrow-up"></i> +0 this month</span>
                     </div>
                 </div>
             </div>
@@ -699,7 +830,7 @@
                     <div class="stat-value" id="maintenanceReq">0</div>
                     <div class="stat-label">Maintenance</div>
                     <div class="stat-trend">
-                        <i class="fas fa-exclamation-circle"></i> 3 urgent
+                        <span id="maintTrend"><i class="fas fa-exclamation-circle"></i> 0 urgent</span>
                     </div>
                 </div>
             </div>
@@ -742,52 +873,9 @@
                             </tr>
                         </thead>
                         <tbody id="applicationsTable">
-                            <tr>
-                                <td>Ahmad Faiz</td>
-                                <td>STU001</td>
-                                <td>A-3-12</td>
-                                <td>15 Mar 2026</td>
-                                <td><span class="status-badge status-pending">Pending</span></td>
-                                <td>
-                                    <button class="action-btn action-view" onclick="viewApplication('STU001')">
-                                        <i class="fas fa-eye"></i>
-                                    </button>
-                                    <button class="action-btn action-approve" onclick="approveApplication('STU001')">
-                                        <i class="fas fa-check"></i>
-                                    </button>
-                                    <button class="action-btn action-reject" onclick="rejectApplication('STU001')">
-                                        <i class="fas fa-times"></i>
-                                    </button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>Nur Aisyah</td>
-                                <td>STU002</td>
-                                <td>B-2-05</td>
-                                <td>14 Mar 2026</td>
-                                <td><span class="status-badge status-approved">Approved</span></td>
-                                <td>
-                                    <button class="action-btn action-view" onclick="viewApplication('STU002')">
-                                        <i class="fas fa-eye"></i>
-                                    </button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>Raj Kumar</td>
-                                <td>STU003</td>
-                                <td>C-1-08</td>
-                                <td>14 Mar 2026</td>
-                                <td><span class="status-badge status-pending">Pending</span></td>
-                                <td>
-                                    <button class="action-btn action-view" onclick="viewApplication('STU003')">
-                                        <i class="fas fa-eye"></i>
-                                    </button>
-                                    <button class="action-btn action-approve" onclick="approveApplication('STU003')">
-                                        <i class="fas fa-check"></i>
-                                    </button>
-                                    <button class="action-btn action-reject" onclick="rejectApplication('STU003')">
-                                        <i class="fas fa-times"></i>
-                                    </button>
+                            <tr id="appsLoading">
+                                <td colspan="6" style="text-align: center; padding: 30px;">
+                                    <i class="fas fa-spinner fa-spin"></i> Loading applications...
                                 </td>
                             </tr>
                         </tbody>
@@ -807,26 +895,8 @@
                         <a href="warden-maintenance.html" class="view-all">View All →</a>
                     </div>
                     <ul class="maintenance-list" id="maintenanceList">
-                        <li class="maintenance-item">
-                            <span class="maintenance-priority priority-high"></span>
-                            <div class="maintenance-details">
-                                <div class="maintenance-title">Room B-2-05 - Electrical Issue</div>
-                                <div class="maintenance-meta">Reported by: Nur Aisyah • 2 hours ago</div>
-                            </div>
-                        </li>
-                        <li class="maintenance-item">
-                            <span class="maintenance-priority priority-medium"></span>
-                            <div class="maintenance-details">
-                                <div class="maintenance-title">Room A-3-12 - Plumbing Leak</div>
-                                <div class="maintenance-meta">Reported by: Ahmad Faiz • 5 hours ago</div>
-                            </div>
-                        </li>
-                        <li class="maintenance-item">
-                            <span class="maintenance-priority priority-low"></span>
-                            <div class="maintenance-details">
-                                <div class="maintenance-title">Common Area - Light Flickering</div>
-                                <div class="maintenance-meta">Reported by: Security • Yesterday</div>
-                            </div>
+                        <li style="text-align: center; padding: 20px; list-style: none;">
+                            <i class="fas fa-spinner fa-spin"></i> Loading...
                         </li>
                     </ul>
                 </div>
@@ -836,37 +906,14 @@
                     <div class="card-header">
                         <h3>
                             <i class="fas fa-bed"></i>
-                            Room Occupancy
+                            Room Occupancy <span style="font-size:10px; color:#999; font-weight:normal;">(Demo)</span>
                         </h3>
                         <a href="warden-rooms.html" class="view-all">Manage →</a>
                     </div>
-                    <div class="room-occupancy">
-                        <div class="occupancy-item">
-                            <div class="occupancy-label">
-                                <span>Block A</span>
-                                <span>45/60 Rooms</span>
-                            </div>
-                            <div class="progress-bar">
-                                <div class="progress-fill" style="width: 75%"></div>
-                            </div>
-                        </div>
-                        <div class="occupancy-item">
-                            <div class="occupancy-label">
-                                <span>Block B</span>
-                                <span>38/50 Rooms</span>
-                            </div>
-                            <div class="progress-bar">
-                                <div class="progress-fill" style="width: 76%"></div>
-                            </div>
-                        </div>
-                        <div class="occupancy-item">
-                            <div class="occupancy-label">
-                                <span>Block C</span>
-                                <span>42/55 Rooms</span>
-                            </div>
-                            <div class="progress-bar">
-                                <div class="progress-fill" style="width: 76%"></div>
-                            </div>
+                    <div class="room-occupancy" id="roomOccupancyContainer">
+                        <div style="text-align: center; padding: 30px; color: #666; font-style: italic;">
+                            <i class="fas fa-database" style="display: block; font-size: 24px; margin-bottom: 10px; color: #ccc;"></i>
+                            Real-time room data will be synced from GMI Hostel database soon.
                         </div>
                     </div>
                 </div>
@@ -897,20 +944,161 @@
 </div>
 
 <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { getAuth, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
-    const firebaseConfig = {
-        apiKey: "AIzaSyBUIG4ZIanXbeEPeqaBO5ifkH_KiAg5M8w",
-        authDomain: "gmi-hostelku.firebaseapp.com",
-        projectId: "gmi-hostelku",
-        storageBucket: "gmi-hostelku.firebasestorage.app",
-        messagingSenderId: "556053021509",
-        appId: "1:556053021509:web:d64966c34ae18e3d12f42c"
+    import { auth, db } from "./js/firebase-config.js";
+    import { collection, query, where, getDocs, orderBy, limit } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+    import { doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+    
+    window.viewApplication = async (appId) => {
+        Swal.fire({
+            title: 'Loading...',
+            text: 'Fetching application details',
+            allowOutsideClick: false,
+            didOpen: () => {
+                Swal.showLoading();
+            }
+        });
+        
+        try {
+            const appRef = doc(db, "applications", appId);
+            const appSnap = await getDoc(appRef);
+            
+            if (appSnap.exists()) {
+                const app = appSnap.data();
+                const statusClass = app.status === 'approved' ? 'status-approved' : (app.status === 'rejected' ? 'status-rejected' : 'status-pending');
+                const dateStr = app.timestamp ? app.timestamp.toDate().toLocaleDateString('en-MY', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute:'2-digit' }) : '-';
+                
+                const htmlContent = `
+                    <div style="text-align: left; background: #f9f9f9; padding: 20px; border-radius: 10px; margin-top: 15px;">
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 10px; border-bottom: 1px solid #eee; padding-bottom: 5px;">
+                            <span style="color: #666; font-weight: 500;">Application ID</span>
+                            <span style="font-weight: 600; color: #0f1638;">${appId.substring(0,8).toUpperCase()}</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 10px; border-bottom: 1px solid #eee; padding-bottom: 5px;">
+                            <span style="color: #666; font-weight: 500;">Student Email</span>
+                            <span style="font-weight: 600; color: #0f1638;">${app.userEmail}</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 10px; border-bottom: 1px solid #eee; padding-bottom: 5px;">
+                            <span style="color: #666; font-weight: 500;">Room Type</span>
+                            <span style="font-weight: 600; color: #0f1638; text-transform: capitalize;">${app.roomType}</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 10px; border-bottom: 1px solid #eee; padding-bottom: 5px;">
+                            <span style="color: #666; font-weight: 500;">Date Applied</span>
+                            <span style="font-weight: 600; color: #0f1638;">${dateStr}</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between;">
+                            <span style="color: #666; font-weight: 500;">Status</span>
+                            <span class="status-badge ${statusClass}" style="text-transform: capitalize;">${app.status || 'pending'}</span>
+                        </div>
+                    </div>
+                `;
+                
+                if (!app.status || app.status === 'pending') {
+                    Swal.fire({
+                        title: 'Application Details',
+                        html: htmlContent,
+                        showCancelButton: true,
+                        showDenyButton: true,
+                        confirmButtonText: 'Approve',
+                        denyButtonText: 'Reject',
+                        cancelButtonText: 'Close',
+                        confirmButtonColor: '#2ecc71',
+                        denyButtonColor: '#e74c3c'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            updateApplicationStatus(appId, 'approved', app.userEmail);
+                        } else if (result.isDenied) {
+                            updateApplicationStatus(appId, 'rejected', app.userEmail);
+                        }
+                    });
+                } else {
+                    Swal.fire({
+                        title: 'Application Details',
+                        html: htmlContent,
+                        confirmButtonText: 'Close'
+                    });
+                }
+            } else {
+                Swal.fire('Error', 'Application not found', 'error');
+            }
+        } catch (e) {
+            console.error(e);
+            Swal.fire('Error', 'Failed to fetch details: ' + e.message, 'error');
+        }
     };
 
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
+    window.updateApplicationStatus = async (appId, newStatus, userEmail = null) => {
+        const result = await Swal.fire({
+            title: 'Confirm ' + newStatus.charAt(0).toUpperCase() + newStatus.slice(1),
+            text: "Are you sure you want to " + newStatus + " this application?",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: newStatus === 'approved' ? '#2ecc71' : '#e74c3c',
+            cancelButtonColor: '#6c757d',
+            confirmButtonText: 'Yes, ' + newStatus + ' it!'
+        });
+        
+        if (!result.isConfirmed) return;
+        
+        try {
+            const appRef = doc(db, "applications", appId);
+            
+            if (!userEmail) {
+                const appSnap = await getDoc(appRef);
+                if (appSnap.exists()) {
+                    userEmail = appSnap.data().userEmail;
+                }
+            }
+
+            await updateDoc(appRef, {
+                status: newStatus,
+                updatedAt: new Date()
+            });
+            
+            
+            Swal.fire({
+                title: 'Updating...',
+                text: 'Saving status and sending email...',
+                allowOutsideClick: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
+
+            if (userEmail) {
+                // EmailJS Logic
+                const templateParams = {
+                    to_email: userEmail,
+                    application_id: appId.substring(0,8).toUpperCase(),
+                    status: newStatus.toUpperCase(),
+                    message: newStatus === 'approved' 
+                        ? "Congratulations! Please log in to the GMI HostelKu portal for further instructions regarding your room allocation and move-in process."
+                        : "Unfortunately, we are unable to process your application at this time. Please contact the warden office for more information."
+                };
+
+                try {
+                    await emailjs.send('YOUR_SERVICE_ID', 'YOUR_TEMPLATE_ID', templateParams); // GANTIKAN DENGAN SERVICE ID & TEMPLATE ID ANDA
+                } catch (emailError) {
+                    console.error("EmailJS Error:", emailError);
+                    // We still continue even if email fails, so we don't block the UI
+                }
+            }
+            
+            await Swal.fire(
+                'Success!',
+                'Application has been ' + newStatus + ' and email notification sent.',
+                'success'
+            );
+            
+            window.location.reload();
+            
+        } catch (e) {
+            console.error(e);
+            Swal.fire('Error', "Error updating status: " + e.message, 'error');
+        }
+    };
+
 
     const hamburger = document.getElementById('hamburger');
     const sidebar = document.getElementById('sidebar');
@@ -950,6 +1138,166 @@
         }
     });
 
+    
+    async function loadWardenDashboardData() {
+        try {
+            // -- Applications Fetch --
+            const appsRef = collection(db, "applications");
+            // Sorting by timestamp might fail if index is missing, so we fetch all and sort in JS
+            const appsSnap = await getDocs(appsRef);
+            
+            let applications = [];
+            let pendingAppsCount = 0;
+            // Also we can count unique student emails as total students approximation
+            let studentSet = new Set();
+            let studentsThisMonth = new Set();
+            
+            appsSnap.forEach(doc => {
+                const data = doc.data();
+                data.id = doc.id;
+                applications.push(data);
+                
+                if (data.status === 'pending' || !data.status) {
+                    pendingAppsCount++;
+                }
+                if (data.userEmail) {
+                    studentSet.add(data.userEmail);
+                }
+                
+                // Check if this month
+                if (data.timestamp) {
+                    const date = data.timestamp.toDate();
+                    const now = new Date();
+                    if (date.getMonth() === now.getMonth() && date.getFullYear() === now.getFullYear()) {
+                        studentsThisMonth.add(data.userEmail);
+                    }
+                }
+            });
+            
+            // Update Stats
+            document.getElementById('pendingApps').textContent = pendingAppsCount;
+            document.getElementById('totalStudents').textContent = studentSet.size > 0 ? studentSet.size : '-';
+            const sTrend = document.getElementById('studentTrend');
+            if (sTrend) sTrend.innerHTML = '<i class="fas fa-arrow-up"></i> +' + studentsThisMonth.size + ' this month';
+            document.getElementById('availableRooms').textContent = '-'; // No real room DB yet
+
+            // Sort applications by date descending
+            applications.sort((a, b) => {
+                const timeA = a.timestamp ? a.timestamp.toMillis() : 0;
+                const timeB = b.timestamp ? b.timestamp.toMillis() : 0;
+                return timeB - timeA;
+            });
+            
+            // Render top 5 recent applications
+            const appsTable = document.getElementById('applicationsTable');
+            if (applications.length === 0) {
+                appsTable.innerHTML = '<tr><td colspan="6" style="text-align:center;">No applications found</td></tr>';
+            } else {
+                let appsHtml = '';
+                applications.slice(0, 5).forEach(app => {
+                    const status = app.status || 'pending';
+                    const statusClass = status === 'approved' ? 'status-approved' : (status === 'rejected' ? 'status-rejected' : 'status-pending');
+                    const dateStr = app.timestamp ? app.timestamp.toDate().toLocaleDateString('en-MY', { day: 'numeric', month: 'short', year: 'numeric' }) : '-';
+                    const studentName = app.userEmail ? app.userEmail.split('@')[0] : 'Unknown';
+                    const roomType = app.roomType || 'Standard';
+                    
+                    appsHtml += `
+                        <tr>
+                            <td style="text-transform: capitalize;">${studentName}</td>
+                            <td>${app.id.substring(0, 6).toUpperCase()}</td>
+                            <td style="text-transform: capitalize;">${roomType}</td>
+                            <td>${dateStr}</td>
+                            <td><span class="status-badge ${statusClass}" style="text-transform: capitalize;">${status}</span></td>
+                            <td>
+                                <div class="action-buttons">
+                                    <button class="action-btn action-view" onclick="viewApplication('${app.id}')" title="View">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                    ${status === 'pending' ? `
+                                        <button class="action-btn action-approve" onclick="updateApplicationStatus('${app.id}', 'approved', '${app.userEmail}')" title="Approve">
+                                            <i class="fas fa-check"></i>
+                                        </button>
+                                        <button class="action-btn action-reject" onclick="updateApplicationStatus('${app.id}', 'rejected', '${app.userEmail}')" title="Reject">
+                                            <i class="fas fa-times"></i>
+                                        </button>
+                                    ` : ''}
+                                </div>
+                            </td>
+                        </tr>`;
+                });
+                appsTable.innerHTML = appsHtml;
+            }
+
+            // -- Maintenance Fetch --
+            const maintRef = collection(db, "maintenance_requests");
+            const maintSnap = await getDocs(maintRef);
+            
+            let maintenanceReqs = [];
+            let maintCount = 0;
+            let urgentMaintCount = 0;
+            
+            maintSnap.forEach(doc => {
+                const data = doc.data();
+                data.id = doc.id;
+                maintenanceReqs.push(data);
+                
+                maintCount++;
+                let pClass = 'priority-low';
+                if (data.issueType && (data.issueType.includes('Electrical') || data.issueType.includes('Plumbing'))) pClass = 'priority-high';
+                else if (data.issueType && data.issueType.includes('AC')) pClass = 'priority-medium';
+                
+                if (pClass === 'priority-high' || pClass === 'priority-medium') {
+                    urgentMaintCount++;
+                }
+            });
+            
+            document.getElementById('maintenanceReq').textContent = maintCount;
+            const mTrend = document.getElementById('maintTrend');
+            if (mTrend) mTrend.innerHTML = '<i class="fas fa-exclamation-circle"></i> ' + urgentMaintCount + ' urgent';
+            
+            // Sort
+            maintenanceReqs.sort((a, b) => {
+                const timeA = a.timestamp ? a.timestamp.toMillis() : 0;
+                const timeB = b.timestamp ? b.timestamp.toMillis() : 0;
+                return timeB - timeA;
+            });
+            
+            // Render top 3 recent maintenance
+            const maintList = document.getElementById('maintenanceList');
+            if (maintenanceReqs.length === 0) {
+                maintList.innerHTML = '<li style="text-align: center; padding: 20px;">No maintenance requested</li>';
+            } else {
+                let maintHtml = '';
+                maintenanceReqs.slice(0, 3).forEach(req => {
+                    const studentName = req.userEmail ? req.userEmail.split('@')[0] : 'Student';
+                    // Determine priority based on type (demo logic)
+                    let pClass = 'priority-low';
+                    if (req.issueType && (req.issueType.includes('Electrical') || req.issueType.includes('Plumbing'))) pClass = 'priority-high';
+                    else if (req.issueType && req.issueType.includes('AC')) pClass = 'priority-medium';
+                    
+                    const issueName = req.issueType || 'General Issue';
+                    const timeStr = req.timestamp ? req.timestamp.toDate().toLocaleString('en-MY', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }) : '-';
+                    
+                    maintHtml += `
+                    <li class="maintenance-item">
+                        <span class="maintenance-priority ${pClass}"></span>
+                        <div class="maintenance-details">
+                            <div class="maintenance-title" style="text-transform: capitalize;">${issueName}</div>
+                            <div class="maintenance-meta">Reported by: ${studentName} • ${timeStr}</div>
+                        </div>
+                    </li>`;
+                });
+                maintList.innerHTML = maintHtml;
+            }
+
+        } catch (error) {
+            console.error("Error loading dashboard data:", error);
+            document.getElementById('applicationsTable').innerHTML = '<tr><td colspan="6" style="text-align:center;color:red;">Error loading data</td></tr>';
+            document.getElementById('maintenanceList').innerHTML = '<li style="text-align:center;color:red;">Error loading data</li>';
+        }
+    }
+    
+
     window.addEventListener('resize', () => {
         if (window.innerWidth > 768) {
             sidebar.classList.remove('open');
@@ -960,6 +1308,21 @@
     // Check authentication and domain
     onAuthStateChanged(auth, (user) => {
         if (user) {
+            const email = user.email ? user.email.toLowerCase() : '';
+            const isStudent = email.endsWith('@student.gmi.edu.my');
+            
+            if (isStudent) {
+                alert('🛡️ Access Denied: Student accounts cannot access Warden pages.');
+                window.location.href = 'student-dashboard.html';
+                return;
+            }
+            // RBAC PASS
+        }
+        
+        if (user) {
+            // Load live data
+            loadWardenDashboardData();
+            
             // Validate email domain
             if (!user.email.endsWith('@gmi.edu.my') || user.email.includes('@student.')) {
                 alert("Access Denied: This portal is for wardens only.");
@@ -969,62 +1332,31 @@
                 return;
             }
 
-            // Display warden info
-            const displayName = user.displayName || user.email.split('@')[0];
-            document.getElementById('wardenDisplayName').textContent = displayName;
-            
-            // Store in session
-            sessionStorage.setItem('wardenEmail', user.email);
-            sessionStorage.setItem('wardenName', displayName);
-            
-            // Load dashboard data
-            loadDashboardData();
+            // Display user info
+            const wardenDisplayName = document.getElementById('wardenDisplayName');
+            if (wardenDisplayName) {
+                wardenDisplayName.textContent = user.email.split('@')[0];
+            }
         } else {
+            // No user is signed in, redirect to login page
             window.location.href = "warden-login.html";
         }
     });
 
-    // Logout function
-    document.getElementById('logoutBtn').addEventListener('click', (e) => {
-        e.preventDefault();
-        signOut(auth).then(() => {
-            sessionStorage.clear();
-            window.location.href = "index.html";
-        }).catch((error) => {
-            alert("Logout failed: " + error.message);
+    // Logout Functionality
+    const logoutBtn = document.getElementById('logoutBtn');
+    if (logoutBtn) {
+        logoutBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            signOut(auth).then(() => {
+                sessionStorage.clear();
+                window.location.href = "index.html";
+            }).catch((error) => {
+                console.error("Logout Error:", error);
+                alert("Error logging out.");
+            });
         });
-    });
-
-    // Load dashboard data (simulated - replace with Firestore later)
-    function loadDashboardData() {
-        // Simulate loading data
-        setTimeout(() => {
-            document.getElementById('totalStudents').textContent = '156';
-            document.getElementById('pendingApps').textContent = '12';
-            document.getElementById('maintenanceReq').textContent = '8';
-            document.getElementById('availableRooms').textContent = '24';
-        }, 500);
     }
-
-    // Action functions
-    window.viewApplication = function(studentId) {
-        alert(`Viewing application for student ID: ${studentId}`);
-        // In production, navigate to application details page
-    };
-
-    window.approveApplication = function(studentId) {
-        if (confirm(`Approve application for student ID: ${studentId}?`)) {
-            alert(`Application approved! Student ID: ${studentId}`);
-            // In production, update Firestore
-        }
-    };
-
-    window.rejectApplication = function(studentId) {
-        if (confirm(`Reject application for student ID: ${studentId}?`)) {
-            alert(`Application rejected. Student ID: ${studentId}`);
-            // In production, update Firestore
-        }
-    };
 </script>
 
 </body>

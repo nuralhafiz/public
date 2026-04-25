@@ -1,0 +1,2426 @@
+ 
+ 
+ 
+GMI HOSTELKU  (GMI -HK) 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+SWE/10/24A  
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+GERMAN  MALAYSIAN  INSTITUTE  
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+JULY/2025  
+===PAGE===
+I hereby  declare  that the project paper  or thesis  has been  read and I have  the opinion  that 
+the project paper is appropriate in terms of scope coverage and quality for awarding an 
+Industrial Diploma in Software Engineering.  
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Signature  : 
+Name of Supervisor l  : Ms. Norulmubarakah  Ibrahim 
+Date : 12 November 2025  
+===PAGE===
+GMI HOSTELKU(GMI -HK) 
+ 
+ 
+ 
+ 
+SWE/10/24A  
+ 
+ 
+ 
+ 
+GROUP  MEMBERS  
+MUHAMMAD  NUR  AL-HAFIZ  BIN ROSDI 
+MOHAMAD NUR HAIQAL RAZIQ  
+MUHAMMAD  KHAIRUL  NAIM  BIN MOHD  KHAIRUL  NIZAM 
+MUHAMMAD ZAHIRUDDIN BIN ZULHAIDI  
+ 
+ 
+This project  report  is submitted  as a partial  fulfilment  
+of the requirements  for the Diploma  in Software  Engineering  
+ 
+Project  Supervisor  
+MS. NORULMUBARAKAH  IBRAHIM  
+ 
+SWE  
+COMPUTER  AND  INFORMATION  DEPARTMENT  
+ 
+ 
+GERMAN -MALAYSIAN  INSTITUTE  
+ 
+ 
+JULY  / 2025  
+===PAGE===
+ 
+We hereby  declare  that this project  paper  is authenthic  and the group  members  are 
+ 
+ 
+Signature  : 
+…………………………………………………………………………...  
+Name  of Group  Members  : MUHAMMAD  NUR  AL-HAFIZ  BIN ROSDI  
+ 
+ 
+ 
+Signature  : 
+…………………………………………………………………………... 
+Name  of Group  Members  : MOHAMAD  NUR  HAIQAL  RAZIQ  
+ 
+ 
+ 
+Signature  : 
+…………………………………………………………………………...  
+Name of Group Members  : MUHAMMAD  KHAIRUL  NAIM  BIN MOHD  KHAIRUL 
+NIZAM  
+ 
+ 
+ 
+Signature  : 
+…………………………………………………………………………...  
+Name of Group Members  : MUHAMMAD  ZAHIRUDDIN  BIN ZULHAIDI 
+Date : 12 November 2025  
+===PAGE===
+DEDICATION  
+ 
+ 
+We dedicate this Final Year Project to our supervisor, Ms. Norulmubarakah Ibrahim. Thank 
+you for walking this path with us; your wisdom, unwavering patience, and belief in our 
+capabilities  have  been  our guiding  light.  Your  feedback  pushed  us to think  deeper, and  your 
+encouragement was the steady hand that kept us going through every challenge.  
+ 
+ 
+ 
+We also dedicate this work to our families and friends. To our parents, whose love and 
+sacrifices laid our foundation, and to our friends, for the sha red coffee breaks and 
+unwavering listening ears. Your unconditional support has been our greatest source of 
+strength.  This report is  more  than a project;  it is a reflection  of the incredible  support system 
+without which we could not have reached this miles tone.  
+===PAGE===
+ACKNOWLEDGEMENT  
+ 
+We wish to express our deepest gratitude to our project supervisor, Ms. Norulmubarakah  
+Ibrahim, for her invaluable guidance and unwavering support. Her expertise and insightful 
+feedback  were instrumental in shaping our work, and  her patience and  encouragement gave 
+us the confidence to overcome challenges and refine our ideas throughout this  journey.  
+ 
+Our sincere thanks also go to our dedicated team members. This project was brought to life 
+through our collective effort, shared commitment, and the unique contributions of each 
+individual.  It has been  a rewarding  experience  to collaborate,  learn  from one another,  and see 
+our collective vision become a reality.  
+ 
+Finally, we are profoundly thankful to our families and friends for their endless patience and 
+unwavering  belief  in us. Their  constant  encouragement  was a tremendous  source of strength, 
+motivating us to persevere. This accomplishment would not have been possible without the 
+support of everyone mentioned, for which we are eternally grateful.  
+===PAGE===
+ 
+ABSTRACT  
+ 
+ 
+than just paperwork. It is a source of frustration. Long queues during registration, forms that 
+get lost, and a constant lack of updates create delays and confusion for everyone involved. 
+The current  manual  system  is not just slow,  it is prone  to errors,  making  simple  tasks  a tedious 
+ordeal for students and administrators alike.  
+ 
+ 
+ 
+This project tackles these challenges with GMI HostelKu, a web -based system built to bring 
+hostel management into the digital age. Our goal was simple, to create a single, easy to use 
+online  platform  where  students  can apply  for a room  or report  a maintenance  issue  with a few 
+clicks, and  where  wardens  can manage  the entire  process  from a clear,  real-time dashboard. 
+By moving everything online, we have designed a system that cuts down waiting times, 
+reduces mistakes, and finally giv es everyone the transparency they need. GMI HostelKu is 
+more than just software, it is a smarter way for the GMI community to manage hostel life.  
+===PAGE===
+TABLE  OF CONTENT  
+ 
+CHAPTER  1 ................................ ................................ ................................ ...............................  1 
+INTRODUCTION  ................................ ................................ ................................ ....................  1 
+1.1 PROJECT  BACKGROUND  ................................ ................................ ...............................  1 
+1.2 PROBLEM  STATEMENT  ................................ ................................ ................................ .. 3 
+1.3 PROJ ECT OBJECTIVES  ................................ ................................ ................................ .. 4 
+1.4 PROJECT  SCOPE  ................................ ................................ ................................ ............  5 
+CHAPTER 2  ................................ ................................ ................................ ...............................  7 
+LITERATURE  REVIEW  ................................ ................................ ................................ ..............  7 
+2.1 FEASIBILITY  STUDIES  ................................ ................................ ................................ .... 7 
+2.1.1  PRIMARY  SOURCES  ................................ ................................ ................................ .. 13 
+2.1.2  SECONDARY  SOURCES  ................................ ................................ ............................  14 
+2.2 PRODUCT  COMPARISON  ................................ ................................ .............................  16 
+CHAPTE R 3 ................................ ................................ ................................ .............................  18 
+3.1 SOFTWARE  REQUIREMENT  SPECIFICATION  ................................ .............................  18 
+3.1.1  SDLC  PROCESS  ................................ ................................ ................................ .........  18 
+3.1.2  USE CASE  DIAGRAM  ................................ ................................ ................................ .. 25 
+3.1.3  USE CASE  SPECIFICATION  ................................ ................................ .......................  26 
+3.1.4  SEQUENCE  DIAGRAM  ................................ ................................ ................................  38 
+3.1.5  ACTIVITY  DIAGRAM  ................................ ................................ ................................ ... 49 
+3.1.6  CLASS  DIAGRAM  ................................ ................................ ................................ ........  55 
+3.2 PROJECT  SPECIFICATION  ................................ ................................ ...........................  56 
+3.2.1  SOFTWARE  USE SPECIFICATION  ................................ ................................ .............  56 
+3.2.2  HARDWARE  USE SPECIFICATION  ................................ ................................ ............  59 
+3.3 PROJECT  FEATURE  ................................ ................................ ................................ ..... 61 
+3.4 PROJECT  COSTING  ................................ ................................ ................................ ...... 65 
+3.4.1  REQUIRED  ITEMS  ................................ ................................ ................................ ....... 67 
+CHAPTER 4 ................................ ................................ ................................ .............................  68 
+TESTING  METHODOLOGY  ................................ ................................ ................................ . 68 
+4.1 AGIL E TESTING  MODEL  ................................ ................................ ...............................  68 
+4.1.2  FEATURE  TO BE TESTED  ................................ ................................ ..........................  72 
+4.2 TESTING  TOOLS  ................................ ................................ ................................ ...........  73 
+4.2.1  APPL ICATION  USE FOR  TESTING  ................................ ................................ .............  73 
+===PAGE===
+4.2.2  TESTING  TYPE  ................................ ................................ ................................ ...........  74 
+CHAPTER 5  ................................ ................................ ................................ .............................  75 
+FINDING  AND  ANALYSIS  ................................ ................................ ................................ .... 75 
+5.1 PROJECT  MOCKUP  ................................ ................................ ................................ ...... 75 
+5.1.1  USER  GUI SYSTEM  PROPOSED  ................................ ................................ ...............  75 
+5.1.2  ADMIN  GUI SYSTEM  PROPOSED  ................................ ................................ ..............  85 
+5.2 PROBLEM  ENCOUNTERED  AND  COUNTERMEASURE  ................................ ..............  92 
+5.3 RESULT  AND  DISCUSSION  ................................ ................................ ..........................  93 
+CHAPTER  6 ................................ ................................ ................................ .............................  94 
+CONCLUSION  ................................ ................................ ................................ ......................  94 
+6.1 CONCLUSION  ................................ ................................ ................................ ................  94 
+6.2 RECOMMENDATION  ................................ ................................ ................................ ..... 95 
+TASK DISTRIBUTION  ................................ ................................ ................................ ..........  96 
+REFERENCE  ................................ ................................ ................................ .......................  98 
+APPENDIX  ................................ ................................ ................................ ...........................  99 
+APPENDIX  A ................................ ................................ ................................ ........................  99 
+APPENDIX  B ................................ ................................ ................................ ......................  100 
+ 
+ 
+===PAGE===
+LIST  OF TABLES  
+ 
+Table  2.1.1.1  Interview  
+13 
+Table  2.2.1  Product  Comparison  
+17 
+Table  3.1.3.1  User  Profile  Specification  
+27 
+Table  3.1.3.2  QR Code  or Direct  Link Specification  
+28 
+Table  3.1.3.3  Room  Management  Specification  
+29 
+Table  3.1.3.4  Student  Application  Management  Specification  
+30 
+Table  3.1.3.5  Data  Monitoring  Specification  
+31 
+Table  3.1.3.6  Generate  Report  Specification  
+32 
+Table  3.1.3.7  Room  Application  Form  Specification  
+33 
+Table  3.1.3.8  Move  Out Form  Specification  
+34 
+Table  3.1.3.9  Room  Maintenance  Specification  
+35 
+Table  3.1.3.10  Notification  Specification  
+37 
+Table  3.2.1.1  Software  Use Specification  
+58 
+Table  3.2.2.1  Hardware  Use Specification  
+59 
+Table  3.4.1  Project  Costing  
+66 
+Table  4.1.2.1  Feature  To Be Tested  
+73 
+Table  4.2.1.1  Application  Use For Testing  
+74 
+Table  5.2.1  Problem  Encountered  and Countermeasure  
+93 
+===PAGE===
+LIST  OF FIGURES  
+ 
+Figure  2.1.1  Questionnaire  1 8 
+Figure  2.1.2  Questionnaire  2 9 
+Figure  2.1.3  Questionnaire  3 10 
+Figure  2.1.4  Questionnaire  4 11 
+Figure  3.1.1.1  SDLC  Process  31 
+Diagram  3.1.2.1  Use Case  Diagram  25 
+Diagram  3.1.3.1  User  Profile  26 
+Diagram  3.1.3.2  QR Code  or Direct  Link Access  28 
+Diagram  3.1.3.3  Room  Management  29 
+Diagram  3.1.3.4  Student  Application  Management  30 
+Diagram  3.1.3.5  Data  Monitoring  31 
+Diagram  3.1.3.6  Generate  Report  32 
+Diagram  3.1.3.7  Room  Application  Form  33 
+Diagram  3.1.3.8  Move  Out 34 
+Diagram  3.1.3.9  Room  Maintenance  35 
+Diagram  3.1.3.10  Notification  36 
+Diagram  3.1.4.1  Student  Room  Application  38 
+Diagram  3.1.4.2  Student  Move  Out 39 
+Diagram  3.1.4.3  Student  Maintenance  Reporting  40 
+Diagram  3.1.4.4  Hostel  Admin  Student  Application  Management  41 
+Diagram  3.1.4.5  Hostel  Admin  Monitoring  42 
+Diagram  3.1.4.6  Student  Registration  43 
+Diagram  3.1.4.7  Hostel  Admin  Registration  44 
+Diagram  3.1.4.8  Profile  (Both  User)  45 
+Diagram  3.1.4.9  Hostel  Admin  Room  Management  46 
+Diagram  3.1.4.10  Hostel  Admin  Maintenance  Management  47 
+Diagram  3.1.4.11  Hostel  Admin  Generate  Report  48 
+Diagram  3.1.5.1  Room  Application  and Admin  Review  Management  49 
+Diagram  3.1.5.2  Maintenance  Application  and Admin  Review  Management  50 
+Diagram  3.1.5.3  Move  Out Application  and Admin  Review  Management  51 
+Diagram  3.1.5.4  Student  and Admin  Profile  Management  52 
+Diagram  3.1.5.5  Admin  Report  Generation  53 
+Diagram  3.1.5.6  Admin  Real Time  Monitoring  54 
+Diagram  3.1.6.1  Class  Diagram  55 
+Figure  4.1.1  Agile  Model  68 
+Figure  5.1.1.1  Page  for User  to Choose  76 
+Figure  5.1.1.2  Sign In Page  77 
+Figure  5.1.1.3  User  Create  Account  78 
+Figure  5.1.1.4  Homepage  Student  79 
+Figure  5.1.1.5  Room  Maintenance  Page  80 
+Figure  5.1.1.6  Submit  Room  Maintenance  81 
+Figure  5.1.1.7  Room  Apply  Page  82 
+Figure  5.1.1.8  Room  Apply  Page  after submitting  83 
+===PAGE===
+ 
+Figure  5.1.1.9  Move  Out Page  84 
+Figure  5.1.1.10  Move  Out Page  After  Submitting  85 
+Figure  5.1.2.1  Hostel  Admin  Sign In 86 
+Figure  5.1.2.2  Hostel  Admin  Dashboard  87 
+Figure  5.1.2.3  Student  Application  Management  88 
+Figure  5.1.2.4  Room  Management  Page  89 
+Figure  5.1.2.5  Maintenance  Page  90 
+Figure  5.1.2.6  Monitoring  Page  91 
+Figure  5.1.2.7  Generate  Report  Page  92 
+===PAGE===
+LIST  OF SYMBOLS  AND  ABBREVIATIONS  
+ 
+GMI German -Malaysian  Institute  
+GMI-HK GMI HostelKu  
+SWE  Software  Engineering  
+SDLC  Software  Development  Life Cycle  
+FYP Final  Year  Project  
+UI User  Interface  
+UX User  Experience  
+PC Personal  Computer  
+PHP Hypertext  Preprocessor  
+SQL Structured  Query  Language  
+===PAGE===
+1  CHAPTER  1 
+ 
+INTRODUCTION  
+ 
+1.1 PROJECT  BACKGROUND  
+ 
+Manual administrative processes and inefficient record -keeping have long been significant 
+challenges in managing student accommodation at the German -Malaysian Institute (GMI). 
+Many students experience delays during room registration, struggle with lost application 
+forms, and face difficulties tracking maintenance requests. These issues highlight the urgent 
+need for a more st reamlined, transparent, and digital approach to hostel management that 
+benefits both students and administrative staff.  
+ 
+ 
+ 
+To address these challenges, this project introduces GMI HostelKu, a web -based hostel 
+management system designed to automate and cent ralize all accommodation -related 
+operations. The system serves as a unified platform, allowing students to submit room 
+applications, report maintenance issues, and track their requests in real -time. By replacing 
+paper -based workflows with digital processes , GMI HostelKu minimizes manual errors, 
+reduces processing delays, and enhances the overall user experience for both students and 
+staff.  
+ 
+ 
+ 
+GMI HostelKu is  designed  to provide  a user -friendly and efficient  solution  tailored specifically 
+to the needs  of GMI’s hostel  ecosystem.  Key features  include  online  application  and approval 
+workflows, real -time room availability updates, automated notifications, and a dedicated 
+maintenance  reporting  portal.  This project  aims  to ensure  that the system  is not only functional 
+but also accessible  and easy  to use, thereby  improving  operational  efficiency  and satisfaction 
+across all user groups.  
+Furthermore, the system emphasizes transparency and accountability by providing live 
+updates and centralized access to informa tion. Administrators can monitor occupancy rates, 
+track  maintenance  progress,  and generate  reports  with ease,  while  students  gain visibility  into 
+their application  status  and request  history.  By digitizing  these  core processes,  GMI HostelKu 
+reduces  administrative  workload,  encourages  timely  communication,  and supports  data-driven 
+decision -making.  
+===PAGE===
+2  In conclusion, GMI HostelKu  represents a proactive step toward modernizing hostel 
+operations at GMI. By integrating automation, real -time data tracking, and an intuitive 
+interface, the system establishes a more organized and responsive accommodation 
+management environment. This init iative not only addresses  
+===PAGE===
+3  1.2 PROBLEM  STATEMENT  
+ 
+ 
+ 
+1. Long  queues  and persistent  delays  are a regular  issue  due to slow,  manual  processing.  
+ 
+ 
+Picture students lining up down the hallway, just to submit a single form. This is a common 
+scene  during  busy  periods,  forcing  everyone  to waste  precious  time on simple  administrative 
+tasks. The slow, paper -based system creates unnecessary waiting for students and a 
+constant backlog of work for staff.  
+ 
+ 
+2. The manual  record -keeping  system  is highly  vulner able to misplaced  forms  and human 
+error.  
+ 
+ 
+A student's application can easily get lost in a pile of papers, or a simple mistake can be 
+made when copying details by hand. When this happens, it is incredibly difficult to track 
+down  the correct  information.  This lack of dependable  data compromises  the reliability  and 
+integrity of vital student and occupancy records, leading to confusion and mistrust.  
+ 
+ 
+3. Hostel  operations  lack real-time data or transparency  in key management  areas.  
+ 
+ 
+Is a room available? How long will a repair take? Nobody can get an immediate answer. 
+Wardens  cannot  make  fast decisions, and  students  are often  left in the dark about  the status 
+of their requests. This absence of live information prevents quick, informed decision -making 
+and strains communication between everyone involved.  
+===PAGE===
+4  1.3 PROJECT  OBJECTIVES  
+ 
+ 
+ 
+1. To develop  a web-based  platform  called  “GMI  HostelKu”  
+ 
+ 
+Imagine a single website where students can handle everything to do with their hostel life, 
+and where staff have all the information they need at their fingertips. This platform is 
+designed  to be that one-stop-shop,  making  hostel  management  straightforward  and hassle - 
+free for everyone involved.  
+ 
+ 
+2. To digitalize the hostel registration process for eac h new semester.  
+ 
+ 
+We're  saying  goodbye  to long lines and paper  forms.  Instead, students  will be able to apply 
+for their room  from anywhere,  at any time, and  get clear  updates on  their application status 
+every step of the way. This makes securing a room a m uch simpler and less stressful 
+experience.  
+ 
+ 
+3. To facilitate maintenance issue reporting and notification  
+ 
+ 
+If a student reports a leaky tap or a broken light, the right staff member will be notified 
+instantly.  This means  problems  can be assigned  and fixed  much  faster,  creating  a safer  and 
+more comfortable living environment for students without unnecessary delays.  
+===PAGE===
+5  1.4 PROJECT  SCOPE  
+ 
+ 
+ 
+TYPE  OF SYSTEM  
+GMI HostelKu  is a web-based  platform  designed  to bring  hostel  management into  the digital  
+age. Think of it as a central nervous system for all accommodation operations at GMI - 
+replacing  paper  forms  and manual  processes with  a streamlined, online  solution  that makes 
+managing hostel life smoother for everyone involved.  
+ 
+ 
+TARGETED  USER  
+ 
+ 
+GMI HostelKu  is built with two main  users  in mind:  
+Students living in GMI hostels will use the system to handle everything from applying for a 
+room to reporting maintenance issues. Instead of waiting in lines or filling out paper forms, 
+they can manage  their hostel  needs  through  their phone  or computer,  getting  instant  updates 
+about their applications and requests.  
+Hostel Administrators and Wardens will use the system's dashboard to manage the entire 
+accommodation  process.  They  can quickly  see which  rooms  are available,  process  student 
+applications, and track maintenance jobs. All from one central location, saving time and 
+reducing paperwork.  
+===PAGE===
+6  DEVELOPMENT  FEATURES  
+ 
+ 
+The features  of the GMI HostelKu system, based  on the Use-Case  Diagram  and standard 
+web application requirements, include:  
+ 
+ 
+Secure Authentication: Login and Logout for both Student and Admin/Warden users 
+Profile Management: User Profile management for both Students and Admin/Warden 
+Application  Processing:  Student  Application  Management  for processing  new applications  
+Administrative  Control:  Application  Management  for Warden/Admin  (approval,  rejection, 
+assignment)  
+Live Updates:  Real-Time  Room  Availability  monitoring  for students  
+Administrative  Oversight:  Real-Time  Data  Monitoring  dashboard  for administrators 
+Digital Forms: Fill Room Application Form through student interface  
+Check -out Process: Move Out Form submission and processing 
+Maintenance  Tracking:  Room  Maintenance  reporting  and issue  logging  
+Reporti ng Tools:  Generate  Reports  on occupancy,  applications,  and maintenance  history  
+Quick  Access:  QR Code  / Direct  Link Access  for system  login  or specific  features  
+Communication  System:  Notification  System  for instant  alerts  and updates  on application 
+status and maintenance requests  
+===PAGE===
+7  CHAPTER 2  
+LITERATURE  REVIEW  
+2.1 FEASIBILITY  STUDIES  
+ 
+ 
+To further assess the feasibility of the  GMi HostelKu  system, a  student feedback survey  was 
+executed  to understand  their experiences  and expectations  regarding  hostel  registration.  The 
+survey aimed to  identify issues with the existing manual registration process and evaluate 
+students’ readiness for an online system.  
+A total of 51 students from the German -Malaysian Institute participated in the survey 
+conducted to evaluate the current hostel registration process and gather feedback regarding 
+the proposed HostelKu digital system.  
+===PAGE===
+8   
+ 
+Figure  2.1.1:  Questionnaire  1 
+ 
+1. Efficiency  of the Current  Manual  Hostel  Registration  Process  
+ 
+Based  on the responses,  
+ 
+• 45.1%  of students  rated  the current  manual  registration  process  as slow,  
+• 35.3%  found  it very inefficient,  
+• 11.8%  remained  neutral,  and 
+• Only a small  percentage  found  it efficient  or very efficient.  
+ 
+ 
+This indicates that a majority of students experience delays, long queues, and processing 
+issues under the current manual system. The result highlights a strong need for digital 
+transformation to improve efficiency and convenience in the hostel registration workflow.  
+
+===PAGE===
+9   
+ 
+Figure  2.1.2:  Questionnaire  2 
+ 
+2. Main  Issues  Faced  During  Registration  
+ 
+The survey results show several key challenges in the current manual hostel registration 
+process:  
+• Long  Queues  (96.1%)  – Most  students  experience  long waiting  times,  especially 
+during peak registration periods. Eg, semester registration.  
+• Lack of Clear Commu nication (78.4%)  – Students often face uncertainty regarding  
+room allocation and approval updates.  
+• Repeated Data Entry Errors (64.7%) – Manual form filling leads to errors and delays 
+in processing applications.  
+• Limited  Staff Response  (2%)  – A few responden ts noted  that staff were  overwhelmed, 
+causing slower assistance.  
+ 
+ 
+Overall, these findings highlight that the manual process is inefficient and time -consuming, 
+supporting the need for a digital system like HostelKu to improve speed, accuracy, and 
+communication.  
+
+===PAGE===
+10   
+ 
+Figure  2.1.3:  Questionnaire  3 
+ 
+3. Preference  for a Digital  Hostel  Registration  System  
+ 
+ 
+ 
+When asked whether they would prefer a digital system for hostel registration and 
+maintenance reporting, 98% of respondents answered “Yes”, while only 2% selected “No.”  
+ 
+ 
+ 
+This overwhelmingly positive response demonstrates that almost all students support the 
+implementation of an online hostel registration system. It confirms that students are 
+comf ortable  using  digital  platforms  and view them  as a practical  solution  to existing  problems 
+in manual process  
+
+===PAGE===
+11   
+ 
+Figure  2.1.4:  Questionnaire  4 
+ 
+4. Most  Useful  Features  for Students  
+ 
+ 
+ 
+Participants  were  also asked  to select  which  features  would  be most  useful  in a 
+digital hostel system:  
+ 
+ 
+ 
+• Online  registration  form – 96.1%  
+• QR code  check -in – 68.6%  
+• Real-time application  status  – 52.9%  
+ 
+ 
+ 
+The majority of students prioritized having an online registration form, reflecting their desire 
+for convenience and accessibility. A significant number also expressed interest in QR code 
+check -in, which simplifies verification and check -in procedures. Additionally, more than half 
+valued real -time application tracking, showing that transparency  and timely updates are also 
+key expectations for the system.  
+
+===PAGE===
+12   
+ 
+ 
+ 
+Based on the recorded responses, it can be concluded that  the majority of students  support 
+the transition  to a digital platform. The key factors influencing this support are convenience, 
+faster processing, and improved transparency. This feedback strengthens the feasibility of 
+implementing GMi HostelKu as a reliable, user -friendly hostel management system.  
+ 
+ 
+ 
+Furthermore, the survey findings confirm that the existi ng manual hostel registration system 
+is viewed as inefficient by most students. There is a strong preference (98%) for a digital 
+platform, with major interest in features such as online registration, QR -based access, and 
+real-time status  tracking.  These  results validate  the feasibility  and relevance  of developing  the 
+GMi HostelKu system to meet the students’ needs for a faster, more transparent, and user - 
+friendly process.  
+===PAGE===
+13  2.1.1  PRIMARY  SOURCES  
+ 
+ 
+INTERVIEW  
+ 
+ 
+An interview serves as a formal, stru ctured conversation used to gather crucial, first -hand 
+information directly  from stakeholders. These sessions can be conducted in various settings, 
+including face -to-face meetings, phone calls, or video conferencing platforms, and are 
+typically prepared fo r in advance to ensure efficiency and focus.  
+ 
+ 
+ 
+For this study, a vital consultation session was held with our primary stakeholder, Mr. Mohd 
+Saimi  Mohd  Zain,  the hostel's  warden.  The purpose  was to validate  the initial  concept  of 
+the GMi HostelKu  system,  present  a draft of the expected  functionalities,  and gather  feedback 
+on the administrative needs. The session provided positive confirmation that the proposed 
+digital  platform would effectively meet the core  requirements for managing  room applicat ions 
+and maintenance  reports.  According  to Sir Saimi,  the system's  ability  to simplify  complex  tasks 
+is highly valuable, and several additional  features were suggested to enhance its overall 
+utility.  
+ 
+Details  Information  
+Stakeholder  Mr Mohd  Saimi  Mohd  Zain 
+Date Friday,  October  17, 2025  
+Location  Hostel  Management  Office,  German - 
+Malaysian Institute  
+ 
+ 
+Table  2.1.1.1:  Interview  
+===PAGE===
+14  2.1.2  SECONDARY  SOURCES  
+ 
+ 
+Secondary  research  was conducted  to identify  similar  studies,  digital  solutions,  and academic 
+discussions  related  to online  hostel  management  and registration  systems.  This analysis  helps 
+validate the need for  GMi HostelKu and ensures that its proposed features align with current 
+technological and administrative trends in higher education institutions.  
+ 
+ 
+ 
+According to  Rajput and Sharma (2021), the digitalization of campus facilities management, 
+including hostel operations, significantly improves efficiency by reducing paperwork, manual 
+errors, and communication delays between students and a dministrators. Their study on 
+university hostel systems in India highlighted that online platform provide  real-time updates, 
+centralized  data storage,  and automated  record  tracking,  making  them  preferable  to traditional 
+manual systems.  
+ 
+ 
+ 
+Rajput, S., & Sharma, N. (2021). Development of Online Hostel Management System for 
+Universities. International Journal of Computer Applications, 183(10), 25 –31. 
+ 
+ 
+ 
+In a similar context,  Yusof et al. (2020) investigated hostel management issues at Malaysia n 
+polytechnics and found that most institutions still relied heavily on  paper -based registration. 
+The researchers emphasized that web -based solutions can enhance accuracy and 
+accountability by enabling role -based access control  for students, wardens, and 
+administrators.  
+ 
+ 
+ 
+Yusof, M. N., Rahman, H. A., &  Omar, A. R. (2020). Web-based hostel  management system 
+for Malaysian polytechnics.  Journal of Information Systems Research and Innovation, 14(2), 
+88–97. 
+ 
+ 
+ 
+Furthermore,  a report by The Star (2022) discussed Malaysia’s growing push toward digital 
+campus  systems,  stating  that web-based  student  portals  and online  administrative  tools  have 
+become essential for managing large student populations effectively. The article highlighted  
+===PAGE===
+15  the importance of integrating  QR code technology for verification and  real-time database 
+connectivity, both of which are implemented in the HostelKu system.  
+ 
+ 
+ 
+The Star. (2022, October 5). Malaysian universities move toward fully digital campus 
+management syst ems.  
+ 
+ 
+Comparing similar systems, the  MSU Hostel Management System (2023) and  UMS Online 
+Hostel  Application  Portal  (2023)  also offer limited  online  functionality.  While  both provide  basic 
+student registration, they lack features such as automated approval notifications, QR -based 
+access, and integrated maintenance reporting. The HostelKu  system differentiates itself by 
+providing a  comprehensive, centralized dashboard  for both students and hostel wardens, 
+aligning with modern usability and administrative needs.  
+ 
+ 
+ 
+Management and Science University (MSU). (2023). MSU Hostel Management System 
+Overview. https:// www.msu.edu.my/hostel  
+ 
+ 
+ 
+These  secondary  sources  reinforce  the relevance  and importance  of the GMi 
+HostelKu  project. They confirm that transitioning from manual hostel management to a web - 
+based  system  aligns  with global  educational  technology  trends  and offers  measurable  benefits 
+in efficiency, accessibility, and transparency.  
+===PAGE===
+16   
+2.2 PRODUCT  COMPARISON  
+ 
+A product comparison was conducted to evaluate the GMi HostelKu  system against existing 
+hostel management solutions used by other institutions, such as MSU and UMS. This 
+comparison focuses on identifying strengths, missing features, and innovation gaps within 
+current systems.  
+ 
+ 
+ 
+As shown  in the table  below,  GMi Hostel Ku integrates  advanced  functionalities,  including  QR 
+code access, online application management, user profile management, and automated 
+notifications, that are not fully implemented in other university systems. This comparison 
+highlights the  unique advanta ges and improved digital  efficiency that HostelKu provides over 
+traditional or partially digitalized hostel management systems.  
+ 
+ 
+ 
+ 
+ 
+Features  Hostelku  MSU  UMS  
+ 
+ 
+QR Code/  Direct  LInk Access   
+ 
+(✔)  
+ 
+(✔)  
+ 
+(✔) 
+ 
+ 
+Application  Management 
+(Hostel Admin)   
+ 
+(✔)  
+ 
+(X)  
+ 
+(X) 
+ 
+ 
+User  Profile  (Hostel  Admin  & 
+Student)   
+ 
+(✔)  
+ 
+(X)  
+ 
+(X) 
+ 
+Apply  for Room  (Student)   
+(✔)  
+(✔)  
+(✔) 
+ 
+Move  Out Form  (Student)   
+(✔)  
+(X)  
+(X) 
+===PAGE===
+17   
+ 
+Notifications/reminders   
+ 
+(✔)  
+ 
+(X)  
+ 
+(X) 
+ 
+Room  Maintenance  Application 
+Form (Student)   
+(✔)  
+(✔)  
+(X) 
+ 
+Room  Management 
+(Hostel Admin)   
+(✔)  
+(X)  
+(X) 
+ 
+Real Time  Monitoring 
+(Hostel Admin)   
+(✔)  
+(X)  
+(X) 
+ 
+Generate  Report   
+(✔)  
+(✔)  
+(✔) 
+ 
+Maintenance  Request 
+(Hostel Admin)   
+(✔)  
+(✔)  
+(X) 
+ 
+ 
+Table  2.2.1:  Product  Comparison  
+===PAGE===
+18  
+CHAPTER  3 
+PROJECT  METHODOLOGY  
+3.1 SOFTWARE  REQUIREMENT  SPECIFICATION  
+ 
+3.1.1  SDLC  PROCESS  
+ 
+ 
+ 
+Figure  3.1.1.1:  SDLC  Process  
+The development of the GMI HostelKu system followed the  Agile methodology, which we 
+selected for its iterative, user -focused nature. This approach allowed us to break down the 
+project  into short  development  cycles  rather  than attempting  to build  the entire  system  at once. 
+After each cycle, we reviewed a functional piece of the software with our stakeholde rs, 
+wardens and students, gathering their feedback. This continuous feedback loop was crucial, 
+enabling  us to refine  features  and priorities  to ensure  the final product  truly addressed  the real- 
+world problems of administrative delays and manual processes  
+===PAGE===
+19  1. Planning  Phase  
+ 
+ 
+During  the planning  phase,  the following  objectives  were  defined:  
+ 
+ 
+Main  Goal:  
+ 
+ 
+Develop  a reliable,  efficient,  and user-friendly  web-based  hostel  management  system  to 
+digitalize accommodation operations at GMI.  
+ 
+ 
+Key Stakeholders:  
+ 
+ 
+Students, hostel administrators/wardens, and the IT support team. The initial product 
+backlog was created, listing major tasks such as user authentication, room application 
+processing,  maintenance  reporting,  real-time occupancy  monitoring,  and administrative 
+dashboard features.  
+===PAGE===
+20  2. Requirements  and Analysis  Phase  
+ 
+ 
+The system's  requirements  were  gathered  through  stakeholder  interviews  and 
+document analysis, and were refined iteratively. They consisted of:  
+ 
+ 
+Functional  Requirements:  
+ 
+ 
+• Secure  login  and role-based  access  for students  and administrators.  
+• Online  room  application  and automated  allocation  system.  
+• Real-time maintenance  reporting  and tracking  system.  
+• Room  availability  monitoring  and occupancy  management.  
+ 
+ 
+Non-Functional  Requirements:  
+ 
+ 
+• High system  availability  during  critical  enrollment  periods.  
+• Responsive  design  accessible  on both desktop  and mobile  devices.  
+• Intuitive  interface  requiring  minimal  training  for users.  
+ 
+ 
+Technical  Analysis:  
+ 
+ 
+We built the GMI HostelKu  system  using  PHP,  a powerful  and reliable  programming  language 
+that works behind the scenes to run all the important logic, like processing applications and 
+managing  user logins.  All the information,  from student  details  to room  records,  is safely  stored 
+and organized in  a MySQL database, which acts  as the system's secure  digital  filing cabinet.  
+ 
+ 
+ 
+To make  sure the system  is easy  for everyone  to use, we designed  the interface 
+with Bootstrap. This means whether a  student is checking room availability on  their phone or 
+a warden  is managing  applications  on a desktop  computer,  the website  will look  great and  be 
+simple to navigate on any device.  
+===PAGE===
+21  3. Design  Phase  
+ 
+ 
+The syste m's design evolved organically through each sprint, shaped by ongoing feedback 
+from our stakeholders.  We focused  on creating  intuitive  workflows  that would  feel natural  for 
+both students and hostel staff.  
+ 
+ 
+Process  Flowcharts : We mapped  out every key  process,  from how a student  applies  for a 
+room to how a warden resolves a maintenance ticket, ensuring no step was overlooked.  
+ 
+ 
+Use Case Diagrams:  These diagrams helped us visualize all the ways students and 
+administrators  would  interact  with the system,  clarifying  responsibilities  for each  user role 
+from the very beginning.  
+ 
+ 
+ 
+ 
+UI/UX  Wireframes : Using  Figma,  we built clickable  prototypes  of the student  portal  and 
+admin dashboard. Our design goal was simplicity and clarity, making sure that tasks  
+like submitting  a room  application  or checking  occupancy  rates  would  be straightforward, 
+even for first -time users.  
+ 
+ 
+These designs weren't set in stone; they were living documents. After each sprint, we 
+reviewed  the wireframes  and flowcharts  with our stakeholders,  refining  them  based  on their 
+hands -on experience and suggestions.  
+===PAGE===
+22  4. Implementation  Phase  
+ 
+ 
+We brought  the GMI HostelKu  system  to life through  a series  of focused,  two-week  sprints. 
+Each sprint delivered a concrete, working part of the platform, building momentum and 
+allowing for continuous improvement.  
+ 
+ 
+Sprint  1: Laying  the Foundation  
+We started by building the core gateway to the system: a secure user registration and login 
+system.  This established  the crucial  separation  between  student  and admin  access  from day 
+one. 
+ 
+ 
+Sprint  2: Digitalizing  the Core  Service  
+Our focus  shifted  to the heart  of the problem, the  manual  application  process.  We developed 
+the complete online room application and allocation system, allowing students to apply for a 
+room and administrators to manage those applications digitally.  
+ 
+ 
+ 
+ 
+Sprint  3: Enabling  Real -Time  Reporting  
+We built the maintenance  reporting  module,  empowering  students  to log facility  issues  with a 
+few clicks and giving staff a centralized dashboard to track and manage these requests, 
+replacing lost paper forms with instant digital tickets.  
+ 
+ 
+Sprint  4: Creating  Visibility  and Insight  
+We implemented  the real-time monitoring  features,  including  the room  availability dashboard 
+and administrative overview panels. This provided the transparency that was missing in the 
+old system, allowing for data -driven decisions.  
+ 
+ 
+ 
+ 
+Sprint  5: Automating  and Finalizing  
+In the final development sprint, we automated system notifications and built the report 
+generation  tool, enabling  wardens  to create  occupancy  and maintenance  reports  with a 
+single click, wrapping up the core administrative functionality.  
+===PAGE===
+23  5. Testing  Phase  
+ 
+ 
+Testing wasn't just a final st ep, it was a constant companion throughout the entire 
+development  journey.  We believed  in catching  issues  early  and often  to build  a system 
+everyone could rely on.  
+ 
+ 
+I. Unit Testing:  We tested  every  individual  piece  of the puzzle  in isolation,  like the room 
+allocation algorithm or the login verification function, to ensure each one worked 
+perfectly on its own.  
+ 
+ 
+II. Integration Testing:  Once  individual parts  were  ready, we  checked  how they worked 
+together. We made sure that submitting a room application corr ectly updated the 
+room  availability  and that a new maintenance  ticket  instantly  appeared  on the admin 
+dashboard.  
+ 
+ 
+III. System Testing:  We put the entire, fully -assembled system through its paces, 
+simulating  a full semester  of student  registrations  and maintenance  reports  to ensure 
+it could handle real -world pressure.  
+ 
+ 
+IV. User Acceptance Testing (UAT):  This was the most crucial test. We invited our key 
+stakeholders,  including  hostel  wardens  and students,  to use the system  themselves. 
+Their real -world feedb ack on everything from button placement to form clarity led to 
+immediate, practical improvements, which made the system truly theirs.  
+ 
+ 
+Whenever  a test uncovered  a bug or a usability  hiccup, we  logged  it, prioritized  it, and made 
+sure it was fixed in the v ery next development cycle.  
+===PAGE===
+24  6. Deployment  Phase  
+ 
+ 
+We introduced  the GMI HostelKu  system  to the campus  community  in a careful,  staged 
+rollout to ensure a smooth and secure transition from the old paper -based methods.  
+ 
+ 
+ 
+Staged  Rollout:  After  each  successful  sprint,  the new features  were  deployed  to a private 
+staging server. This gave the development team and a small group of testers a safe 
+environment to validate everything before it went live.  
+ 
+ 
+ 
+Go-Live with Confidence:  Once  the complete  system  was thoroughly  tested  and approved  in 
+the staging environment, we scheduled the final deployment to the live production server.  
+We planned  this outside  of peak  hours  to ensure  minimal  disruption  to hostel  operations.  
+ 
+ 
+ 
+Safety  First:  We prepared  detailed  deployment  checklists  and rollback  plans.  This meant  that 
+if any unexpected issue arose during the live update, we could quickly revert to  
+the previous  stable  version,  guaranteeing  that hostel  operations  would  never  be 
+negativel y impacted.  
+===PAGE===
+25  
+3.1.2  USE CASE  DIAGRAM  
+ 
+ 
+Diagram  3.1.2.1:  Use Case  Diagram  
+===PAGE===
+26  
+3.1.3  USE CASE  SPECIFICATION  
+ 
+1. User  profile  
+ 
+ 
+Diagram  3.1.3.1:  User  Profile  
+ 
+Element  Details  
+Use Case  Name  User  Profile  
+Actor  1. User 
+2. Hostel  Admin  
+Use_case  
+Description  Hostel  Admin  and User  Register  or login  allows  them  to view and update 
+personal details and to access their account.  
+Pre-Condition  1. User  and Hostel  Admin  must  register  or login  into GMI 
+hostelku system.  
+2. User  profile  must  have  a valid email/phone  number.  
+3. Internet  access  is available.  
+Post-Condition  1. User  accounts  are created.  
+2. User  is directed  to the dashboard/home  page  of GMI Hostelku.  
+3. Updated  profile  information  is saved.  
+Basic  Path 1. User  selects  User  Profile.  
+2. System  displays  current  profile.  
+3. User  edits  profile  details  as needed.  
+4. User  submits  changes.  
+5. System  updates  the profile  and shows  confirmation.  
+===PAGE===
+27  Alternative  Path If User  Click  “Cancel”,  then system  exits editing  mode  without  saving  the 
+profile details.  
+Exception  Path 1. System  is unavailable.  
+2. If system  can’t  load profile,  means  display  error.  
+3. User  unable  to connect  due to network  issues.  
+4. System  shows  an error  message  to user.  
+ 
+ 
+Table  3.1.3.1:  User  Profile  Specification  
+===PAGE===
+28  
+2. QR Code/  Direct  Link Access  
+ 
+ 
+Diagram  3.1.3.2:  QR Code  or Direct  Link Access  
+ 
+ 
+ 
+Element  Details  
+Use Case  Name  QR Code/  Direct  Link Access  
+Actor  1. User 
+2. Hostel  Admin  
+Use_case  Description  Enables  quick  access  to the system  through  scanning  a QR code 
+or clicking a provided direct link  
+Pre-Condition  1. QR code  or link must  be valid.  
+2. System  must  be online.  
+Post-Condition  User  is directed  to the dashboard  or relevant  module.  
+Basic  Path 1. User  scans  QR code  or opens  link. 
+2. System  verifies  access  token.  
+3. System  redirects  user to dashboard.  
+Alternative  Path If token  expired,  then system  asks for login  credentials.  
+Exception  Path If Invalid  QR code/link,  then system  will display  “Invalid  or 
+expired code”.  
+ 
+Table  3.1.3.2:  QR Code  or Direct  Link Specification  
+===PAGE===
+29  
+3. Room  Management  
+ 
+Diagram  3.1.3.3:  Room  Management  
+ 
+Element  Details  
+Use Case  Name  Room  Management  
+Actor  Hostel  Admin  
+Use_case  Description  Provides  real-time information  on hostel  room  availability, 
+including vacant, occupied, and reserved rooms.  
+Pre-Condition  1. User  authenticated.  
+2. Room  status  data exists.  
+Post-Condition  Room  availability  is displayed.  
+Basic  Path 1. Admin  opens  Real -Time  Room  Availability . 
+2. System  retrieves  current  room  status.  
+3. System  displays  availability  in real-time. 
+Alternative  Path If Admin  applies  filters  (block,  floor),  then System  updates  display 
+current room status.  
+Exception  Path If database  unreachable,  System  display  “Unable  to load room 
+data”.  
+ 
+Table  3.1.3.3:  Room  Management  Specification  
+===PAGE===
+30  
+4. Student  Application  Management  
+ 
+ 
+Diagram  3.1.3.4:  Student  Application  Management  
+ 
+Element  Details  
+Use Case  Name  Student  Application  Management  
+Actor  Hostel  Admin  
+Use_case  
+Description  Allows  admin  to view,  evaluate,  approve,  or reject  student  hostel 
+applications.  
+Pre-Condition  1. Admin  logged  in. 
+2. Student  applications  exist.  
+Post-Condition  1. Admin  makes  decision.  
+2. Application  status  updated.  
+Basic  Path 1. Admin  selects  Student  Application  Management.  
+2. System  loads  all pending  applications.  
+3. Admin  reviews  and decides  to approve  or reject.  
+4. System  updates  application  status. 
+5.Notification sent to student.  
+Alternative  Path If Admin  requests  more  information,  then Application  marked 
+“Incomplete”.  
+Exception  Path If data is missing,  then system  prompts  admin 
+that application cannot be processed.  
+ 
+Table  3.1.3.4:  Student  Application  Management  Specification  
+===PAGE===
+31  
+5. Real -Time  Data  Monitoring  
+ 
+ 
+Diagram  3.1.3.5:  Data  Monitoring  
+ 
+Element  Details  
+Use Case  Name  Real-Time  Data  Monitoring  
+Actor  Hostel  Admin  
+Use_case  
+Description  Displays  live dashboards  for occupancy,  maintenance  requests,  and 
+application trends.  
+Pre-Condition  1. Admin  logged  in. 
+2. Admin  monitoring  exist data.  
+Post-Condition  1. Admin  redirected  to dashboard.  
+2. Dashboard  displays  current  statistics.  
+Basic  Path 1. Admin  opens  Real -Time  Data  Monitoring . 
+2. System  loads  dashboard  widgets.  
+3. System  displays  updated  metrics.  
+Alternative  Path If Admin  filters  by date/location,  then Dashboard  refreshes.  
+Exception  Path If Some  modules  fail to load,  System  shows  partial  data with warnings.  
+ 
+Table  3.1.3.5:  Data  Monitoring  Specification  
+===PAGE===
+32  
+6. Generate  Reports  
+ 
+ 
+Diagram  3.1.3.6:  Generate  Report  
+ 
+Element  Details  
+Use Case  Name  Generate  Reports  
+Actor  Hostel  Admin  
+Use_case  
+Description  Generates  various  reports  such  as occupancy  reports,  application  lists, 
+and maintenance logs.  
+Pre-Condition  1. Admin  logged  in. 
+2. Relevant  data available.  
+Post-Condition  Report  generated  in PDF/Excel.  
+Basic  Path 1. Admin  selects  Generate  Reports.  
+2. Admin  chooses  report  type. 
+3. System  generates  the report.  
+4. Admin  downloads  or prints  the report.  
+Alternative  Path Admin  schedules  automatic  periodic  report  generation.  
+Exception  Path 1. If data is missng,  then system  generates  report  with warning.  
+2. If file export  fails, then system  will display  error.  
+ 
+Table  3.1.3.6:  Generate  Report  Specification  
+===PAGE===
+33  
+7. Fill Room  Application  Form  
+ 
+ 
+Diagram  3.1.3.7:  Room  Application  Form  
+ 
+Element  Details  
+Use Case  Name  Fill Room  Application  Form  
+Actor  User 
+Use_case  
+Description  Allows  students  to apply  for hostel  rooms  by filling  out and submitting  an 
+online form.  
+Pre-Condition  1. User  logged  in. 
+2. Application period is open. 
+3User  register  for application.  
+Post-Condition  Application  stored  and awaits  admin  review.  
+Basic  Path 1. User  opens  Room  Application  Form.  
+2. System  loads  form fields  
+3. User  fills in required  information.  
+4. User  submits  the form.  
+5. System  validates  entries.  
+6. System  stores  application. 
+7.Confirmation displayed.  
+Alternative  Path User  saves  draft instead  of submitting.  
+Exception  Path 1. If application  period  closed,  then system  will block  submission.  
+2. If required  field is missing,  then system  will ask for correction.  
+ 
+Table  3.1.3.7:  Room  Application  Form  Specification  
+===PAGE===
+34  
+8. Move  Out Form  
+ 
+ 
+Diagram  3.1.3.8:  Move  Out 
+ 
+Element  Details  
+Use Case  Name  Move  Out Form  
+Actor  User 
+Use_case  
+Description  Allows  the student  to officially  notify  the hostel  about  leaving 
+and submit move -out details.  
+Pre-Condition  1. User  logged  in. 
+2. Student  currently  occupies  a hostel  room.  
+Post-Condition  Move -out request  recorded.  
+Basic  Path 1. User  selects  Move  Out Form.  
+2. User  enters  move -out date,  reason,  and other  details.  
+3. User  submits  form.  
+4. System  validates  information.  
+5. System  saves  the move -out request.  
+Alternative  Path If user cancel  request,  then no action  taken.  
+Exception  Path If invalid  move -out date entered,  then System  rejects  submission.  
+ 
+Table  3.1.3.8:  Move  Out Form  Specification  
+===PAGE===
+35  
+9. Room  Maintenance  
+ 
+ 
+Diagram  3.1.3.9:  Room  Maintenance  
+ 
+Element  Details  
+Use Case  Name  Room  Maintenance  
+Actor  1. User 
+2. Hostel  Admin  
+Use_case  
+Description  Allows  users  to submit  maintenance  requests  and enables  admin  to 
+track, assign, and update maintenance tasks.  
+Pre-Condition  1. User  and Admin  Login  
+2. Maintenance  module  active.  
+Post-Condition  Maintenance  request  updated  or completed.  
+Basic  Path 1. User  opens  Room  Maintenance.  
+2. User  submits  an issue  report.  
+3. Admin  receives  the ticket.  
+4. Admin  assigns  technician.  
+5. Technician  performs  task and updates  status.  
+6. System  marks  job completed.  
+7. System  updated.  
+Alternative  Path 1. User  edits  submitted  request.  
+2. Admin  changes  assigned  technician.  
+Exception  Path 1. Request  submission  fails. 
+2. If no technician  available,  then system  marks  request  as “Delayed”.  
+ 
+Table  3.1.3.9:  Room  Maintenance  Specification  
+===PAGE===
+36  
+10. Notification  
+ 
+Diagram  3.1.3.10:  Notification  
+ 
+Element  Details  
+Use Case  Name  Notifications  
+Actor  1. User 
+2. Hostel  Admin  
+Use_case 
+Description  This use case  allows  the system  to send  notifications  to 
+users regarding queue status updates, payment confirmations, service 
+completion,  or important  alerts.  Users  receive  notifications  either  in real 
+time or upon refreshing their dashboard.  
+Pre-Condition  1. The user must  be registered  or currently  in the queue.  
+2. The system  must  have  the user's  contact  method  (email,  system 
+inbox, or dashboard session).  
+3. The triggering  event  (payment  complete,  queue  update,  service 
+finished, etc.) has occurred.  
+Post-Condition  1. Notification  is successfully  delivered  to the user.  
+2. The notification  record  is stored  in the system  for reference.  
+Basic  Path 1. The system  detects  an event  that requires  user notification.  
+2. The system  generates  a notification  message.  
+3. The system  sends  the notification  through  mailbox.  
+4. The user views  the notification  on their device  or system  
+5. The system  logs the notification  as “delivered”.  
+Alternative  Path • User  Has Disabled  Some  Notification  Types  
+1. The system  checks  the user's  notification  preferences.  
+2. Only enabled  types  of notifications  are sent.  
+3. The notification  log updates  accordingly.  
+===PAGE===
+37   • Notification  Delivered  to Multiple  Actors  
+1. If the event  is relevant  to multiple  parties  ( such  as queue  update 
+to staff and customer),  
+the system  sends  notifications  to all relevant  users.  
+2. Delivery  status  is logged  individually  per user.  
+Exception  Path • If Notification  Delivery  Failure  
+1. The system  attempts  to send  the notification.  
+2. Delivery  fails due to network  issues  or invalid  contact  details.  
+3. The system  retries  up to a defined  limit. 
+4. If still unsuccessful,  system  logs “Notification  Failed”  and alerts 
+the admin.  
+ 
+ 
+• System  Error  While  Generating  Notification  
+1. A system  malfunction  prevents  creation  of the notification.  
+2. System  will display  error.  
+3. Admin  will be notified  of a systm  error 
+ 
+ 
+Table  3.1.3.10:  Notification  Specification  
+===PAGE===
+38  
+3.1.4  SEQUENCE  DIAGRAM  
+ 
+Sequence  Diagram  1: Student  Room  Application  
+ 
+Diagram  3.1.4.1:  Student  Room  Application  
+===PAGE===
+39  
+Sequence  Diagram  2: Student  Move -Out Process  
+ 
+ 
+ 
+Diagram  3.1.4.2:  Student  Move  Out 
+===PAGE===
+40  
+Sequence  Diagram  3: Maintenance  Reporting  
+ 
+ 
+ 
+Diagram  3.1.4.3:  Student  Maintenance  Reporting  
+===PAGE===
+41  
+Sequence  Diagram  4: Admin  Student  Application  Management  
+ 
+ 
+ 
+ 
+Diagram  3.1.4.4:  Hostel  Admin  Student  Application  Management  
+===PAGE===
+42  
+ 
+Sequence  Diagram  5: Real -Time  Monitoring  (Hostel  Admin)  
+ 
+ 
+ 
+Diagram  3.1.4.5:  Hostel  Admin  Monitoring  
+===PAGE===
+43  
+Sequence  Diagram  6: Student  Registration  
+ 
+ 
+ 
+Diagram  3.1.4.6:  Student  Registration  
+===PAGE===
+44  
+ 
+Sequence  Diagram  7: Hostel  Admin  Registration  
+ 
+ 
+ 
+Diagram  3.1.4.7:  Hostel  Admin  Registration  
+===PAGE===
+45  
+ 
+ 
+ 
+Sequence  Diagram  8: Profile  Management  (Both  Users)  
+ 
+ 
+ 
+Diagram  3.1.4.8:  Profile  (Both  User)  
+===PAGE===
+46  
+Sequence  Diagram  9: Hostel  Admin  Room  Management  
+ 
+ 
+ 
+ 
+Diagram  3.1.4.9:  Hostel  Admin  Room  Management  
+===PAGE===
+47  
+Sequence  Diagram  10: Hostel  Admin  Maintenance  Request  Management  
+ 
+ 
+ 
+ 
+Diagram  3.1.4.10:  Hostel  Admin  Maintenance  Management  
+===PAGE===
+48  
+Sequence  Diagram  11: Hostel  Admin  Generate  Report  
+ 
+Diagram  3.1.4.11:  Hostel  Admin  Generate  Report  
+===PAGE===
+49  
+3.1.5  ACTIVITY  DIAGRAM  
+ 
+Activity  Diagram  1: Room  Application  and Admin  Review  Management  
+ 
+ 
+Diagram  3.1.5.1  - Room  Application  and Admin  Review  Management  
+===PAGE===
+50  
+Activity  Diagram  2: Maintenance  Application  And Admin  Review  Management  
+ 
+ 
+ 
+ 
+Diagram  3.1.5.2  - Maintenance  Application  and Admin  Review  Management  
+===PAGE===
+51  
+Activity  Diagram  3: Move -Out Application  and Admin  Review  Management  
+ 
+ 
+ 
+ 
+Diagram  3.1.5.3  - Move -Out Application  and Admin  Review  Management  
+===PAGE===
+52  
+ 
+Activity  Diagram  4: Student  And Admin  Profile  Management  
+ 
+ 
+Diagram  3.1.5.4  - Student  And Admin  Profile  Management  
+===PAGE===
+53  
+Activity  Diagram  5: Admin  Report  Generation  
+ 
+Diagram  3.1.5.5  - Admin  Report  Generation  
+===PAGE===
+54  
+Activity  Diagram  : Admin  Real  Time  Monitoring  
+ 
+ 
+ 
+Diagram  3.1.5.6  - Admin  Real Time  Monitoring  
+===PAGE===
+55  
+3.1.6  CLASS  DIAGRAM  
+ 
+ 
+ 
+Diagram:  3.1.6.1:  Class  Diagram  
+===PAGE===
+56  3.2 PROJECT  SPECIFICATION  
+3.2.1  SOFTWARE  USE SPECIFICATION  
+ 
+The software  specifications  outline  the technologies,  languages,  and platforms  used  to build 
+and run the GMi HostelKu  system. The system is architected as a dynamic, web -based 
+application following a client -server model to ensure broad accessibility and ease of 
+maintenance.  
+ 
+Component  Picture  Specification  Rationale  / 
+Purpose  
+Operating  System  
+ Windows  10 / 11 
+(Development)  Provides a 
+stable and 
+widely -used 
+environment for 
+the development 
+and initial  
+testing phases.  
+Development 
+Environment  
+ Visual  Studio  Code  Lightweight, 
+powerful 
+Integrated 
+Development 
+Environments 
+(IDEs) with 
+extensive 
+support  for web 
+technologies 
+and plugins.  
+Server -Side 
+Scripting  
+ PHP A robust and 
+widely -adopted 
+server -side 
+language for 
+handling 
+business logic, 
+database 
+interactions,  and 
+session 
+management.  
+
+===PAGE===
+57  Database 
+Management 
+System  
+ MySQL  8.x (via 
+phpMyAdmin)  A reliable,  open - 
+source  relational 
+database  
+system chosen 
+for its 
+performance, 
+scalability, and 
+ease of 
+integration with 
+PHP.  
+ 
+ 
+ 
+ 
+Web Server  
+ Apache HTTP 
+Server  (via XAMPP)  A stable and 
+configurable  
+web server  used 
+in the local 
+development 
+environment 
+(XAMPP stack) 
+to process PHP 
+scripts.  
+Client -Side 
+Technologies  
+ HTML,  CSS,  
+JavaScript  (ES6+)  Standard front - 
+end 
+technologies  for 
+structuring, 
+styling, and 
+implementing 
+interactive 
+features on the 
+user interface.  
+Version  Control  
+ GitHub  Used for source 
+code 
+management, 
+version  tracking, 
+and 
+collaborative 
+development, 
+ensuring code 
+integrity and 
+history.  
+
+===PAGE===
+58  Browser 
+Compatibility   
+ Google  Chrome 
+(v100+),  Mozilla 
+Firefox  (v100+), 
+Microsoft Edge 
+(v100+)  The application 
+is tested and 
+optimized for 
+these modern, 
+standards - 
+compliant 
+browsers to 
+ensure a 
+consistent  user 
+experience.  
+Additional  Tools  & 
+Libraries   
+ XAMPP (Local 
+Server Stack), 
+phpMyAdmin (DB 
+GUI),  Google  Fonts 
+& Icons  These tools 
+provide a 
+complete local 
+hosting 
+environment, 
+simplify 
+database 
+administration, 
+and enhance 
+the application's 
+visual 
+aesthetics.  
+ 
+ 
+Table  3.2.1.1:  Software  Use Specification  
+
+===PAGE===
+59  3.2.2  HARDWARE  USE SPECIFICATION  
+ 
+The hardware  specifications  define  the minimum  recommended  computing  resources  for the 
+development, server deployment, and end -user access to the system. These requirements 
+are designed to ensure optimal performance and responsiveness under expected load 
+conditions.  
+Hardware  Requirements  
+ 
+Role  Minimum  Hardware  Specifications   
+Development 
+Workstation  • Processor:  Intel Core  i5 (9th Gen)  or 
+AMD Ryzen 5 3600 equivalent  
+• Memory  (RAM):  8 GB DDR4  
+• Storage:  512 GB Solid  State  Drive 
+(SSD)  
+• Display:  15.6-inch,  1920x1080  (Full 
+HD) Resolution  
+• Network:  Stable  Broadband  Internet 
+Connection (≥ 25 Mbps)   
+Production  Server  • Processor:  Intel Xeon  E-series  (Quad - 
+core) or Intel Core i7 equivalent  
+• Memory  (RAM):  16 GB ECC  RAM  
+• Storage: 512 GB SSD (for 
+OS/Application)  + 1 TB HDD  (for Data)  or 
+a single 1 TB SSD  
+• Network: High-Speed Dedicated 
+Internet  Connection  with a Service  Level 
+Agreement (SLA) guaranteeing ≥ 99% 
+Uptime   
+End-User  Client  • Device:  Personal  Computer,  Laptop, 
+Tablet, or Smartphone  
+• Processor: Any modern 64 -bit 
+processor  (Intel,  AMD,  or ARM -based)  
+• Memory  (RAM):  4 GB 
+• Browser:  A modern,  updated  web 
+browser (as listed in Section 3.2.1)  
+• Network:  A stable  Wi-Fi or mobile  data 
+connection (≥ 5 Mbps)   
+ 
+ 
+Table  3.2.2.1:  Hardware  Use Specification  
+
+===PAGE===
+60  JUSTIFICATION:  
+The development  workstation  specifications  are chosen  to efficiently  run the development 
+IDE, local server stack (XAMPP), database, and browser simultaneously without 
+performance bottlenecks.  
+The production server  specifications are  recommended to  reliably host  the web application, 
+manage  concurrent  database  transactions  from multiple  users  (students  and wardens),  and 
+ensure high availability.  
+The end -user client requirements are deliberately minimal, reflecting the system's web - 
+based  nature  and ensuring  accessibility  for a wide range  of users  with standard  computing 
+devices.  
+===PAGE===
+61  3.3 PROJECT  FEATURE  
+ 
+Student  Features:  
+ 
+ 
+1. User  Authentication  & Profile  Management  
+ 
+ 
+Secure  registration  and login  using  Student  ID and password. 
+Password recovery and reset functionality.  
+Personal  profile  management  (view  and edit contact  information,  course  details,  etc.).  
+ 
+ 
+2. Online  Hostel  Application  
+ 
+ 
+Digital  hostel  registration  forms  each  semester.  
+Option to select preferred room type, block, and roommate. 
+Upload  supporting  documents  (e.g.,  IC, student  card,  offer letter). 
+Save draft application and submit when ready.  
+ 
+3. Real -Time  Application  Tracking  
+View  application  status  with clear  indicators:  “Pending,”  “Approved,”  or “Rejected.” 
+See assigned room and move -in de tails upon approval.  
+Receive  automatic  notifications  (email/in -app) for status  updates.  
+ 
+ 
+4. Digital  Documents  & Confirmation  
+ 
+ 
+View  and download  the Hostel  Acceptance  Slip in PDF format. 
+Access a digital copy of the hostel rules and regulations.  
+===PAGE===
+62  5. Maintenance  Reporting  
+ 
+ 
+Report  room  or facility  issues  through  an online  form. 
+Attach photos to describe the problem clearly.  
+Track  the status  of reported  maintenance  requests.  
+ 
+ 
+6. Move -Out Request  
+ 
+ 
+Submit an online move -out form at the end of the semester. 
+Receive  confirmation  and clearance  status  after admin  review.  
+ 
+7. Quick  Access  & Notifications  
+Use a QR code or direct link for quick system login and status checks. 
+Receive  important  announcements  and alerts  from the hostel  administration.  
+===PAGE===
+63  Hostel  Admin  features:  
+ 
+ 
+1. Dashboard  Overview  
+See all key info at a glance:  applications,  occupancy,  and pending  tasks  
+ 
+ 
+2. Manage  Applications  
+Review,  approve  or reject  student  applications 
+Assign rooms to approved students  
+Add notes  to applications  
+ 
+ 
+3. Room  Management  
+Add and manage  rooms  and blocks  
+Update  room  status  (available/occupied/maintenance) 
+Set room capacities and types  
+ 
+4. Maintenance  Tracking  
+View all maintenance requests 
+Update  repair  status  and assign  staff 
+Track progress until completion  
+ 
+5. Real -Time  Monitoring  
+Live view of room  occupancy  and applications 
+Instant alerts for urgent issues  
+ 
+6. Report  Generation  
+Create  occupancy  and application  reports 
+Export data to PDF/Excel  
+Generate  weekly/monthly  statistics  
+===PAGE===
+64  7. Admin  Management  
+Manage  user accounts  and permissions 
+System settings and configuration  
+View  activity  logs 
+===PAGE===
+65  3.4 PROJECT  COSTING  
+ 
+ 
+No. Component  Specification / 
+Model  (Example)  Estimated  Price 
+(RM)  
+1 Processor  (CPU)  
+ 
+AMD  Ryzen  5 
+5600G  (6 cores, 
+integrated  Vega 
+graphics)   
+ 
+ 
+750 
+2 Motherboard  
+ 
+B550M  / A520M  
+Micro  ATX  
+350 
+3 Memory  (RAM)  
+ 
+16 GB DDR4  (2×8 
+GB, 3200  MHz)   
+250 
+4 Storage  (SSD)  
+ 
+512 GB NVMe  M.2 
+SSD  
+220 
+5 Hard  Disk Drive  (HDD)  
+ 
+1 TB HDD (for 
+backup and 
+database  storage)   
+180 
+6 Power  Supply  Unit (PSU)  
+ 
+550W  80+ Bronze 
+Certified   
+200 
+7 Casing  
+ 
+Mid-Tower Case 
+with Cooling  Fans   
+180 
+===PAGE===
+66  8 Monitor  
+ 
+24” LED Full HD 
+(1920×1080)   
+450 
+9 Keyboard  & Mouse  Combo  
+ 
+Logitech  / HP Basic 
+Wired Set   
+80 
+10 UPS (Uninterrupted  Power 
+Supply)  Basic  650VA  model  
+ 
+250 
+11 Network  Adapter  / Wi-Fi 
+ 
+Built-in or USB 
+Adapter   
+70 
+12 Speaker  / Headset  
+ 
+For communication 
+and presentation   
+120 
+13 Operating  System  
+ 
+Windows 10 / 11 
+(Education  License)   
+- 
+ 
+ 
+Estimated  Total  Cost RM 3,100  
+ 
+Table  3.4.1:  Project  Costing  
+===PAGE===
+67  3.4.1  REQUIRED  ITEMS  
+ 
+The development  of the GMi HostelKu  Hostel  Registration  System  required  several  essential 
+items spanning hardware, software, and web services. A personal computer (PC) served as 
+the primary development workstation, equipped with necessary peripherals such as a 
+monitor, keyboard, mouse, and an uninterrupted power supply (UPS) to ensure smooth and 
+stable operation during coding, testi ng, and deployment.  
+To facilitate local web server hosting and backend development, XAMPP was installed to 
+provide  Apache,  MySQL,  and PHP support.  The system’s  source  code  was developed  and 
+edited  using  Visual  Studio  Code  (VS Code),  chosen  for its  flexibility,  modern  interface, and 
+wide range of extensions compatible with PHP and JavaScript.  
+For system  design  and planning, Figma  was used  to create  the user interface  prototypes, 
+while Draw.io assisted in designing system diagrams such as use case and  sequence 
+diagrams. phpMyAdmin, integrated within XAMPP, was utilized to manage and test the 
+MySQL database, ensuring that all data transactions,such as student applications, room 
+assignments, and maintenance records, were properly handled.  
+Google Chrome DevTools and Postman were used for testing and debugging. Chrome 
+DevTools  assisted  in inspecting  and refining  front-end layouts  and responsiveness,  whereas 
+Postman was employed to validate form submissions and backend connectivity through 
+simulated HTTP requests.  
+Version control and project backup were managed through Git and GitHub, enabling secure 
+code  storage  and team  collaboration.  Once  development  and testing  were  completed  locally, 
+the system was prepared for deployment on a web hosting server with a registered domain 
+name, ensuring public accessibility. An SSL certificate provided by the hosting service was 
+implemented to secure user data during online interactions  
+===PAGE===
+68  
+CHAPTER 4  
+TESTING  METHODOLOGY  
+4.1 AGILE  TESTING  MODEL 
+ 
+ 
+The Agile  Model  was selected  for the testing  phase  due to its flexibility  and suitability  for web- 
+based development projects. Under this model, testing is conducted concurrently with 
+development in short, iterative cycles known as sprints. Each spri nt focuses on specific 
+modules  of the system,  such  as student  registration,  admin  approval,  and room  allocation,  and 
+concludes with testing and feedback before moving to the next module.  
+ 
+ 
+ 
+ 
+Figure  4.1.1  - Agile  Model  
+===PAGE===
+69  1. Requirement  Analysis  
+ 
+ 
+• Development: Functional and non -functional requirements were defined for the 
+HostelKu  system,  including  features  such  as student  registration,  room  allocation,  QR 
+code generation, and maintenance reporting.  
+ 
+ 
+• Testing:  Acceptance  testing  will be based  on these  established  requirements.  
+• Tasks: Verify that the system fulfills all user and business needs, such as successful 
+hostel applications, accurate room assignment, and timely notification updates.  
+ 
+ 
+ 
+ 
+2. System  Design  
+ 
+• Development: The system architecture was designed to include modules 
+for student registration, admin approval, room and block management, and 
+maintenance tracking.  
+• Testing: System  testing  ensures  that all modules  work together cohesively  within the 
+web-based architecture.  
+• Tasks:  Validate  that the overall  design  supports  integrated  workflows  between  student 
+and admin interfaces, and that the data is properly stored and retrieved from the 
+MySQL database.  
+===PAGE===
+70  3. Architecture  Design  
+ 
+ 
+ 
+• Develop ment: The system’s underlying architecture was structured using a client - 
+server model with PHP as the backend and MySQL as the database.  
+ 
+ 
+• Testing: Integration testing checks data flow between different modules such as user 
+registration, application appro val, and QR code generation.  
+ 
+ 
+• Tasks: Confirm that communication between modules (e.g., student form submission 
+to admin dashboard updates) operates seamlessly.  
+ 
+ 
+4. Module  Design  
+ 
+• Development:  The HostelKu  system  was divided  into smaller  modules,  including  
+Student  Module , Admin  Module , and Maintenance  Module . 
+ 
+• Testing:  Unit testing  verifies  the functionality  of each  individual  module.  
+ 
+• Tasks: Ensure that each module performs as expected —for example, the student 
+module  correctly  handles  registration,  and the admin  module  processes  approvals  and 
+room management accurately.  
+ 
+5. Coding  
+ 
+ 
+ 
+• Development: The design was implemented into executable code using PHP, HTML, 
+CSS, and JavaScript, supported by MySQL as the database engine.  
+ 
+ 
+• Testing:  Unit testing  occurs  simultaneously  during  coding  to detect  and fix errors  early.  
+ 
+ 
+• Tasks: Ensure each coded function (such as data submission, session  management, 
+and QR  code generation) works correctly and  integrates  properly with  other  modules.  
+===PAGE===
+71  6. Unit Testing  
+ 
+ 
+ 
+• Testing: Each individual function or component of the HostelKu system was tested in 
+isolation.  
+ 
+ 
+• Tasks: Verify that critical functions, like user login, registration submission, and 
+maintenance reporting, operate without errors.  
+ 
+ 
+7. Integration  Testing  
+ 
+• Testing:  Integration  testing  was performed  to ensure  all modules  interact  correctly  and 
+that data flows accurately between them.  
+• Tasks:  Verify  that information  from the student  registration  module  is properly  reflected 
+in the admin approval module and that approved applications trigger QR code 
+generation.  
+ 
+8. System  Testing  
+ 
+• Testing: System testing validates the HostelKu application as a complete, fully 
+integrated web -based platform . 
+• Tasks:  Test all end-to-end operations  under  realistic  conditions,  such  as simultaneous 
+student registrations, admin updates, and report generation.  
+ 
+ 
+ 
+9. Acceptance  Testing  
+ 
+• Testing:  Conducted  with actual  users,  students  and the hostel  warden  to confirm  that 
+the HostelKu system meets user expectations and business objectives.  
+• Tasks: Evaluate the system’s usability, performance, and ability to simplify hostel 
+management processes. Feedback from this stage was used to finalize the user 
+interface and  improve workflow efficiency.  
+===PAGE===
+72  4.1.2  FEATURE  TO BE TESTED  
+The following  features  of GMi HostelKu  were  selected  for testing  based  on their critical  role in 
+system performance and user experience:  
+ 
+Feature  Description  Expected  Outcome  
+ 
+Student  Registration  & 
+Login  Verify  user registration  and 
+authentication using valid 
+credentials.  Users  should  be able to 
+register, log in, and 
+access their dashboard  
+securely.  
+ 
+Online  Hostel  Application 
+Form  Test data input  validation,  
+document  upload,  and form 
+submission  All fields  must  validate  
+correctly and store 
+data in the database.  
+ 
+Admin  Application 
+Management  Ensure  that the admin  can view, 
+approve, or reject applications.  Status changes should 
+reflect  instantly  in both 
+admin and student  
+dashboards.  
+ 
+Room  & Block  Management  Test creation,  updating,  and 
+deletion  of rooms  and capacity 
+limits.  Data  must  update  
+accurately  and display 
+real-time availability.  
+ 
+Maintenance  Report  Module  Validate  submission  and tracking 
+of maintenance issues by 
+students.  Reports should reach 
+admin  instantly  and be 
+marked as resolved 
+once completed.  
+ 
+QR Code  Generation  Ensure that QR codes are 
+generated  correctly  for room 
+access.  Each QR code should 
+correspond  to a unique 
+approved student  
+record.  
+ 
+ 
+Table  4.1.2.1:  Feature  to be Tested  
+===PAGE===
+73  4.2 TESTING  TOOLS  
+ 
+ 
+Testing of GMi HostelKu utilized both manual and automated tools to ensure functionality,  
+performance, and compatibility.  
+ 
+ 
+ 
+4.2.1  APPLICATION  USE FOR  TESTING  
+ 
+ 
+Tool Purpose/Function  
+ 
+XAMPP  (PHP,  
+Apache,  MySQL)  Local  server  setup  and database  testing  environment.  
+ 
+Selenium  IDE Automates  browser  interactions  for system  testing,  making  it easy 
+to test real -world scenarios and end -to-end workflows.  
+ 
+Postman  API endpoint  testing  for database  connections  and data retrieval.  
+ 
+PhpMyAdmin  Database  verification  for insert,  update,  and delete  queries  
+ 
+Visual  Studio/ 
+Notepad++  Source  code  debugging  and unit test execution  
+ 
+ 
+Table  4.2.1.1:  Application  Use for Testing  
+===PAGE===
+74  4.2.2  TESTING  TYPE  
+ 
+ 
+User  Acceptance  Testing  (UAT)  
+ 
+ 
+Through  our discussion,  we have  decided  that UAT is the most  suitable  for HostelKu  because 
+it directly involves the end users, students and hostel wardens, who will actually use the 
+system.  
+ 
+ 
+ 
+While other testing types (unit, integration, system, smoke, load) ensure the system is 
+technically correct and stable, UAT confirms that the syst em meets real -world needs. It 
+validates usability, reliability, and functionality from the perspective of users, which is crucial 
+for a hostel management system where registration, QR code generation, and approval 
+workflows must work smoothly in practice.  
+ 
+ 
+User  Acceptance  Testing  (UAT)  ensures  that HostelKu meets  the real needs  of students  and 
+hostel wardens. It validates usability, functionality, and reliability from the user’s perspective, 
+confirming that the system is practical and ready for deployment.  
+===PAGE===
+75  
+CHAPTER 5  
+FINDING  AND  ANALYSIS  
+5.1 PROJECT  MOCKUP  
+ 
+5.1.1  USER  GUI SYSTEM  PROPOSED  
+ 
+ 
+Figure  5.1.1.1:  Page  for User  to Choose  Student  
+===PAGE===
+76   
+ 
+ 
+Figure  5.1.1.2:  Sign In Page  
+
+===PAGE===
+77   
+Figure  5.1.1.3:  Users  create  an account  
+
+===PAGE===
+78   
+ 
+Figure  5.1.1.4:  Homepage  Student  
+
+===PAGE===
+79   
+ 
+Figure  5.1.1.5:  Room  maintenance  Page  
+
+===PAGE===
+80   
+ 
+Figure  5.1.1.6:  Submit  Room  Maintenance  
+
+===PAGE===
+81   
+Figure  5.1.1.7:  Room  Apply  Page  
+
+===PAGE===
+82   
+Figure  5.1.1.8:  Room  Apply  Page  after submitting  
+
+===PAGE===
+83   
+ 
+Figure  5.1.1.9:  Move  Out Page  
+
+===PAGE===
+84   
+ 
+Figure  5.1.1.10:  Move  Out Page  after submitting  
+
+===PAGE===
+85  
+5.1.2  ADMIN  GUI SYSTEM  PROPOSED  
+ 
+ 
+Figure  5.1.2.1:  Hostel  admin  sign in 
+===PAGE===
+86   
+Figure  5.1.2.2:  Hostel  Admin  Dashboard  
+
+===PAGE===
+87   
+Figure  5.1.2.3:  Student  Application  Page  
+
+===PAGE===
+88   
+ 
+Figure  5.1.2.4:  Room  Management  Page  
+
+===PAGE===
+89   
+ 
+Figure  5.1.2.5:  Maintenance  Page  
+
+===PAGE===
+90   
+ 
+Figure  5.1.2.6:  Monitoring  Page  
+
+===PAGE===
+91   
+ 
+Figure  5.1.2.7:  Generate  Report  Page  
+
+===PAGE===
+92  5.2 PROBLEM  ENCOUNTERED  AND  COUNTERMEASURE  
+ 
+ 
+Problem  Encountered  Countermeasure  
+Difficulty  estimating  project  costs  during 
+planning.  Prepared  a detailed  budgeting  table  for 
+hardware  and software,  ensuring  all costs  
+stayed  within  the RM4,000  limit. 
+Limited experience  using  PHP and  MySQL 
+for backend development.  Referred  to online  tutorials,  documentation, 
+and examples  to strengthen  understanding  
+and ensure  proper  database  integration.  
+Designing   a clear and user-friendly 
+interface  for  both  students  and 
+administrators.  Created  wireframes  and mockups  using 
+Figma,  then revised  based  on feedback  
+from team  members  and the hostel  warden.  
+Time  constraints  due to multiple  ongoing 
+academic projects.  Developed a project schedule focusing on 
+high-priority   features   first,  then  refined  
+secondary  modules  after testing.  
+ 
+ 
+Table  5.2.1  - Problem  Encountered  and Countermeasure  
+===PAGE===
+93  5.3 RESULT  AND  DISCUSSION  
+ 
+ 
+An interview was conducted with a key stakeholder, Mr. Mohd Saimi Mohd Zain, the Hostel 
+Warden  at the German -Malaysian  Institute  (GMi),  who is directly  involved  in managing  student 
+hostel  applications,  room  allocations,  and maintenance  reporting.  He shared  valuable  insights 
+regarding the current manual hostel registration process, emphasizing issues such as data 
+entry  errors,  paperwork  overload,  and long processing  times  during  peak  registration  periods.  
+According to Mr. Saimi, the manual process often causes delays in student check -ins, 
+miscommunication about room assignments, and difficulties tracking maintenance reports. 
+These challenges highlight the n eed for a centralized, automated system to handle hostel 
+management tasks efficiently.  
+When presented with the proposed GMi HostelKu system, the stakeholder expressed strong 
+support for the platform’s concept. He emphasized that features such as online reg istration, 
+QR code verification, and real -time application tracking would greatly improve transparency 
+and streamline  daily hostel  operations.  The integration  of a maintenance  reporting  feature  was 
+also praised for promoting faster communication between st udents and hostel staff.  
+Mr. Saimi  also recommended  ensuring  data security  and reliable  user authentication  to protect 
+student records and maintain system integrity. From an administrative perspective, he 
+believed  the system  could  significantly  reduce  workload,  eliminate  redundant  paperwork,  and 
+improve overall efficiency.  
+Furthermore, survey data collected from students supported  these findings — with over 90% 
+expressing interest in using a digital hostel registration platform. Thi s demonstrates clear 
+demand and readiness among users for a web -based system.  
+Overall, the results confirm that the HostelKu system addresses real operational pain points 
+and provides practical value to both students and hostel management. With continuous 
+improvement, the platform can serve as a reliable and scalable digital solution for campus 
+accommodation management.  
+===PAGE===
+94  CHAPTER  6 
+ 
+CONCLUSION  
+ 
+6.1 CONCLUSION  
+ 
+ 
+In conclusion, the current manual and paper -based system for managing student 
+accommodation at the German -Malaysian Institute (GMI) is plagued by inefficiencies that 
+result in significant administrative burdens, data inaccuracies, and poor communication. The 
+identified  problems,  including  slow processing  times,  vulnerable  record -keeping,  and a lack of 
+real-time operational visibility directly hinder  the quality of service  for both  staff and  students.  
+ 
+ 
+ 
+To effectively resolve these issues, the  GMi HostelKu  project has been initiated. This project 
+aims to develop a centralised, web -based platform that will digitalise and streamline all core 
+hostel management processes. By achieving its objectives automating the registration and 
+room allocation workflow, impl ementing an instant notification system for maintenance, and 
+providing a user -friendly digital interface the  GMi HostelKu system is poised to transform the 
+hostel management experience.  
+ 
+ 
+ 
+Ultimately,  this system  will eliminate  the delays  and errors  of the old method,  provide  real-time 
+data transparency, and enable informed, efficient decision -making. The successful 
+implementation  of GMi HostelKu  will mark  a critical  upgrade,  close  the service  quality  gap and 
+creating a faster, smarter, and more reliable hostel management environment for the entire 
+GMi community.  
+===PAGE===
+95  6.2 RECOMMENDATION  
+ 
+Automate  Room  Allocation:  
+Hostelku  can implement  an intelligent  room  allocation  system  that automatically  assigns 
+rooms  based  on student  preferences,  availability,  and occupancy  rules. This will reduce 
+manual errors and save time for hostel administrators.  
+Real -Time  Maintenance  Reporting:  
+Introduce a feature that allows students to report mainten ance issues in real time, with 
+automated  notifications  sent to hostel  staff.  This ensures  quicker  resolution  of problems  and 
+improves the overall living experience.  
+Enhanced  Data  Management  and Analytics:  
+Include  dashboards  for hostel  administrators  to track  occupancy  rates,  payment  status,  and 
+maintenance requests. An analytics feature can help identify trends and improve resource 
+planning  
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+===PAGE===
+96  TASK DISTRIBUTION  
+ 
+TASK  
+DISTRIBUTION  AL-HAFIZ  HAIQAL  ZAHIR  KHAIRUL 
+NAIM  
+Chapter 1: 
+Introduction      
+1.1Introduction      
+1.2Problem Statement      
+1.3 Project Objective      
+1.4 Project Scope      
+Chapter 2: Literature 
+Review      
+2.1 Feasibility Studies      
+2.1.1 Primary Sources      
+2.1.2 Secondary 
+Sources      
+2.2 Product Comparison      
+Chapter 3: Project 
+Methodology      
+3.1 Software 
+Requirement 
+Specification      
+3.1.1 SDLC Process      
+3.1.2 Use Case Diagram      
+3.1.3 Use Case 
+Specification      
+3.1.4 Sequence 
+Diagram      
+3.1.5 Activity Diagram      
+3.1.6 Class Diagram      
+3.2 Project Specification      
+3.2.1 Software Use 
+Specification      
+3.2.2 Hardware Use 
+Specification      
+3.3 Project Feature      
+3.4 Project Costing      
+===PAGE===
+97  3.4.1 Required items      
+Chapter 4: Testing 
+Methodology      
+4.1 Testing Model      
+4.1.1 Agile Model or Any 
+testing model      
+4.1.2 Feature to be 
+tested      
+4.2 Testing Tools      
+4.2.1 Application use for 
+testing      
+4.2.2 Testing Type      
+Chapter 5: Finding and 
+Analysis      
+5.1 Project Mockup      
+5.1.1 User GUI System 
+Proposed      
+5.1.2 Admin GUI System 
+Proposed      
+5.2 Problem 
+Encountered and 
+Countermeasure      
+5.3 Result and 
+Disccusion      
+Chapter 6 : Conclusion      
+6.1 Conclusion      
+6.2 Recommendation      
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+===PAGE===
+98  REFERENCE  
+ 
+[1] S. Rajput and N. Sharma, "Development of Online Hostel Management System for 
+Universities,"  International  Journal  of Computer  Applications , vol. 183, no. 10, pp. 25–31, 
+2021, doi: 10.5120/ijca2021921181.  
+[2] M. N. Yusof, H. A. Rahman, and A. R. Omar, "Web -based hostel management system 
+for Malaysian  polytechnics,"  Journal  of Information  Systems  Research  and Innovation , vol. 
+14, no. 2, pp. 88 –97, 2020.  
+[3] "Malaysian  universities  move  toward  fully digital  campus  management  systems," The 
+Star, Oct. 5, 2022. [Online]. Availabl e: 
+https://www.thestar.com.my/news/education/2022/10/05/digital -campus -transformation  
+[4] Management  and Science  University  (MSU),  "MSU  Hostel  Management  System 
+Overview," 2023. [Online]. Available: https://www.msu .edu.my/hostel  
+[5] Universiti  Malaysia  Sabah  (UMS),  "UMS  Online  Hostel  Application  Portal,"  2023. 
+[Online]. Available: [suspicious link removed]  
+[6] German  Malaysian  Intitute  Website  
+https://www.gmi.edu.my/  
+===PAGE===
+99  
+APPENDIX  
+ 
+APPENDIX  A 
+ 
+ 
+ 
+ 
+===PAGE===
+100  
+APPENDIX  B 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+===PAGE===
+101  Interview  Questions  with Hostel  Warden  
+1. What's  the most  difficult  part of managing  the hostel  right now?  
+ 
+ 
+Mostly  the paperwork.  Forms  get lost so easily, especially  during  busy  periods. The  long 
+queues  and slow processing  create  frustration  for everyone,  my staff and students  alike.  
+ 
+ 
+2. How long does  it take to process  room  applications  and maintenance  issues?  
+ 
+ 
+Much longer than it should. Processing applications can take days because we have to 
+check  everything  manually. For  maintenance  issues,  it sometimes  takes  a full day just to 
+assign someone before the repair even begins.  
+ 
+ 
+3. How do you know  which  rooms  are available  right now?  
+ 
+ 
+We use a whiteboard and a record book that we update by hand. It's not a perfect system. 
+Sometimes  we make  mistakes  because  the information  isn't live, and we accidentally  assign 
+a room that's already taken.  
+ 
+ 
+4. What  do students  complain  about  most  often?  
+ 
+ 
+They feel left in the dark. After they submit a form, they have no idea what's happening with 
+their application  or maintenance  request. This  means  they often  come  to the office  again  and 
+again just to ask for updates, which takes up a lot of our time.  
+ 
+ 
+5. What  would  be the most  helpful  feature  in a new digital  system?  
+ 
+ 
+A live dashboard showing everything at a glance, which rooms are free, how many 
+applications  are waiting,  and what  needs  fixing.  Also,  if the system  could  automatically 
+update students on th eir request status, that would save us from answering the same 
+questions repeatedly.  
+===PAGE===
+102  6. How do you handle  maintenance  reports  now,  and what's  not working?  
+ 
+ 
+We've tried using Google Forms, but it still has problems. Students sometimes don't give 
+enough  details  about  the issue  or their room  number.  The reports  also don't  always  reach 
+the right person quickly, and it's easy to lose track of which requests are still pending.  

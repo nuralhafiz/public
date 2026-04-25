@@ -6,6 +6,7 @@
     <title>GMI HostelKu - Student Dashboard</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
         * {
             margin: 0;
@@ -19,13 +20,12 @@
             display: flex; 
             flex-direction: column; 
             height: 100vh; 
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: #f0f3fa;
             overflow: hidden; 
         }
         
         /* Header Styling */
-        header { 
-            background: rgba(15, 22, 56, 0.95);
+        header { background: linear-gradient(135deg, #1e3a8a 0%, #2d72d2 100%);
             backdrop-filter: blur(10px);
             color: white; 
             padding: 0 25px; 
@@ -39,32 +39,31 @@
         }
 
         /* Logo Branding */
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
         .brand-container { 
             display: flex; 
             align-items: center; 
-            font-size: 28px; 
-            font-weight: 700; 
+            font-size: 24px; 
+            font-weight: 800; 
             cursor: pointer; 
             position: relative; 
             margin-left: 10px;
+            letter-spacing: -0.5px;
         }
-        .brand-blue { 
-            color: #2d72d2; 
-            text-shadow: 0 2px 10px rgba(45, 114, 210, 0.3);
-        }
-        .brand-lime { 
-            color: #ccff00; 
-            margin-left: 5px;
-            text-shadow: 0 2px 10px rgba(204, 255, 0, 0.3);
-        }
-        .brand-dot { 
-            color: #ff3131; 
-            font-size: 28px; 
-            position: absolute; 
-            top: -16px; 
-            left: 42px;
-            text-shadow: 0 2px 10px rgba(255, 49, 49, 0.3);
-        }
+        
+        
+        
         
         .menu-toggle { 
             cursor: pointer; 
@@ -78,20 +77,36 @@
         }
 
         /* Avatar in Header */
+                /* Premium Student Avatar */
+                /* Premium Student Avatar */
         .avatar-container {
             cursor: pointer;
-            transition: all 0.3s;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #ccff00 0%, #99cc00 100%);
+            border: 2px solid rgba(255, 255, 255, 0.9);
+            position: relative;
+            overflow: hidden;
+        }
+        .avatar-container::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.4) 0%, transparent 60%);
         }
         .avatar-container:hover {
-            transform: scale(1.1);
+            transform: scale(1.1) translateY(-2px);
+            border-color: #ffffff;
         }
         .avatar-container i {
-            font-size: 36px;
-            color: #ccff00;
-            background: rgba(255,255,255,0.1);
-            border-radius: 50%;
-            padding: 5px;
-            box-shadow: 0 0 20px rgba(204, 255, 0, 0.3);
+            font-size: 22px;
+            color: #0f1638;
+            z-index: 2;
         }
 
         /* Layout */
@@ -136,13 +151,13 @@
             cursor: pointer; 
         }
         .nav-item:hover { 
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #1e3a8a 0%, #2d72d2 100%);
             color: white; 
             transform: translateX(5px);
             box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
         }
         .nav-item.active { 
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #1e3a8a 0%, #2d72d2 100%);
             color: white; 
             box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
         }
@@ -173,7 +188,7 @@
             gap: 25px; 
             flex-wrap: wrap; 
             overflow-y: auto; 
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: #f0f3fa;
         }
 
         /* Dashboard Cards */
@@ -207,7 +222,7 @@
 
         h2 { 
             border-bottom: 3px solid transparent;
-            border-image: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-image: linear-gradient(135deg, #1e3a8a 0%, #2d72d2 100%);
             border-image-slice: 1;
             padding-bottom: 15px; 
             margin-top: 0; 
@@ -221,7 +236,7 @@
         }
 
         h2 i {
-            color: #667eea;
+            color: #2d72d2;
             font-size: 24px;
         }
         
@@ -279,7 +294,7 @@
         }
 
         .action-btn {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #1e3a8a 0%, #2d72d2 100%);
             color: white;
             padding: 15px 20px;
             border: none;
@@ -406,21 +421,61 @@
             }
         }
     </style>
+
+    <style id="unified-logo-style">
+        .gmi-wrapper {
+            position: relative;
+            display: inline-block;
+            line-height: 1;
+            padding-right: 0.05em; /* Padding for the wrapper */
+        }
+        .brand-blue {
+            color: #1118a8; /* Deep blue from image */
+            font-weight: 900;
+            font-family: 'Arial', sans-serif;
+            letter-spacing: -1px;
+            text-shadow: 
+                -0.8px -0.8px 0 #fff, 0px -0.8px 0 #fff, 0.8px -0.8px 0 #fff, 0.8px 0px 0 #fff, 0.8px 0.8px 0 #fff, 0px 0.8px 0 #fff, -0.8px 0.8px 0 #fff, -0.8px 0px 0 #fff, 0 4px 6px rgba(0,0,0,0.3);
+        }
+        .brand-dot {
+            position: absolute;
+            top: -0.24em;
+            right: 0.05em;
+            /* Shifted to perfectly align over the I */
+            width: 0.32em;
+            height: 0.32em;
+            background-color: #f93144;
+            /* Red dot from image */
+            border-radius: 50%;
+            box-shadow: 0 0 0 0.8px #fff, 0 4px 6px rgba(0, 0, 0, 0.3);
+        }
+        .brand-lime {
+            color: #ccff00;
+            margin-left: 5px;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 800;
+            text-shadow: 
+                -1px -1px 0 #000, 0px -1px 0 #000, 1px -1px 0 #000, 1px 0px 0 #000, 1px 1px 0 #000, 0px 1px 0 #000, -1px 1px 0 #000, -1px 0px 0 #000, 0 4px 6px rgba(0,0,0,0.3);
+        }
+        /* Increased font size for dashboards */
+        .brand-container {
+            font-size: 32px !important;
+        }
+    </style>
 </head>
 <body>
 
 <header>
     <div style="display: flex; align-items: center;">
         <i class="fas fa-bars menu-toggle" id="hamburger"></i>
-        <div class="brand-container">
-            <span class="brand-dot">•</span> <span class="brand-blue">GMI</span>
-            <span class="brand-lime">-HK</span>
+        <div class="brand-container" onclick="window.location.href='student-dashboard.html'">
+            <span class="gmi-wrapper"><span class="brand-blue">GMI</span><span class="brand-dot"></span></span><span class="brand-lime">HostelKu.</span>
         </div>
     </div>
     <div style="display: flex; align-items: center; gap: 10px;">
         <!-- Avatar Icon that links to profile page -->
         <a href="student-profile.html" class="avatar-container" id="profileLink">
-            <i class="fas fa-user-circle"></i>
+            <i class="fas fa-user-graduate"></i>
         </a>
     </div>
 </header>
@@ -452,28 +507,10 @@
                 <i class="fas fa-bell"></i>
                 Alerts & Reminders
             </h2>
-            <div class="alert-item info">
-                <i class="fas fa-info-circle"></i>
+            <div class="alert-item info" style="justify-content: center; opacity: 0.7; padding: 25px;">
+                <i class="fas fa-check-circle" style="color: #4caf50;"></i>
                 <div>
-                    <strong>Welcome back!</strong> Check your application status below.
-                </div>
-            </div>
-            <div class="alert-item warning">
-                <i class="fas fa-clock"></i>
-                <div>
-                    <strong>Payment Due:</strong> Room rent payment by 15th of each month
-                </div>
-            </div>
-            <div class="alert-item success">
-                <i class="fas fa-calendar-check"></i>
-                <div>
-                    <strong>Room Inspection:</strong> Scheduled for next week
-                </div>
-            </div>
-            <div class="alert-item danger">
-                <i class="fas fa-exclamation-triangle"></i>
-                <div>
-                    <strong>Maintenance Required:</strong> AC repair pending
+                    <strong>You're all caught up!</strong> No new alerts at this moment.
                 </div>
             </div>
         </section>
@@ -506,52 +543,9 @@
                 <i class="fas fa-history"></i>
                 Recent Activity
             </h2>
-            
-            <div class="activity-item">
-                <div class="activity-icon success">
-                    <i class="fas fa-check-circle"></i>
-                </div>
-                <div class="activity-content">
-                    <div class="activity-title">Room application submitted</div>
-                    <div class="activity-time">
-                        <i class="fas fa-clock"></i> 2 days ago
-                    </div>
-                </div>
-            </div>
-
-            <div class="activity-item">
-                <div class="activity-icon warning">
-                    <i class="fas fa-tools"></i>
-                </div>
-                <div class="activity-content">
-                    <div class="activity-title">Maintenance request #1234</div>
-                    <div class="activity-time">
-                        <i class="fas fa-clock"></i> 3 days ago
-                    </div>
-                </div>
-            </div>
-
-            <div class="activity-item">
-                <div class="activity-icon info">
-                    <i class="fas fa-file-alt"></i>
-                </div>
-                <div class="activity-content">
-                    <div class="activity-title">Application status updated</div>
-                    <div class="activity-time">
-                        <i class="fas fa-clock"></i> 5 days ago
-                    </div>
-                </div>
-            </div>
-
-            <div class="activity-item">
-                <div class="activity-icon success">
-                    <i class="fas fa-credit-card"></i>
-                </div>
-                <div class="activity-content">
-                    <div class="activity-title">Payment confirmed</div>
-                    <div class="activity-time">
-                        <i class="fas fa-clock"></i> 1 week ago
-                    </div>
+            <div id="activityContainer">
+                <div style="text-align: center; padding: 30px; color: #666;">
+                    <i class="fas fa-spinner fa-spin"></i> Loading recent activity...
                 </div>
             </div>
         </section>
@@ -559,20 +553,10 @@
 </div>
 
 <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { getAuth, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
-    const firebaseConfig = {
-        apiKey: "AIzaSyBUIG4ZIanXbeEPeqaBO5ifkH_KiAg5M8w",
-        authDomain: "gmi-hostelku.firebaseapp.com",
-        projectId: "gmi-hostelku",
-        storageBucket: "gmi-hostelku.firebasestorage.app",
-        messagingSenderId: "556053021509",
-        appId: "1:556053021509:web:d64966c34ae18e3d12f42c"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
+    import { auth, db } from "./js/firebase-config.js";
+    import { collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
     const hamburger = document.getElementById('hamburger');
     const sidebar = document.getElementById('sidebar');
@@ -615,6 +599,96 @@
     });
 
     // Handle window resize
+    
+    async function loadRecentActivity(email) {
+        const activityContainer = document.getElementById('activityContainer');
+        let activities = [];
+
+        try {
+            // Fetch Applications
+            const appQuery = query(collection(db, "applications"), where("userEmail", "==", email));
+            const appSnap = await getDocs(appQuery);
+            appSnap.forEach(doc => {
+                const data = doc.data();
+                activities.push({
+                    title: "Room application submitted",
+                    time: data.timestamp ? data.timestamp.toDate() : new Date(),
+                    icon: "fa-bed",
+                    type: "info"
+                });
+            });
+
+            // Fetch Maintenance
+            const maintQuery = query(collection(db, "maintenance_requests"), where("userEmail", "==", email));
+            const maintSnap = await getDocs(maintQuery);
+            maintSnap.forEach(doc => {
+                const data = doc.data();
+                activities.push({
+                    title: "Maintenance request: " + data.issueType,
+                    time: data.timestamp ? data.timestamp.toDate() : new Date(),
+                    icon: "fa-tools",
+                    type: "warning"
+                });
+            });
+
+            // Fetch Move-Out
+            const moveOutQuery = query(collection(db, "moveout_requests"), where("userEmail", "==", email));
+            const moveOutSnap = await getDocs(moveOutQuery);
+            moveOutSnap.forEach(doc => {
+                const data = doc.data();
+                activities.push({
+                    title: "Move-out request submitted",
+                    time: data.timestamp ? data.timestamp.toDate() : new Date(),
+                    icon: "fa-box-open",
+                    type: "danger"
+                });
+            });
+
+            // Sort descending
+            activities.sort((a, b) => b.time - a.time);
+
+            // Render
+            if (activities.length === 0) {
+                activityContainer.innerHTML = `<div style="text-align: center; padding: 30px; color: #666;">
+                    No recent activity found.
+                </div>`;
+                return;
+            }
+
+            let html = '';
+            // Show only latest 5
+            const latestActivities = activities.slice(0, 5);
+            
+            latestActivities.forEach(item => {
+                // Exact Date Time formatter
+                const timeOptions = { day: 'numeric', month: 'short', year: 'numeric', hour: 'numeric', minute: '2-digit', hour12: true };
+                let timeString = item.time.toLocaleString('en-MY', timeOptions);
+
+                html += `
+                <div class="activity-item">
+                    <div class="activity-icon ${item.type}">
+                        <i class="fas ${item.icon}"></i>
+                    </div>
+                    <div class="activity-content">
+                        <div class="activity-title">${item.title}</div>
+                        <div class="activity-time">
+                            <i class="fas fa-clock"></i> ${timeString}
+                        </div>
+                    </div>
+                </div>`;
+            });
+
+            activityContainer.innerHTML = html;
+
+        } catch (error) {
+            console.error("Error fetching activities:", error);
+            activityContainer.innerHTML = `<div style="text-align: center; padding: 30px; color: #f44336;">
+                    Failed to load activities.
+                </div>`;
+        }
+    }
+    
+
     window.addEventListener('resize', () => {
         if (window.innerWidth > 768) {
             // On desktop, ensure sidebar is visible and overlay is hidden
@@ -625,7 +699,27 @@
 
     // Check if user is logged in
     onAuthStateChanged(auth, (user) => {
-        if (user) {
+            if (user) {
+                const email = user.email ? user.email.toLowerCase() : '';
+                const isStudent = email.endsWith('@student.gmi.edu.my');
+                
+                if (!isStudent) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Access Denied',
+                        text: 'Warden accounts cannot access Student pages.',
+                        confirmButtonColor: '#d33'
+                    }).then(() => {
+                        window.location.href = 'warden-dashboard.html';
+                    });
+                    return;
+                }
+                // RBAC PASS
+            }
+            if (user) {
+            // Load activities dynamically
+            loadRecentActivity(user.email);
+            
             // Store user email in session storage for profile page to use
             sessionStorage.setItem('userEmail', user.email);
             sessionStorage.setItem('userName', user.email.split('@')[0]);
@@ -645,24 +739,49 @@
             window.location.href = "index.html";
         }).catch((error) => {
             // An error happened
-            alert("Logout failed: " + error.message);
+            Swal.fire('Error', 'Logout failed: ' + error.message, 'error');
         });
     });
 
-    // Add click handlers for alert items
-    document.querySelectorAll('.alert-item').forEach(item => {
-        item.addEventListener('click', function() {
-            const title = this.querySelector('strong')?.textContent || 'Alert';
-            alert(`📢 ${title}\n\nMore details will be available soon!`);
-        });
-    });
+    // Use event delegation for alert items and dynamically added activity items
+    document.body.addEventListener('click', function(e) {
+        // Handle alert clicks
+        const alertItem = e.target.closest('.alert-item');
+        if (alertItem) {
+            const title = alertItem.querySelector('strong')?.textContent || 'Alert';
+            Swal.fire({
+                icon: 'info',
+                title: 'Announcement Details',
+                html: `<strong>${title}</strong><br><br><p style="color: #666; font-size: 14px;">This is a system generated announcement. You are all caught up and no further action is required at this time.</p>`,
+                confirmButtonColor: '#2d72d2',
+                confirmButtonText: 'Understood'
+            });
+            return;
+        }
 
-    // Add click handlers for activity items
-    document.querySelectorAll('.activity-item').forEach(item => {
-        item.addEventListener('click', function() {
-            const title = this.querySelector('.activity-title')?.textContent || 'Activity';
-            alert(`📋 ${title}\n\nView full details coming soon!`);
-        });
+        // Handle activity clicks
+        const activityItem = e.target.closest('.activity-item');
+        if (activityItem) {
+            const title = activityItem.querySelector('.activity-title')?.textContent || 'Activity';
+            const time = activityItem.querySelector('.activity-time')?.textContent || '';
+            const typeClass = activityItem.querySelector('.activity-icon').className;
+            
+            let iconType = 'info';
+            if(typeClass.includes('success')) iconType = 'success';
+            if(typeClass.includes('warning')) iconType = 'warning';
+            if(typeClass.includes('danger')) iconType = 'error';
+
+            Swal.fire({
+                icon: iconType,
+                title: 'Activity Record',
+                html: `<div style="text-align: left; background: #f8f9fa; padding: 15px; border-radius: 8px;">
+                        <strong>Action:</strong> ${title}<br>
+                        <strong>Timestamp:</strong> ${time}<br><br>
+                        <p style="color: #666; font-size: 13px; margin: 0;">Record tracking active. If you need to follow up on this request, please refer to the respective department.</p>
+                       </div>`,
+                confirmButtonColor: '#2d72d2'
+            });
+        }
     });
 </script>
 
