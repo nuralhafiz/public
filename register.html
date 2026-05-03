@@ -186,12 +186,38 @@
             font-weight: 500;
         }
     </style>
+
+    <style>
+        .floating-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+        .particle {
+            position: absolute;
+            background: rgba(204, 255, 0, 0.2);
+            border-radius: 50%;
+            filter: blur(3px);
+            animation: float 20s infinite;
+        }
+        @keyframes float {
+            0% { transform: translateY(0) rotate(0deg); opacity: 0; }
+            20% { opacity: 0.5; }
+            80% { opacity: 0.3; }
+            100% { transform: translateY(-100vh) rotate(360deg); opacity: 0; }
+        }
+    </style>
 </head>
 <body>
+<div class="floating-bg" id="particlesContainer"></div>
 
     <div class="register-container">
         <div class="brand-logo">
-            <span class="gmi-wrapper"><span class="brand-blue">GMI</span><span class="brand-dot"></span></span><span class="brand-lime">HostelKu.</span>
+            <span class="brand-blue">GM<span class="i-wrapper">I<span class="brand-dot"></span></span></span><span class="brand-lime">HostelKu.</span>
         </div>
         <h2>Create Student Account</h2>
 
@@ -215,7 +241,7 @@
             <button type="submit" class="btn-submit">Sign Up</button>
         </form>
 
-        <a href="student-login.html" class="login-link">Already have an account? <span>Login here</span></a>
+        <a href="student-login.html" class="login-link" title="Navigation Link">Already have an account? <span>Login here</span></a>
     </div>
 
     <script type="module">
@@ -264,6 +290,34 @@
                 alert(errorMessage);
             }
         });
+    
+    // Add smooth dynamic particles (seamless from welcome page)
+    
+
+</script>
+
+    <script>
+        function createParticles() {
+            const container = document.getElementById('particlesContainer');
+            if (!container) return;
+            const colors = ['#ccff00', '#ff3131', '#3b82f6', '#ffffff80'];
+            for (let i = 0; i < 35; i++) {
+                const particle = document.createElement('div');
+                particle.classList.add('particle');
+                const size = Math.random() * 8 + 2;
+                particle.style.width = size + 'px';
+                particle.style.height = size + 'px';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.bottom = '-20px';
+                particle.style.animationDelay = '-' + (Math.random() * 25) + 's';
+                particle.style.animationDuration = 12 + Math.random() * 12 + 's';
+                particle.style.background = colors[Math.floor(Math.random() * colors.length)];
+                particle.style.opacity = Math.random() * 0.4 + 0.1;
+                container.appendChild(particle);
+            }
+        }
+        createParticles();
     </script>
+
 </body>
 </html>

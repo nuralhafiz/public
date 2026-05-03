@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GMI HostelKu - My Profile</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="css/global.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
         rel="stylesheet">
     <style>
@@ -434,7 +435,7 @@
         }
 
                 /* Mobile Responsive */
-        @media (max-width: 768px) {
+        @media (max-width: 1024px) {
             nav {
                 position: absolute;
                 left: 0;
@@ -638,54 +639,16 @@
 
     </style>
 
-    <style id="unified-logo-style">
-        .gmi-wrapper {
-            position: relative;
-            display: inline-block;
-            line-height: 1;
-            padding-right: 0.05em;
-            /* Padding for the wrapper */
-        }
-
-        .brand-blue {
-            color: #1118a8;
-            /* Deep blue from image */
-            font-weight: 900;
-            font-family: 'Arial', sans-serif;
-            letter-spacing: -1px;
-            text-shadow:
-                -0.8px -0.8px 0 #fff, 0px -0.8px 0 #fff, 0.8px -0.8px 0 #fff, 0.8px 0px 0 #fff, 0.8px 0.8px 0 #fff, 0px 0.8px 0 #fff, -0.8px 0.8px 0 #fff, -0.8px 0px 0 #fff, 0 4px 6px rgba(0, 0, 0, 0.3);
-        }
-
-        .brand-dot {
-            position: absolute;
-            top: -0.24em;
-            right: 0.05em;
-            /* Shifted to perfectly align over the I */
-            width: 0.32em;
-            height: 0.32em;
-            background-color: #f93144;
-            /* Red dot from image */
-            border-radius: 50%;
-            box-shadow: 0 0 0 0.8px #fff, 0 4px 6px rgba(0, 0, 0, 0.3);
-        }
-
-        .brand-lime {
-            color: #ccff00;
-            margin-left: 5px;
-            font-family: 'Poppins', sans-serif;
-            font-weight: 800;
-            text-shadow:
-                -0.8px -0.8px 0 #000, 0px -0.8px 0 #000, 0.8px -0.8px 0 #000, 0.8px 0px 0 #000, 0.8px 0.8px 0 #000, 0px 0.8px 0 #000, -0.8px 0.8px 0 #000, -0.8px 0px 0 #000, 0 4px 6px rgba(0, 0, 0, 0.3);
-        }
-
-        /* Increased font size for dashboards */
-        .brand-container {
-            font-size: 32px !important;
-        }
-    </style>
+    
 
     
+    <style>
+        /* Fix for dropdown z-index behind tables/cards */
+        .filters-section, .page-header {
+            position: relative;
+            z-index: 50;
+        }
+    </style>
 </head>
 
 <body>
@@ -694,12 +657,11 @@
         <div style="display: flex; align-items: center;">
             <i class="fas fa-bars menu-toggle" id="hamburger"></i>
             <div class="brand-container" onclick="window.location.href='warden-dashboard.html'">
-                <span class="gmi-wrapper"><span class="brand-blue">GMI</span><span class="brand-dot"></span></span><span
-                    class="brand-lime">HostelKu.</span>
+                <span class="brand-blue">GM<span class="i-wrapper">I<span class="brand-dot"></span></span></span><span class="brand-lime">HostelKu.</span>
             </div>
         </div>
         <div style="display: flex; align-items: center; gap: 10px;">
-            <a href="warden-profile.html" class="avatar-container">
+            <a href="warden-profile.html" class="avatar-container" title="Navigation Link">
                 <i class="fas fa-user-shield"></i>
             </a>
         </div>
@@ -711,34 +673,30 @@
         <nav id="sidebar">
         <!-- Navigation Menu -->
             <div class="nav-menu">
-                <a href="warden-profile.html" class="nav-item active">
+                <a href="warden-profile.html" class="nav-item active" title="Navigation Link">
                     <i class="fas fa-user"></i> My Profile
                 </a>
-                <a href="warden-dashboard.html" class="nav-item">
+                <a href="warden-dashboard.html" class="nav-item" title="Navigation Link">
                     <i class="fas fa-home"></i> Dashboard
                 </a>
-                <a href="warden-applications.html" class="nav-item">
-                    <i class="fas fa-file-alt"></i> Applications
-                </a>
-                <a href="warden-moveout.html" class="nav-item">
+                <a href="warden-applications.html" class="nav-item" title="Navigation Link">
+                    <i class="fas fa-file-alt"></i> Room Applications</a>
+                <a href="warden-moveout.html" class="nav-item" title="Navigation Link">
                     <i class="fas fa-box-open"></i> Move-Out Requests
                 </a>
-                <a href="warden-maintenance.html" class="nav-item">
-                    <i class="fas fa-tools"></i> Maintenance
-                </a>
-                <a href="warden-students.html" class="nav-item">
-                    <i class="fas fa-users"></i> Students
-                </a>
-                <a href="warden-rooms.html" class="nav-item">
+                <a href="warden-maintenance.html" class="nav-item" title="Navigation Link">
+                    <i class="fas fa-tools"></i> Maintenance Logs</a>
+                <a href="warden-students.html" class="nav-item" title="Navigation Link">
+                    <i class="fas fa-users"></i> Student Records</a>
+                <a href="warden-rooms.html" class="nav-item" title="Navigation Link">
                     <i class="fas fa-bed"></i> Room Management
                 </a>
-                <a href="warden-reports.html" class="nav-item">
-                    <i class="fas fa-chart-bar"></i> Reports
-                </a>
+                <a href="warden-reports.html" class="nav-item" title="Navigation Link">
+                    <i class="fas fa-chart-bar"></i> Analytics & Reports</a>
             </div>
 
         <!-- Logout Button -->
-        <a href="#" class="nav-item logout-btn" id="logoutBtn">
+        <a href="#" class="nav-item logout-btn" id="logoutBtn" aria-label="Logout">
             <i class="fas fa-sign-out-alt"></i> Logout
         </a>
     </nav>
@@ -923,6 +881,9 @@
                 // RBAC PASS
             }
             if (user) {
+                const cachedAvatar = localStorage.getItem('avatar_' + user.uid);
+                if (cachedAvatar) updateAvatarUI(cachedAvatar);
+
                 // Display user info
                 document.getElementById('profileName').textContent = user.displayName || user.email.split('@')[0];
                 loadProfileData(user);
@@ -1003,14 +964,18 @@
                 // photoURL is too long for Firebase Auth when using Base64.
                 // We intentionally skip updating Auth photoURL and only rely on Firestore photoURL.
 
-                await setDoc(doc(db, "users", user.uid), {
+                const updateData = {
                     displayName: newName,
                     staffId: newStaffId,
                     phoneNumber: newPhone,
                     block: newBlock,
-                    photoURL: newPhotoUrl,
                     updatedAt: new Date()
-                }, { merge: true });
+                };
+                if (photoFile) {
+                    updateData.photoURL = newPhotoUrl;
+                }
+
+                await setDoc(doc(db, "users", user.uid), updateData, { merge: true });
 
                 document.getElementById('profileStaffId').textContent = newStaffId;
                 document.getElementById('profilePhone').textContent = newPhone;
@@ -1068,6 +1033,9 @@
         }
 
         function updateAvatarUI(url) {
+            if (auth.currentUser) {
+                localStorage.setItem('avatar_' + auth.currentUser.uid, url);
+            }
             const mainAvatar = document.querySelector('.profile-avatar');
             if(mainAvatar) mainAvatar.innerHTML = `<img src="${url}" style="width: 140px; height: 140px; border-radius: 50%; object-fit: cover; border: 3px solid #0f1638; box-shadow: 0 10px 30px rgba(0,0,0,0.2);">`;
             
@@ -1113,6 +1081,9 @@
     
     </body>
 </html>
+
+
+
 
 
 

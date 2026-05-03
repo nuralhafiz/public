@@ -1,0 +1,23 @@
+=== GMI HostelKu Codebase Audit Report ===
+
+--- File: index.html ---
+  [Accessibility] 2 <a> tags missing aria-label or title.
+
+--- File: student-login.html ---
+  [Warning] Excessive <style> tags (3). Consider externalizing CSS.
+  [Accessibility] 2 <a> tags missing aria-label or title.
+
+--- File: warden-login.html ---
+  [Warning] Excessive <style> tags (4). Consider externalizing CSS.
+  [Accessibility] 1 <a> tags missing aria-label or title.
+
+--- File: student-dashboard.html ---
+  [Accessibility] 11 <a> tags missing aria-label or title.
+
+--- File: warden-dashboard.html ---
+  [Warning] Excessive <style> tags (3). Consider externalizing CSS.
+  [Accessibility] 14 <a> tags missing aria-label or title.
+
+--- File: register.html ---
+  [Accessibility] 1 <a> tags missing aria-label or title.
+

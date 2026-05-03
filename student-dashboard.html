@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GMI HostelKu - Student Dashboard</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="css/global.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
@@ -379,7 +380,7 @@
         }
 
         /* Mobile Responsive */
-        @media (max-width: 768px) {
+        @media (max-width: 1024px) {
             nav { 
                 position: absolute; 
                 left: 0; 
@@ -422,46 +423,7 @@
         }
     </style>
 
-    <style id="unified-logo-style">
-        .gmi-wrapper {
-            position: relative;
-            display: inline-block;
-            line-height: 1;
-            padding-right: 0.05em; /* Padding for the wrapper */
-        }
-        .brand-blue {
-            color: #1118a8; /* Deep blue from image */
-            font-weight: 900;
-            font-family: 'Arial', sans-serif;
-            letter-spacing: -1px;
-            text-shadow: 
-                -0.8px -0.8px 0 #fff, 0px -0.8px 0 #fff, 0.8px -0.8px 0 #fff, 0.8px 0px 0 #fff, 0.8px 0.8px 0 #fff, 0px 0.8px 0 #fff, -0.8px 0.8px 0 #fff, -0.8px 0px 0 #fff, 0 4px 6px rgba(0,0,0,0.3);
-        }
-        .brand-dot {
-            position: absolute;
-            top: -0.24em;
-            right: 0.05em;
-            /* Shifted to perfectly align over the I */
-            width: 0.32em;
-            height: 0.32em;
-            background-color: #f93144;
-            /* Red dot from image */
-            border-radius: 50%;
-            box-shadow: 0 0 0 0.8px #fff, 0 4px 6px rgba(0, 0, 0, 0.3);
-        }
-        .brand-lime {
-            color: #ccff00;
-            margin-left: 5px;
-            font-family: 'Poppins', sans-serif;
-            font-weight: 800;
-            text-shadow: 
-                -1px -1px 0 #000, 0px -1px 0 #000, 1px -1px 0 #000, 1px 0px 0 #000, 1px 1px 0 #000, 0px 1px 0 #000, -1px 1px 0 #000, -1px 0px 0 #000, 0 4px 6px rgba(0,0,0,0.3);
-        }
-        /* Increased font size for dashboards */
-        .brand-container {
-            font-size: 32px !important;
-        }
-    </style>
+    
 </head>
 <body>
 
@@ -469,12 +431,12 @@
     <div style="display: flex; align-items: center;">
         <i class="fas fa-bars menu-toggle" id="hamburger"></i>
         <div class="brand-container" onclick="window.location.href='student-dashboard.html'">
-            <span class="gmi-wrapper"><span class="brand-blue">GMI</span><span class="brand-dot"></span></span><span class="brand-lime">HostelKu.</span>
+            <span class="brand-blue">GM<span class="i-wrapper">I<span class="brand-dot"></span></span></span><span class="brand-lime">HostelKu.</span>
         </div>
     </div>
     <div style="display: flex; align-items: center; gap: 10px;">
         <!-- Avatar Icon that links to profile page -->
-        <a href="student-profile.html" class="avatar-container" id="profileLink">
+        <a href="student-profile.html" class="avatar-container" id="profileLink" aria-label="User Profile">
             <i class="fas fa-user-graduate"></i>
         </a>
     </div>
@@ -487,15 +449,15 @@
     <nav id="sidebar">
         <!-- Navigation Menu - My Profile at the top -->
         <div class="nav-menu">
-            <a href="student-profile.html" class="nav-item"><i class="fas fa-user"></i> My Profile</a>
-            <a href="student-dashboard.html" class="nav-item active"><i class="fas fa-home"></i> Dashboard</a>
-            <a href="room-apply.html" class="nav-item"><i class="fas fa-check-circle"></i> Room Apply</a>
-            <a href="move-out.html" class="nav-item"><i class="fas fa-box-open"></i> Move-Out</a>
-            <a href="maintenance.html" class="nav-item"><i class="fas fa-tools"></i> Room Maintenance</a>
+            <a href="student-profile.html" class="nav-item" title="Navigation Link"><i class="fas fa-user"></i> My Profile</a>
+            <a href="student-dashboard.html" class="nav-item active" title="Navigation Link"><i class="fas fa-home"></i> Dashboard</a>
+            <a href="room-apply.html" class="nav-item" title="Navigation Link"><i class="fas fa-check-circle"></i> Room Apply</a>
+            <a href="move-out.html" class="nav-item" title="Navigation Link"><i class="fas fa-box-open"></i> Move-Out</a>
+            <a href="maintenance.html" class="nav-item" title="Navigation Link"><i class="fas fa-tools"></i> Room Maintenance</a>
         </div>
 
         <!-- Logout Button at Bottom -->
-        <a href="#" class="nav-item logout-btn" id="logoutBtn">
+        <a href="#" class="nav-item logout-btn" id="logoutBtn" aria-label="Logout">
             <i class="fas fa-sign-out-alt"></i> Logout
         </a>
     </nav>
@@ -522,16 +484,16 @@
                 Quick Actions
             </h2>
             <div class="quick-actions">
-                <a href="room-apply.html" class="action-btn">
+                <a href="room-apply.html" class="action-btn" title="Navigation Link">
                     <i class="fas fa-bed"></i> Apply for Room
                 </a>
-                <a href="maintenance.html" class="action-btn">
+                <a href="maintenance.html" class="action-btn" title="Navigation Link">
                     <i class="fas fa-tools"></i> Report Issue
                 </a>
-                <a href="move-out.html" class="action-btn">
+                <a href="move-out.html" class="action-btn" title="Navigation Link">
                     <i class="fas fa-box-open"></i> Move-Out
                 </a>
-                <a href="student-profile.html" class="action-btn">
+                <a href="student-profile.html" class="action-btn" title="Navigation Link">
                     <i class="fas fa-user"></i> View Profile
                 </a>
             </div>
@@ -624,10 +586,13 @@
             maintSnap.forEach(doc => {
                 const data = doc.data();
                 activities.push({
-                    title: "Maintenance request: " + data.issueType,
-                    time: data.timestamp ? data.timestamp.toDate() : new Date(),
-                    icon: "fa-tools",
-                    type: "warning"
+                    id: doc.id,
+                    type_id: "maintenance",
+                    title: "Maintenance request: " + (data.category || data.issueType || 'General'),
+                    time: data.submittedAt ? data.submittedAt.toDate() : (data.timestamp ? data.timestamp.toDate() : new Date()),
+                    icon: data.status === 'completed' ? "fa-check-circle" : "fa-tools",
+                    type: data.status === 'completed' ? "success" : "warning",
+                    rawData: data
                 });
             });
 
@@ -659,13 +624,13 @@
             // Show only latest 5
             const latestActivities = activities.slice(0, 5);
             
-            latestActivities.forEach(item => {
+            latestActivities.forEach((item, index) => {
                 // Exact Date Time formatter
                 const timeOptions = { day: 'numeric', month: 'short', year: 'numeric', hour: 'numeric', minute: '2-digit', hour12: true };
                 let timeString = item.time.toLocaleString('en-MY', timeOptions);
 
                 html += `
-                <div class="activity-item">
+                <div class="activity-item" data-index="${index}">
                     <div class="activity-icon ${item.type}">
                         <i class="fas ${item.icon}"></i>
                     </div>
@@ -679,6 +644,7 @@
             });
 
             activityContainer.innerHTML = html;
+            window.latestActivitiesData = latestActivities;
 
         } catch (error) {
             console.error("Error fetching activities:", error);
@@ -704,7 +670,7 @@
                 const isStudent = email.endsWith('@student.gmi.edu.my');
                 
                 if (!isStudent) {
-                    Swal.fire({
+                    Swal.fire({ heightAuto: false,
                         icon: 'error',
                         title: 'Access Denied',
                         text: 'Warden accounts cannot access Student pages.',
@@ -749,7 +715,7 @@
         const alertItem = e.target.closest('.alert-item');
         if (alertItem) {
             const title = alertItem.querySelector('strong')?.textContent || 'Alert';
-            Swal.fire({
+            Swal.fire({ heightAuto: false,
                 icon: 'info',
                 title: 'Announcement Details',
                 html: `<strong>${title}</strong><br><br><p style="color: #666; font-size: 14px;">This is a system generated announcement. You are all caught up and no further action is required at this time.</p>`,
@@ -762,6 +728,9 @@
         // Handle activity clicks
         const activityItem = e.target.closest('.activity-item');
         if (activityItem) {
+            const index = activityItem.getAttribute('data-index');
+            const itemData = window.latestActivitiesData ? window.latestActivitiesData[index] : null;
+            
             const title = activityItem.querySelector('.activity-title')?.textContent || 'Activity';
             const time = activityItem.querySelector('.activity-time')?.textContent || '';
             const typeClass = activityItem.querySelector('.activity-icon').className;
@@ -769,15 +738,31 @@
             let iconType = 'info';
             if(typeClass.includes('success')) iconType = 'success';
             if(typeClass.includes('warning')) iconType = 'warning';
-            if(typeClass.includes('danger')) iconType = 'error';
+            // Use info icon for danger type instead of error X
+            if(typeClass.includes('danger')) iconType = 'info';
 
-            Swal.fire({
+            let extraHtml = '';
+            let popupWidth = '32em';
+            if (itemData && itemData.type_id === 'maintenance' && itemData.rawData) {
+                const req = itemData.rawData;
+                extraHtml += `<hr style="margin: 15px 0; border: 0; border-top: 1px solid #ddd;">
+                              <p style="margin-bottom: 5px;"><strong>Status:</strong> <span style="text-transform: uppercase; font-weight: 600; color: ${req.status === 'completed' ? '#4caf50' : '#ff9800'};">${(req.status || 'pending').replace('-', ' ')}</span></p>
+                              <p style="margin-bottom: 5px;"><strong>Description:</strong> ${req.description || 'N/A'}</p>`;
+                
+                if (req.completionPhotoData) {
+                    extraHtml += `<div style="margin-top:15px; border-top: 1px solid #e0e0e0; padding-top: 15px;"><p style="margin-bottom: 10px; color: #4caf50;"><strong><i class="fas fa-check-circle"></i> Completion Proof Photo:</strong></p><img src="${req.completionPhotoData}" style="max-width: 100%; border-radius: 8px; border: 1px solid #4caf50; cursor: pointer;" onclick="window.open(this.src, '_blank')" /></div>`;
+                    popupWidth = '500px';
+                }
+            }
+
+            Swal.fire({ heightAuto: false,
                 icon: iconType,
                 title: 'Activity Record',
+                width: popupWidth,
                 html: `<div style="text-align: left; background: #f8f9fa; padding: 15px; border-radius: 8px;">
                         <strong>Action:</strong> ${title}<br>
-                        <strong>Timestamp:</strong> ${time}<br><br>
-                        <p style="color: #666; font-size: 13px; margin: 0;">Record tracking active. If you need to follow up on this request, please refer to the respective department.</p>
+                        <strong>Timestamp:</strong> ${time}<br>
+                        ${extraHtml ? extraHtml : `<br><p style="color: #666; font-size: 13px; margin: 0;">Record tracking active. If you need to follow up on this request, please refer to the respective department.</p>`}
                        </div>`,
                 confirmButtonColor: '#2d72d2'
             });
@@ -787,3 +772,4 @@
 
 </body>
 </html>
+

@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GMI HostelKu - Student Management</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="css/global.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -520,7 +521,7 @@
             font-size: 12px;
         }
 
-        @media (max-width: 768px) {
+        @media (max-width: 1024px) {
             nav { position: absolute; left: 0; top: 0; bottom: 0; transform: translateX(-100%); width: 280px; }
             nav.open { transform: translateX(0); }
             .menu-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 800; backdrop-filter: blur(3px); }
@@ -537,100 +538,80 @@
             .student-profile { flex-direction: column; text-align: center; }
         }
     </style>
-    <style id="unified-logo-style">
-        .gmi-wrapper {
-            position: relative;
-            display: inline-block;
-            line-height: 1;
-            padding-right: 0.05em; /* Padding for the wrapper */
-        }
-        .brand-blue {
-            color: #1118a8; /* Deep blue from image */
-            font-weight: 900;
-            font-family: 'Arial', sans-serif;
-            letter-spacing: -1px;
-            text-shadow: 
-                -0.8px -0.8px 0 #fff, 0px -0.8px 0 #fff, 0.8px -0.8px 0 #fff, 0.8px 0px 0 #fff, 0.8px 0.8px 0 #fff, 0px 0.8px 0 #fff, -0.8px 0.8px 0 #fff, -0.8px 0px 0 #fff, 0 4px 6px rgba(0,0,0,0.3);
-        }
-        .brand-dot {
-            position: absolute;
-            top: -0.24em;
-            right: 0.05em;
-            /* Shifted to perfectly align over the I */
-            width: 0.32em;
-            height: 0.32em;
-            background-color: #f93144;
-            /* Red dot from image */
-            border-radius: 50%;
-            box-shadow: 0 0 0 0.8px #fff, 0 4px 6px rgba(0, 0, 0, 0.3);
-        }
-        .brand-lime {
-            color: #ccff00;
-            margin-left: 5px;
+    
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <!-- Choices.js CSS & JS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css" />
+    <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
+    <style>
+        /* Custom Choices.js Theme (Flat Design) */
+        .choices[data-type*="select-one"] .choices__inner {
+            padding: 10px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            background-color: white;
+            min-height: 48px;
             font-family: 'Poppins', sans-serif;
-            font-weight: 800;
-            text-shadow: 
-                -0.8px -0.8px 0 #000, 0px -0.8px 0 #000, 0.8px -0.8px 0 #000, 0.8px 0px 0 #000, 0.8px 0.8px 0 #000, 0px 0.8px 0 #000, -0.8px 0.8px 0 #000, -0.8px 0px 0 #000, 0 4px 6px rgba(0,0,0,0.3);
+            font-size: 14px;
+            color: #333;
+            transition: all 0.3s;
+            box-shadow: none;
         }
-        .brand-container {
-            display: flex; 
-            align-items: center; 
-            font-size: 24px; 
-            font-weight: 800; 
-            cursor: pointer; 
-            position: relative; 
-            margin-left: 10px;
-            letter-spacing: -0.5px;
+        .choices[data-type*="select-one"].is-focused .choices__inner {
+            border-color: #2d72d2;
+            box-shadow: none;
         }
-        /* Increased font size for dashboards */
-        .brand-container {
-            font-size: 32px !important;
+        .choices__list--dropdown {
+            border-radius: 10px;
+            box-shadow: none;
+            border: 1px solid #e0e0e0;
+            margin-top: 0;
+            z-index: 100;
         }
-
-        /* Premium Warden Avatar */
-        .avatar-container {
-            cursor: pointer;
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 48px;
-            height: 48px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #ff3131 0%, #cc0000 100%);
-            border: 2px solid rgba(255, 255, 255, 0.9);
-            position: relative;
-            overflow: hidden;
+        .choices__list--dropdown .choices__item--selectable.is-highlighted {
+            background-color: rgba(45, 114, 210, 0.05);
+            color: #2d72d2;
+            font-weight: 500;
         }
-        .avatar-container::after {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.4) 0%, transparent 60%);
+        .choices__list--dropdown .choices__item {
+            padding: 12px 15px;
+            font-size: 14px;
+            font-family: 'Poppins', sans-serif;
         }
-        .avatar-container:hover {
-            transform: scale(1.1) translateY(-2px);
-            border-color: #ffffff;
-            box-shadow: 0 5px 15px rgba(255, 49, 49, 0.4);
+        .choices[data-type*="select-one"]::after {
+            border-color: #64748b transparent transparent transparent;
+            margin-top: -2.5px;
+            right: 15px;
         }
-        .avatar-container i {
-            font-size: 22px;
-            color: #ffffff;
-            z-index: 2;
+        .choices[data-type*="select-one"].is-open::after {
+            border-color: transparent transparent #2d72d2 transparent;
+            margin-top: -7.5px;
+        }
+        
+        /* Fix for filter-group spacing with Choices.js */
+        .filter-group .choices {
+            min-width: 140px;
+            margin-bottom: 0;
         }
     </style>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+        /* Fix for dropdown z-index behind tables/cards */
+        .filters-section, .page-header {
+            position: relative;
+            z-index: 50;
+        }
+    </style>
 </head>
 <body>
     <header>
         <div style="display: flex; align-items: center;">
             <i class="fas fa-bars menu-toggle" id="hamburger"></i>
             <div class="brand-container" onclick="window.location.href='warden-dashboard.html'">
-                <span class="gmi-wrapper"><span class="brand-blue">GMI</span><span class="brand-dot"></span></span><span class="brand-lime">HostelKu.</span>
+                <span class="brand-blue">GM<span class="i-wrapper">I<span class="brand-dot"></span></span></span><span class="brand-lime">HostelKu.</span>
             </div>
         </div>
         <div style="display: flex; align-items: center; gap: 10px;">
-            <a href="warden-profile.html" class="avatar-container" id="profileLink">
+            <a href="warden-profile.html" class="avatar-container" id="profileLink" aria-label="User Profile">
                 <i class="fas fa-user-shield"></i>
             </a>
         </div>
@@ -641,16 +622,16 @@
     <div class="container">
         <nav id="sidebar">
             <div class="nav-menu">
-                <a href="warden-profile.html" class="nav-item"><i class="fas fa-user"></i> My Profile</a>
-                <a href="warden-dashboard.html" class="nav-item"><i class="fas fa-home"></i> Dashboard</a>
-                <a href="warden-applications.html" class="nav-item"><i class="fas fa-file-alt"></i> Applications</a>
-                <a href="warden-moveout.html" class="nav-item"><i class="fas fa-box-open"></i> Move-Out</a>
-                <a href="warden-maintenance.html" class="nav-item"><i class="fas fa-tools"></i> Maintenance</a>
-                <a href="warden-students.html" class="nav-item active"><i class="fas fa-users"></i> Students</a>
-                <a href="warden-rooms.html" class="nav-item"><i class="fas fa-bed"></i> Rooms</a>
-                <a href="warden-reports.html" class="nav-item"><i class="fas fa-chart-bar"></i> Reports</a>
+                <a href="warden-profile.html" class="nav-item" title="Navigation Link"><i class="fas fa-user"></i> My Profile</a>
+                <a href="warden-dashboard.html" class="nav-item" title="Navigation Link"><i class="fas fa-home"></i> Dashboard</a>
+                <a href="warden-applications.html" class="nav-item" title="Navigation Link"><i class="fas fa-file-alt"></i> Room Applications</a>
+                <a href="warden-moveout.html" class="nav-item" title="Navigation Link"><i class="fas fa-box-open"></i> Move-Out Requests</a>
+                <a href="warden-maintenance.html" class="nav-item" title="Navigation Link"><i class="fas fa-tools"></i> Maintenance Logs</a>
+                <a href="warden-students.html" class="nav-item active" title="Navigation Link"><i class="fas fa-users"></i> Student Records</a>
+                <a href="warden-rooms.html" class="nav-item" title="Navigation Link"><i class="fas fa-bed"></i> Room Management</a>
+                <a href="warden-reports.html" class="nav-item" title="Navigation Link"><i class="fas fa-chart-bar"></i> Analytics & Reports</a>
             </div>
-            <a href="#" class="nav-item logout-btn" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Logout</a>
+            <a href="#" class="nav-item logout-btn" id="logoutBtn" aria-label="Logout"><i class="fas fa-sign-out-alt"></i> Logout</a>
         </nav>
 
         <main id="mainContent">
@@ -692,9 +673,12 @@
                 <div class="filter-group">
                     <select class="filter-select" id="blockFilter">
                         <option value="all">All Blocks</option>
-                        <option value="A">Block A</option>
-                        <option value="B">Block B</option>
-                        <option value="C">Block C</option>
+                                                <option value="A1">Block A1</option>
+                        <option value="A2">Block A2</option>
+                        <option value="A3">Block A3</option>
+                        <option value="A4">Block A4</option>
+                        <option value="A5">Block A5</option>
+                        <option value="A7">Block A7</option>
                     </select>
                     <select class="filter-select" id="statusFilter">
                         <option value="all">All Status</option>
@@ -1071,7 +1055,7 @@
             const student = allStudents.find(s => s.id === id);
             if (!student) return;
             
-            Swal.fire({
+            Swal.fire({ heightAuto: false,
                 title: 'Edit Student Details',
                 html: `
                     <div style="text-align:left; display:flex; flex-direction:column; gap:15px;">
@@ -1121,7 +1105,7 @@
         };
 
         window.moreActions = (id) => {
-            Swal.fire({
+            Swal.fire({ heightAuto: false,
                 title: 'More Actions',
                 text: 'Select an action for this student',
                 showDenyButton: true,
@@ -1202,7 +1186,7 @@
         };
 
         window.addStudent = () => {
-            Swal.fire({
+            Swal.fire({ heightAuto: false,
                 title: 'Add New Student',
                 html: `
                     <div style="text-align:left; display:flex; flex-direction:column; gap:10px;">
@@ -1283,5 +1267,24 @@
             }
         });
     </script>
+    <!-- Initialize Choices.js -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const selects = document.querySelectorAll('.filter-select');
+            selects.forEach(select => {
+                new Choices(select, {
+                    searchEnabled: false,
+                    itemSelectText: '',
+                    shouldSort: false
+                });
+            });
+        });
+    </script>
 </body>
 </html>
+
+
+
+
+
+

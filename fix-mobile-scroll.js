@@ -1,49 +1,19 @@
 const fs = require('fs');
 
-if (fs.existsSync('room-apply.html')) {
-    let content = fs.readFileSync('room-apply.html', 'utf8');
+const files = ['student-login.html', 'warden-login.html', 'register.html'];
 
-    // Remove the old .floor-plan-container if it exists
-    const containerRegex = /\.floor-plan-container\s*\{[\s\S]*?\}/g;
-    content = content.replace(containerRegex, '');
+for (const file of files) {
+    if (fs.existsSync(file)) {
+        let content = fs.readFileSync(file, 'utf8');
 
-    // Add the new CSS for mobile scrolling
-    const newMobileCSS = `
-        .floor-plan-container {
-            display: block; /* Safe for horizontal overflow */
-            background: #f8fafc;
-            padding: 20px 10px; /* Smaller padding for mobile */
-            border-radius: 16px;
-            border: 2px dashed #cbd5e1;
-            position: relative;
-            overflow-x: auto; /* Allows swiping horizontally */
-            width: 100%;
-            /* Custom scrollbar for better UI */
-            scrollbar-width: thin;
-            scrollbar-color: #cbd5e1 transparent;
+        // Fix the mobile split-container so it can scroll instead of cutting off the login form
+        if (content.includes('.split-container { flex-direction: column; }')) {
+            content = content.replace(/\.split-container { flex-direction: column; }/, 
+                '.split-container { flex-direction: column; height: auto; min-height: 100vh; overflow-y: auto; overflow-x: hidden; }');
         }
 
-        .floor-plan-container::-webkit-scrollbar {
-            height: 6px;
-        }
-        .floor-plan-container::-webkit-scrollbar-thumb {
-            background-color: #cbd5e1;
-            border-radius: 10px;
-        }
-
-        .blueprint-container {
-            width: max-content; /* Critical: prevents the flex children from shrinking */
-            margin: 0 auto;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 20px 20px;
-        }`;
-
-    // Replace old .blueprint-container and add both
-    const blueprintContainerRegex = /\.blueprint-container\s*\{[\s\S]*?\}/;
-    content = content.replace(blueprintContainerRegex, newMobileCSS);
-
-    fs.writeFileSync('room-apply.html', content);
-    console.log("Fixed horizontal overflow for mobile devices.");
+        fs.writeFileSync(file, content);
+    }
 }
+
+console.log("Mobile split-container scrolling fixed!");

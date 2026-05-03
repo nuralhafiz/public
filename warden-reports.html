@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GMI HostelKu - Reports & Analytics</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="css/global.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -566,7 +567,7 @@
             color: #2d72d2;
         }
 
-        @media (max-width: 768px) {
+        @media (max-width: 1024px) {
             .stats-badge { flex-direction: row; flex-wrap: wrap; justify-content: flex-start; gap: 8px; width: 100%; }
             .stat-badge-item { flex: 1 1 auto; justify-content: center; text-align: center; }
             .page-header { flex-direction: column; align-items: flex-start; gap: 15px; }
@@ -587,59 +588,27 @@
         }
     </style>
 
-    <style id="unified-logo-style">
-        .gmi-wrapper {
-            position: relative;
-            display: inline-block;
-            line-height: 1;
-            padding-right: 0.05em; /* Padding for the wrapper */
-        }
-        .brand-blue {
-            color: #1118a8; /* Deep blue from image */
-            font-weight: 900;
-            font-family: 'Arial', sans-serif;
-            letter-spacing: -1px;
-            text-shadow: 
-                -0.8px -0.8px 0 #fff, 0px -0.8px 0 #fff, 0.8px -0.8px 0 #fff, 0.8px 0px 0 #fff, 0.8px 0.8px 0 #fff, 0px 0.8px 0 #fff, -0.8px 0.8px 0 #fff, -0.8px 0px 0 #fff, 0 4px 6px rgba(0,0,0,0.3);
-        }
-        .brand-dot {
-            position: absolute;
-            top: -0.24em;
-            right: 0.05em;
-            /* Shifted to perfectly align over the I */
-            width: 0.32em;
-            height: 0.32em;
-            background-color: #f93144;
-            /* Red dot from image */
-            border-radius: 50%;
-            box-shadow: 0 0 0 0.8px #fff, 0 4px 6px rgba(0, 0, 0, 0.3);
-        }
-        .brand-lime {
-            color: #ccff00;
-            margin-left: 5px;
-            font-family: 'Poppins', sans-serif;
-            font-weight: 800;
-            text-shadow: 
-                -0.8px -0.8px 0 #000, 0px -0.8px 0 #000, 0.8px -0.8px 0 #000, 0.8px 0px 0 #000, 0.8px 0.8px 0 #000, 0px 0.8px 0 #000, -0.8px 0.8px 0 #000, -0.8px 0px 0 #000, 0 4px 6px rgba(0,0,0,0.3);
-        }
-        /* Increased font size for dashboards */
-        .brand-container {
-            font-size: 32px !important;
-        }
-    </style>
+    
 
     
+    <style>
+        /* Fix for dropdown z-index behind tables/cards */
+        .filters-section, .page-header {
+            position: relative;
+            z-index: 50;
+        }
+    </style>
 </head>
 <body>
     <header>
         <div style="display: flex; align-items: center;">
             <i class="fas fa-bars menu-toggle" id="hamburger"></i>
             <div class="brand-container" onclick="window.location.href='warden-dashboard.html'">
-            <span class="gmi-wrapper"><span class="brand-blue">GMI</span><span class="brand-dot"></span></span><span class="brand-lime">HostelKu.</span>
+            <span class="brand-blue">GM<span class="i-wrapper">I<span class="brand-dot"></span></span></span><span class="brand-lime">HostelKu.</span>
         </div>
         </div>
         <div style="display: flex; align-items: center; gap: 10px;">
-            <a href="warden-profile.html" class="avatar-container" id="profileLink">
+            <a href="warden-profile.html" class="avatar-container" id="profileLink" aria-label="User Profile">
                 <i class="fas fa-user-shield"></i>
             </a>
         </div>
@@ -650,16 +619,16 @@
     <div class="container">
         <nav id="sidebar">
             <div class="nav-menu">
-                <a href="warden-profile.html" class="nav-item"><i class="fas fa-user"></i> My Profile</a>
-                <a href="warden-dashboard.html" class="nav-item"><i class="fas fa-home"></i> Dashboard</a>
-                <a href="warden-applications.html" class="nav-item"><i class="fas fa-file-alt"></i> Applications</a>
-                <a href="warden-moveout.html" class="nav-item"><i class="fas fa-box-open"></i> Move-Out</a>
-                <a href="warden-maintenance.html" class="nav-item"><i class="fas fa-tools"></i> Maintenance</a>
-                <a href="warden-students.html" class="nav-item"><i class="fas fa-users"></i> Students</a>
-                <a href="warden-rooms.html" class="nav-item"><i class="fas fa-bed"></i> Rooms</a>
-                <a href="warden-reports.html" class="nav-item active"><i class="fas fa-chart-bar"></i> Reports</a>
+                <a href="warden-profile.html" class="nav-item" title="Navigation Link"><i class="fas fa-user"></i> My Profile</a>
+                <a href="warden-dashboard.html" class="nav-item" title="Navigation Link"><i class="fas fa-home"></i> Dashboard</a>
+                <a href="warden-applications.html" class="nav-item" title="Navigation Link"><i class="fas fa-file-alt"></i> Room Applications</a>
+                <a href="warden-moveout.html" class="nav-item" title="Navigation Link"><i class="fas fa-box-open"></i> Move-Out Requests</a>
+                <a href="warden-maintenance.html" class="nav-item" title="Navigation Link"><i class="fas fa-tools"></i> Maintenance Logs</a>
+                <a href="warden-students.html" class="nav-item" title="Navigation Link"><i class="fas fa-users"></i> Student Records</a>
+                <a href="warden-rooms.html" class="nav-item" title="Navigation Link"><i class="fas fa-bed"></i> Room Management</a>
+                <a href="warden-reports.html" class="nav-item active" title="Navigation Link"><i class="fas fa-chart-bar"></i> Analytics & Reports</a>
             </div>
-            <a href="#" class="nav-item logout-btn" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Logout</a>
+            <a href="#" class="nav-item logout-btn" id="logoutBtn" aria-label="Logout"><i class="fas fa-sign-out-alt"></i> Logout</a>
         </nav>
 
         <main id="mainContent">
@@ -1370,14 +1339,14 @@
                 
                 doc.save('GMI-HostelKu-Report.pdf');
                 
-                Swal.fire({
+                Swal.fire({ heightAuto: false,
                     icon: 'success',
                     title: 'PDF Downloaded',
                     text: 'Your automated report has been generated successfully!',
                     confirmButtonColor: '#2d72d2'
                 });
             } else {
-                Swal.fire({
+                Swal.fire({ heightAuto: false,
                     icon: 'info',
                     title: 'Coming Soon',
                     text: `Exporting as ${format.toUpperCase()} will be available in the next update.`,
@@ -1396,3 +1365,6 @@
     </script>
 </body>
 </html>
+
+
+

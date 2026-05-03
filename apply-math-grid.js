@@ -1,11 +1,14 @@
 const fs = require('fs');
-let content = fs.readFileSync('c:/Users/Al Hafiz/public/room-apply.html', 'utf8');
 
-// 1. Update CSS
-const oldCSSStart = '.grid-layout {';
-const oldCSSEnd = '        .layout-type-b .door-swing {\r\n            position: absolute;\r\n            top: 120px;\r\n            left: 320px;\r\n            transform: translateX(-100%);\r\n            width: 0;\r\n            height: 0;\r\n            border-top: 25px solid #000;\r\n            border-left: 25px solid transparent;\r\n            z-index: 10;\r\n        }';
-const oldCSSEndLF = '        .layout-type-b .door-swing {\n            position: absolute;\n            top: 120px;\n            left: 320px;\n            transform: translateX(-100%);\n            width: 0;\n            height: 0;\n            border-top: 25px solid #000;\n            border-left: 25px solid transparent;\n            z-index: 10;\n        }';
+const filePath = 'c:/Users/Al Hafiz/public/room-apply.html';
+if (!fs.existsSync(filePath)) {
+    console.error("Fail tidak dijumpai: " + filePath);
+    process.exit(1);
+}
 
+let content = fs.readFileSync(filePath, 'utf8');
+
+// 1. Update CSS menggunakan Regular Expression (Regex) supaya tidak rapuh terhadap 'whitespace'
 const newCSS = `.grid-layout {
             display: grid;
             gap: 1px;
@@ -149,32 +152,30 @@ const newCSS = `.grid-layout {
             z-index: 10;
         }`;
 
-let startIdx = content.indexOf(oldCSSStart);
-let endIdx = content.indexOf(oldCSSEnd);
-if (endIdx === -1) endIdx = content.indexOf(oldCSSEndLF);
+// Match from .grid-layout to the closing brace of .layout-type-b .door-swing
+const cssRegex = /\.grid-layout\s*\{[\s\S]*?\.layout-type-b\s*\.door-swing\s*\{[^}]+\}/;
 
-if (startIdx !== -1 && endIdx !== -1) {
-    const endStr = content.substring(endIdx, endIdx + oldCSSEnd.length);
-    let fullOldStr = content.substring(startIdx, endIdx + (endIdx === content.indexOf(oldCSSEndLF) ? oldCSSEndLF.length : oldCSSEnd.length));
-    content = content.replace(fullOldStr, newCSS);
+if (cssRegex.test(content)) {
+    content = content.replace(cssRegex, newCSS);
 } else {
-    console.log("Could not find CSS boundaries");
+    console.log("Amaran: Kod CSS sasaran tidak dijumpai dalam room-apply.html. Kemungkinan sudah dikemas kini.");
 }
 
-// 2. Add foyer to HTML
-const htmlToReplace = \`                                        <!-- Row 1: [empty] [TOILET] [SHOWER] [P1] -->
-                                        <div class="room-block static toilet">TOILET</div>
-                                        <div class="room-block static shower">SHOWER</div>
-                                        <div class="room-block p1 loading" data-partition="P1">\`;
+// 2. Add foyer to HTML menggunakan Regex yang teguh (robust)
+const htmlRegex = /<!-- Row 1: \[empty\] \[TOILET\] \[SHOWER\] \[P1\] -->\s*<div class="room-block static toilet">TOILET<\/div>\s*<div class="room-block static shower">SHOWER<\/div>\s*<div class="room-block p1 loading" data-partition="P1">/;
 
-const newHtml = \`                                        <!-- Row 1: TOILET, SHOWER, P1 -->
+const newHtml = `                                        <!-- Row 1: TOILET, SHOWER, P1 -->
                                         <div class="room-block static toilet">TOILET</div>
                                         <div class="room-block static shower">SHOWER</div>
                                         <!-- Row 2: Foyer -->
                                         <div class="room-block static foyer"></div>
-                                        <div class="room-block p1 loading" data-partition="P1">\`;
+                                        <div class="room-block p1 loading" data-partition="P1">`;
 
-content = content.replace(htmlToReplace, newHtml);
+if (htmlRegex.test(content)) {
+    content = content.replace(htmlRegex, newHtml);
+} else {
+    console.log("Amaran: Kod HTML sasaran tidak dijumpai. Kemungkinan sudah dikemas kini.");
+}
 
-fs.writeFileSync('c:/Users/Al Hafiz/public/room-apply.html', content);
-console.log('Successfully applied mathematical 160-column grid update!');
+fs.writeFileSync(filePath, content);
+console.log('Selesai! Berjaya mengemas kini grid layout dan HTML foyer.');

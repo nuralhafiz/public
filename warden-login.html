@@ -6,6 +6,7 @@
     <title>GMI HostelKu | Warden Login</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="css/global.css">
     <style>
         * {
             margin: 0;
@@ -56,11 +57,13 @@
             width: 100vw;
             position: relative;
             overflow: hidden;
+            
         }
 
         /* IMAGE SECTION */
         .image-section {
-            flex: 1.5;
+            width: 56.522%;
+            flex: none;
             position: relative;
             overflow: hidden;
             height: 100vh;
@@ -104,33 +107,6 @@
         .image-section:hover .bg-animation {
             transform: scale(1.12);
             transition: transform 0.9s ease-out;
-        }
-
-        /* FLOATING BUBBLE EFFECT */
-        .image-section .floating-bubbles {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 5;
-            overflow: hidden;
-        }
-
-        .image-section .bubble {
-            position: absolute;
-            background: rgba(204, 255, 0, 0.18);
-            border-radius: 50%;
-            filter: blur(4px);
-            animation: floatBubble 22s infinite;
-        }
-
-        @keyframes floatBubble {
-            0% { transform: translateY(0) translateX(0) rotate(0deg); opacity: 0; }
-            15% { opacity: 0.5; }
-            85% { opacity: 0.3; }
-            100% { transform: translateY(-110vh) translateX(40px) rotate(380deg); opacity: 0; }
         }
 
         .image-section::before {
@@ -267,7 +243,9 @@
 
         /* LOGIN SECTION */
         .login-section {
-            flex: 1;
+            z-index: 10;
+            width: 43.478%;
+            flex: none;
             background: linear-gradient(135deg, #ffffff 0%, #f8faff 100%);
             display: flex;
             flex-direction: column;
@@ -452,13 +430,15 @@
             .tagline { font-size: 0.85rem; padding: 6px 20px; margin-top: 15px; }
         }
 
-        @media (max-width: 768px) {
-            .split-container { flex-direction: column; }
-            .image-section { min-height: 38vh; flex: none; height: auto; }
+        @media (max-width: 1024px) {
+            .split-container { flex-direction: column; height: auto; min-height: 100vh; overflow-y: auto; overflow-x: hidden; }
+            .image-section {
+            width: 100% !important; min-height: 38vh; flex: none; height: auto; }
             .brand-logo { font-size: 44px; }
             
             .tagline { font-size: 0.75rem; padding: 5px 16px; margin-top: 12px; }
-            .login-section { padding: 35px 24px; min-height: 62vh; }
+            .login-section {
+            width: 100% !important; padding: 35px 24px; min-height: 62vh; }
             h2 { font-size: 26px; margin-bottom: 28px; }
             .back-arrow { bottom: 20px; left: 20px; width: 42px; height: 42px; }
         }
@@ -475,64 +455,58 @@
         }
     </style>
 
-    <style id="unified-logo-style">
-        .gmi-wrapper {
+    
+    <style>
+        /* Fix for dropdown z-index behind tables/cards */
+        .filters-section, .page-header {
             position: relative;
-            display: inline-block;
-            line-height: 1;
-            padding-right: 0.05em; /* Padding for the wrapper */
+            z-index: 50;
         }
-        .brand-blue {
-            color: #1118a8; /* Deep blue from image */
-            font-weight: 900;
-            font-family: 'Arial', sans-serif;
-            letter-spacing: -1px;
-            text-shadow: 
-                -0.8px -0.8px 0 #fff, 0px -0.8px 0 #fff, 0.8px -0.8px 0 #fff, 0.8px 0px 0 #fff, 0.8px 0.8px 0 #fff, 0px 0.8px 0 #fff, -0.8px 0.8px 0 #fff, -0.8px 0px 0 #fff, 0 4px 6px rgba(0,0,0,0.3);
+    </style>
+
+    <style>
+        .floating-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
         }
-        .brand-dot {
+        .particle {
             position: absolute;
-            top: -0.24em;
-            right: 0.05em;
-            /* Shifted to perfectly align over the I */
-            width: 0.32em;
-            height: 0.32em;
-            background-color: #f93144;
-            /* Red dot from image */
+            background: rgba(204, 255, 0, 0.2);
             border-radius: 50%;
-            box-shadow: 0 0 0 0.8px #fff, 0 4px 6px rgba(0, 0, 0, 0.3);
+            filter: blur(3px);
+            animation: float 20s infinite;
         }
-        .brand-lime {
-            color: #ccff00;
-            margin-left: 5px;
-            font-family: 'Poppins', sans-serif;
-            font-weight: 800;
-            text-shadow: 
-                -0.8px -0.8px 0 #000, 0px -0.8px 0 #000, 0.8px -0.8px 0 #000, 0.8px 0px 0 #000, 0.8px 0.8px 0 #000, 0px 0.8px 0 #000, -0.8px 0.8px 0 #000, -0.8px 0px 0 #000, 0 4px 6px rgba(0,0,0,0.3);
-        }
-        /* Increased font size for dashboards */
-        .brand-container {
-            font-size: 32px !important;
+        @keyframes float {
+            0% { transform: translateY(0) rotate(0deg); opacity: 0; }
+            20% { opacity: 0.5; }
+            80% { opacity: 0.3; }
+            100% { transform: translateY(-100vh) rotate(360deg); opacity: 0; }
         }
     </style>
 </head>
 <body>
+<div class="floating-bg" id="particlesContainer"></div>
 
 <div class="split-container">
     <!-- IMAGE SECTION with dynamic visuals -->
     <div class="image-section">
         <div class="bg-animation"></div>
-        <div class="floating-bubbles" id="bubbleContainer"></div>
         
-        <!-- LOGO AND TAGLINE - Tagline now explicitly placed at the bottom of the logo group -->
+        
+        
+        
+        
+        <!-- LOGO AND TAGLINE -->
         <div class="logo-overlay">
             <div class="brand-logo">
-            <span class="gmi-wrapper"><span class="brand-blue">GMI</span><span class="brand-dot"></span></span><span class="brand-lime">HostelKu.</span>
+            <span class="brand-blue">GM<span class="i-wrapper">I<span class="brand-dot"></span></span></span><span class="brand-lime">HostelKu.</span>
         </div>
-            <!-- Tagline now directly below the brand logo, as requested: bottom of GMI HostelKu -->
-            <div class="tagline">
-                <i class="fas fa-door-open"></i> Seamless Living Experience
-            </div>
+            
         </div>
         
         <!-- BACK ARROW linking to main index -->
@@ -562,13 +536,11 @@
                     </div>
                 </div>
 
-                <a id="forgotPasswordBtn" class="forgot-password">Forgot Password?</a>
+                <a id="forgotPasswordBtn" class="forgot-password" title="Navigation Link">Forgot Password?</a>
 
                 <button type="submit" id="loginBtn" class="btn btn-login">
-                    <span>Login →</span>
+                    <span>Login</span>
                 </button>
-                
-                
             </form>
         </div>
     </div>
@@ -576,32 +548,7 @@
 
 <script>
     (function() {
-        // Enhanced floating bubbles with improved variety and colors matching lime/red accents
-        function createBubbles() {
-            const container = document.getElementById('bubbleContainer');
-            if (!container) return;
-            
-            const colors = ['#ccff00', '#ff4d4d', '#3b82f6', '#a5f0ff', '#00e676', '#ffaa33'];
-            
-            for (let i = 0; i < 55; i++) {
-                const bubble = document.createElement('div');
-                bubble.classList.add('bubble');
-                const size = Math.random() * 14 + 4;
-                bubble.style.width = size + 'px';
-                bubble.style.height = size + 'px';
-                bubble.style.left = Math.random() * 100 + '%';
-                bubble.style.bottom = '-40px';
-                bubble.style.animationDelay = Math.random() * 20 + 's';
-                bubble.style.animationDuration = 13 + Math.random() * 18 + 's';
-                const colorChoice = colors[Math.floor(Math.random() * colors.length)];
-                bubble.style.background = colorChoice;
-                bubble.style.opacity = Math.random() * 0.55 + 0.1;
-                bubble.style.boxShadow = `0 0 12px ${colorChoice}80`;
-                container.appendChild(bubble);
-            }
-        }
         
-        createBubbles();
 
         // Preload images for smoother transition
         const imagesToPreload = [
@@ -747,5 +694,30 @@
         }
     });
 </script>
+
+    <script>
+        function createParticles() {
+            const container = document.getElementById('particlesContainer');
+            if (!container) return;
+            const colors = ['#ccff00', '#ff3131', '#3b82f6', '#ffffff80'];
+            for (let i = 0; i < 35; i++) {
+                const particle = document.createElement('div');
+                particle.classList.add('particle');
+                const size = Math.random() * 8 + 2;
+                particle.style.width = size + 'px';
+                particle.style.height = size + 'px';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.bottom = '-20px';
+                particle.style.animationDelay = '-' + (Math.random() * 25) + 's';
+                particle.style.animationDuration = 12 + Math.random() * 12 + 's';
+                particle.style.background = colors[Math.floor(Math.random() * colors.length)];
+                particle.style.opacity = Math.random() * 0.4 + 0.1;
+                container.appendChild(particle);
+            }
+        }
+        createParticles();
+    </script>
+
 </body>
 </html>
+
