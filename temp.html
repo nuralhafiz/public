@@ -762,39 +762,37 @@
         }
 
         /* TYPE C SPECIFIC PLACEMENT (4 BEDS) */
-        .layout-type-c .p2 { grid-column: 7 / span 4; grid-row: 1 / span 2; }
-        .layout-type-c .p3 { grid-column: 11 / span 4; grid-row: 1 / span 2; }
-        .layout-type-c .p4 { grid-column: 3 / span 4; grid-row: 3 / span 2; }
-        .layout-type-c .c1 { grid-column: 7 / span 4; grid-row: 3 / span 4; position: relative; }
-        .layout-type-c .p1 { grid-column: 11 / span 4; grid-row: 3 / span 2; }
-        .layout-type-c .foyer { grid-column: 11 / span 4; grid-row: 5; }
-        .layout-type-c .toilet { grid-column: 11 / span 2; grid-row: 6; }
-        .layout-type-c .shower { grid-column: 13 / span 2; grid-row: 6; }
+        .layout-type-c .p1 { grid-column: 3 / span 4; grid-row: 1 / span 2; }
+        .layout-type-c .foyer { grid-column: 7 / span 4; grid-row: 2; }
+        .layout-type-c .shower { grid-column: 7 / span 2; grid-row: 1; }
+        .layout-type-c .toilet { grid-column: 9 / span 2; grid-row: 1; }
+        .layout-type-c .p2 { grid-column: 11 / span 4; grid-row: 1 / span 2; }
+        
+        .layout-type-c .c1 { grid-column: 5 / span 8; grid-row: 3; }
+        
+        .layout-type-c .p4 { grid-column: 3 / span 4; grid-row: 4; }
+        .layout-type-c .p3 { grid-column: 11 / span 4; grid-row: 4; }
 
         .layout-type-c .main-door {
             grid-column: 7 / span 4;
-            grid-row: 7;
-            align-self: start;
+            grid-row: 4;
+            align-self: center;
             font-size: 10px;
             font-weight: 700;
             color: #94a3b8;
             text-align: center;
             display: flex;
             flex-direction: column;
-            justify-content: flex-start;
-            margin-top: 5px;
+            justify-content: center;
         }
         .layout-type-c .inner-door {
-            position: absolute;
-            right: 5px;
-            top: 62.5%;
-            transform: translateY(-50%);
+            grid-column: 7 / span 4;
+            grid-row: 2;
+            align-self: flex-start;
             font-size: 10px;
             font-weight: 700;
             color: #94a3b8;
-            display: flex;
-            align-items: center;
-            gap: 4px;
+            text-align: center;
         }
 
         /* Type A Specifics */
@@ -1149,25 +1147,25 @@
                             <div class="room-selectors">
                                 <div>
                                     <label>Block</label>
-                                    <select id="selectBlock" class="native-select" required>
+                                    <select id="selectBlock" required>
                                         <option value="" disabled selected>Choose Block</option>
-                                        <option value="A1">Block A1 (Female)</option>
+                                        <option value="A1">Block A1 (Male)</option>
                                         <option value="A2">Block A2 (Male)</option>
                                         <option value="A3">Block A3 (Male)</option>
-                                        <option value="A4">Block A4 (Male)</option>
-                                        <option value="A5">Block A5 (Male)</option>
-                                        <option value="A7">Block A7 (Female - 4 Beds)</option>
+                                        <option value="A4">Block A4 (Female)</option>
+                                        <option value="A5">Block A5 (Female)</option>
+                                        <option value="A7">Block A7 (Type C - 4 Beds)</option>
                                     </select>
                                 </div>
                                 <div>
                                     <label>Floor</label>
-                                    <select id="selectFloor" class="native-select" disabled required>
+                                    <select id="selectFloor" disabled required>
                                         <option value="" disabled selected>Choose Floor</option>
                                     </select>
                                 </div>
                                 <div>
                                     <label>Room Number</label>
-                                    <select id="selectRoom" class="native-select" disabled required>
+                                    <select id="selectRoom" disabled required>
                                         <option value="" disabled selected>Choose Room</option>
                                     </select>
                                 </div>
@@ -1261,7 +1259,7 @@
         // Set today's date as default for declaration date
                 document.addEventListener('DOMContentLoaded', () => {
             // Initialize Choices.js
-            const selectElements = document.querySelectorAll('select:not(.native-select)');
+            const selectElements = document.querySelectorAll('select');
             selectElements.forEach(el => {
                 new Choices(el, {
                     searchEnabled: false,
@@ -1465,48 +1463,51 @@
             blueprintTitle.innerHTML = `Floor Plan<br>${type}`;
             
             let html = '';
-            if (type === 'Type A' || type === 'Type B') {
-                floorPlanGrid.className = type === 'Type A' ? 'grid-layout layout-type-a' : 'grid-layout layout-type-b';
+            if (type === 'Type A') {
+                floorPlanGrid.className = 'grid-layout layout-type-a';
                 html = `
-                    <div class="annotation main-door">
-                        Main Door
-                        <i class="fas fa-arrow-down" style="margin-top: 3px;"></i>
-                    </div>
-                    <div class="room-block static toilet">TOILET</div>
-                    <div class="room-block static shower">SHOWER</div>
+                    <div class="annotation main-door">Main Door <i class="fas fa-arrow-down" style="margin-top: 3px;"></i></div>
+                    <div class="room-block static toilet">Toilet</div>
+                    <div class="room-block static shower">Shower</div>
                     <div class="room-block static foyer"></div>
+                    <div class="annotation inner-door"><i class="fas fa-arrow-up" style="margin-bottom: 3px;"></i> Door</div>
                     <div class="room-block p1 loading" data-partition="P1"><span class="partition-label">P1</span></div>
-                    <div class="room-block p6 loading" data-partition="P6"><span class="partition-label">P6</span></div>
-                    <div class="room-block corridor c1">
-                        <div class="annotation inner-door">
-                            <i class="fas fa-arrow-up" style="margin-bottom: 3px;"></i>
-                            Door
-                        </div>
-                    </div>
                     <div class="room-block p2 loading" data-partition="P2"><span class="partition-label">P2</span></div>
+                    <div class="room-block p6 loading" data-partition="P6"><span class="partition-label">P6</span></div>
+                    <div class="c1 static">WALKWAY</div>
                     <div class="room-block p5 loading" data-partition="P5"><span class="partition-label">P5</span></div>
                     <div class="room-block p4 loading" data-partition="P4"><span class="partition-label">P4</span></div>
                     <div class="room-block p3 loading" data-partition="P3"><span class="partition-label">P3</span></div>
                 `;
+            } else if (type === 'Type B') {
+                floorPlanGrid.className = 'grid-layout layout-type-b';
+                html = `
+                    <div class="room-block p1 loading" data-partition="P1"><span class="partition-label">P1</span></div>
+                    <div class="room-block static shower">Shower</div>
+                    <div class="room-block static toilet">Toilet</div>
+                    <div class="room-block static foyer"></div>
+                    <div class="annotation inner-door"><i class="fas fa-arrow-up" style="margin-bottom: 3px;"></i> Door</div>
+                    <div class="annotation main-door">Main Door <i class="fas fa-arrow-down" style="margin-top: 3px;"></i></div>
+                    <div class="room-block p2 loading" data-partition="P2"><span class="partition-label">P2</span></div>
+                    <div class="room-block p6 loading" data-partition="P6"><span class="partition-label">P6</span></div>
+                    <div class="c1 static">WALKWAY</div>
+                    <div class="room-block p3 loading" data-partition="P3"><span class="partition-label">P3</span></div>
+                    <div class="room-block p4 loading" data-partition="P4"><span class="partition-label">P4</span></div>
+                    <div class="room-block p5 loading" data-partition="P5"><span class="partition-label">P5</span></div>
+                `;
             } else if (type === 'Type C') {
                 floorPlanGrid.className = 'grid-layout layout-type-c';
                 html = `
-                    <div class="annotation main-door">
-                        <i class="fas fa-arrow-up" style="margin-bottom: 3px;"></i>
-                        Main Door
-                    </div>
-                    <div class="room-block static toilet">TOILET</div>
-                    <div class="room-block static shower">SHOWER</div>
-                    <div class="room-block static foyer"></div>
                     <div class="room-block p1 loading" data-partition="P1"><span class="partition-label">P1</span></div>
-                    <div class="room-block corridor c1">
-                        <div class="annotation inner-door">
-                            Door <i class="fas fa-arrow-right"></i>
-                        </div>
-                    </div>
                     <div class="room-block p2 loading" data-partition="P2"><span class="partition-label">P2</span></div>
+                    <div class="room-block static shower">Shower</div>
+                    <div class="room-block static toilet">Toilet</div>
+                    <div class="room-block static foyer"></div>
+                    <div class="annotation inner-door"><i class="fas fa-arrow-up" style="margin-bottom: 3px;"></i> Door</div>
+                    <div class="c1 static">WALKWAY</div>
                     <div class="room-block p4 loading" data-partition="P4"><span class="partition-label">P4</span></div>
                     <div class="room-block p3 loading" data-partition="P3"><span class="partition-label">P3</span></div>
+                    <div class="annotation main-door">Main Door <i class="fas fa-arrow-up" style="margin-top: 3px;"></i></div>
                 `;
             }
             
@@ -1557,6 +1558,51 @@
             displaySelectedPartition.textContent = 'None';
             selectedPartitionInput.value = '';
         }
+        });
+
+        btnTypeB.addEventListener('click', () => {
+            btnTypeB.classList.add('active');
+            btnTypeA.classList.remove('active');
+            floorPlanGrid.className = 'grid-layout layout-type-b';
+            blueprintTitle.innerHTML = 'Floor Plan<br>Type B';
+            selectedPartitionInput.setAttribute('data-room-type', 'typeB');
+            loadAvailability('typeB');
+        });
+
+        // ── Partition Click Handler ────────────────────────────────────────
+        document.addEventListener('click', (e) => {
+            const block = e.target.closest('.room-block[data-partition]');
+            if (!block) return;
+
+            if (block.classList.contains('unavailable') || block.classList.contains('loading')) {
+                Swal.fire({ heightAuto: false,
+                    icon: 'error',
+                    title: block.classList.contains('loading') ? 'Loading...' : 'Partition Unavailable',
+                    text: block.classList.contains('loading')
+                        ? 'Please wait while availability is being loaded.'
+                        : 'This partition is already occupied. Please choose a green partition.',
+                    confirmButtonColor: '#ef4444'
+                });
+                return;
+            }
+
+            clearSelection();
+            block.classList.add('selected');
+            const pValue = block.getAttribute('data-partition');
+            const roomType = selectedPartitionInput.getAttribute('data-room-type') || 'typeA';
+            displaySelectedPartition.textContent = `${pValue} (${roomType === 'typeA' ? 'Type A' : 'Type B'})`;
+            selectedPartitionInput.value = `${roomType}:${pValue}`;
+        });
+
+        function clearSelection() {
+            document.querySelectorAll('.room-block[data-partition]').forEach(b => b.classList.remove('selected'));
+            displaySelectedPartition.textContent = 'None';
+            selectedPartitionInput.value = '';
+        }
+
+        // Load Type A by default on page load
+        selectedPartitionInput.setAttribute('data-room-type', 'typeA');
+        loadAvailability('typeA');
 
         document.getElementById('applyForm').addEventListener('submit', async (e) => { 
             e.preventDefault(); 
