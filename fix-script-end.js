@@ -9,7 +9,7 @@ const files = [
 files.forEach(f => {
     let c = fs.readFileSync(f, 'utf8');
     // Replace the literal string \n with an actual newline
-    c = c.split('firebase-auth.js";\\n').join('firebase-auth.js";\n');
+    c = c.split('\\n    </script>\\n</body>').join('\n    </script>\n</body>');
     fs.writeFileSync(f, c);
     console.log('Fixed ' + f);
 });
