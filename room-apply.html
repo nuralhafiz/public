@@ -767,8 +767,9 @@
         .layout-type-c .p4 { grid-column: 3 / span 4; grid-row: 3 / span 2; }
         .layout-type-c .c1 { grid-column: 7 / span 4; grid-row: 3 / span 4; position: relative; }
         .layout-type-c .p1 { grid-column: 11 / span 4; grid-row: 3 / span 2; }
-        .layout-type-c .toilet { grid-column: 11 / span 2; grid-row: 5 / span 2; }
-        .layout-type-c .shower { grid-column: 13 / span 2; grid-row: 5 / span 2; }
+        .layout-type-c .foyer { grid-column: 11 / span 4; grid-row: 5; }
+        .layout-type-c .toilet { grid-column: 11 / span 2; grid-row: 6; }
+        .layout-type-c .shower { grid-column: 13 / span 2; grid-row: 6; }
 
         .layout-type-c .main-door {
             grid-column: 7 / span 4;
@@ -786,7 +787,7 @@
         .layout-type-c .inner-door {
             position: absolute;
             right: 5px;
-            top: 50%;
+            top: 62.5%;
             transform: translateY(-50%);
             font-size: 10px;
             font-weight: 700;
@@ -1496,6 +1497,7 @@
                     </div>
                     <div class="room-block static toilet">TOILET</div>
                     <div class="room-block static shower">SHOWER</div>
+                    <div class="room-block static foyer"></div>
                     <div class="room-block p1 loading" data-partition="P1"><span class="partition-label">P1</span></div>
                     <div class="room-block corridor c1">
                         <div class="annotation inner-door">
