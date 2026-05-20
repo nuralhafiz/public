@@ -1463,51 +1463,49 @@
             blueprintTitle.innerHTML = `Floor Plan<br>${type}`;
             
             let html = '';
-            if (type === 'Type A') {
-                floorPlanGrid.className = 'grid-layout layout-type-a';
+            if (type === 'Type A' || type === 'Type B') {
+                floorPlanGrid.className = type === 'Type A' ? 'grid-layout layout-type-a' : 'grid-layout layout-type-b';
                 html = `
-                    <div class="annotation main-door">Main Door <i class="fas fa-arrow-down" style="margin-top: 3px;"></i></div>
-                    <div class="room-block static toilet">Toilet</div>
-                    <div class="room-block static shower">Shower</div>
+                    <div class="annotation main-door">
+                        Main Door
+                        <i class="fas fa-arrow-down" style="margin-top: 3px;"></i>
+                    </div>
+                    <div class="room-block static toilet">TOILET</div>
+                    <div class="room-block static shower">SHOWER</div>
                     <div class="room-block static foyer"></div>
-                    <div class="annotation inner-door"><i class="fas fa-arrow-up" style="margin-bottom: 3px;"></i> Door</div>
                     <div class="room-block p1 loading" data-partition="P1"><span class="partition-label">P1</span></div>
-                    <div class="room-block p2 loading" data-partition="P2"><span class="partition-label">P2</span></div>
                     <div class="room-block p6 loading" data-partition="P6"><span class="partition-label">P6</span></div>
-                    <div class="c1 static">WALKWAY</div>
+                    <div class="room-block corridor c1">
+                        <div class="annotation inner-door">
+                            <i class="fas fa-arrow-up" style="margin-bottom: 3px;"></i>
+                            Door
+                        </div>
+                    </div>
+                    <div class="room-block p2 loading" data-partition="P2"><span class="partition-label">P2</span></div>
                     <div class="room-block p5 loading" data-partition="P5"><span class="partition-label">P5</span></div>
                     <div class="room-block p4 loading" data-partition="P4"><span class="partition-label">P4</span></div>
                     <div class="room-block p3 loading" data-partition="P3"><span class="partition-label">P3</span></div>
-                `;
-            } else if (type === 'Type B') {
-                floorPlanGrid.className = 'grid-layout layout-type-b';
-                html = `
-                    <div class="room-block p1 loading" data-partition="P1"><span class="partition-label">P1</span></div>
-                    <div class="room-block static shower">Shower</div>
-                    <div class="room-block static toilet">Toilet</div>
-                    <div class="room-block static foyer"></div>
-                    <div class="annotation inner-door"><i class="fas fa-arrow-up" style="margin-bottom: 3px;"></i> Door</div>
-                    <div class="annotation main-door">Main Door <i class="fas fa-arrow-down" style="margin-top: 3px;"></i></div>
-                    <div class="room-block p2 loading" data-partition="P2"><span class="partition-label">P2</span></div>
-                    <div class="room-block p6 loading" data-partition="P6"><span class="partition-label">P6</span></div>
-                    <div class="c1 static">WALKWAY</div>
-                    <div class="room-block p3 loading" data-partition="P3"><span class="partition-label">P3</span></div>
-                    <div class="room-block p4 loading" data-partition="P4"><span class="partition-label">P4</span></div>
-                    <div class="room-block p5 loading" data-partition="P5"><span class="partition-label">P5</span></div>
                 `;
             } else if (type === 'Type C') {
                 floorPlanGrid.className = 'grid-layout layout-type-c';
                 html = `
-                    <div class="room-block p1 loading" data-partition="P1"><span class="partition-label">P1</span></div>
-                    <div class="room-block p2 loading" data-partition="P2"><span class="partition-label">P2</span></div>
-                    <div class="room-block static shower">Shower</div>
-                    <div class="room-block static toilet">Toilet</div>
+                    <div class="annotation main-door">
+                        Main Door
+                        <i class="fas fa-arrow-down" style="margin-top: 3px;"></i>
+                    </div>
+                    <div class="room-block static toilet">TOILET</div>
+                    <div class="room-block static shower">SHOWER</div>
                     <div class="room-block static foyer"></div>
-                    <div class="annotation inner-door"><i class="fas fa-arrow-up" style="margin-bottom: 3px;"></i> Door</div>
-                    <div class="c1 static">WALKWAY</div>
+                    <div class="room-block p1 loading" data-partition="P1"><span class="partition-label">P1</span></div>
+                    <div class="room-block corridor c1">
+                        <div class="annotation inner-door">
+                            <i class="fas fa-arrow-up" style="margin-bottom: 3px;"></i>
+                            Door
+                        </div>
+                    </div>
+                    <div class="room-block p2 loading" data-partition="P2"><span class="partition-label">P2</span></div>
                     <div class="room-block p4 loading" data-partition="P4"><span class="partition-label">P4</span></div>
                     <div class="room-block p3 loading" data-partition="P3"><span class="partition-label">P3</span></div>
-                    <div class="annotation main-door">Main Door <i class="fas fa-arrow-up" style="margin-top: 3px;"></i></div>
                 `;
             }
             
