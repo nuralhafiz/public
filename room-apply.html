@@ -1147,7 +1147,7 @@
                             <div class="room-selectors">
                                 <div>
                                     <label>Block</label>
-                                    <select id="selectBlock" required>
+                                    <select id="selectBlock" class="native-select" required>
                                         <option value="" disabled selected>Choose Block</option>
                                         <option value="A1">Block A1 (Male)</option>
                                         <option value="A2">Block A2 (Male)</option>
@@ -1159,13 +1159,13 @@
                                 </div>
                                 <div>
                                     <label>Floor</label>
-                                    <select id="selectFloor" disabled required>
+                                    <select id="selectFloor" class="native-select" disabled required>
                                         <option value="" disabled selected>Choose Floor</option>
                                     </select>
                                 </div>
                                 <div>
                                     <label>Room Number</label>
-                                    <select id="selectRoom" disabled required>
+                                    <select id="selectRoom" class="native-select" disabled required>
                                         <option value="" disabled selected>Choose Room</option>
                                     </select>
                                 </div>
@@ -1259,7 +1259,7 @@
         // Set today's date as default for declaration date
                 document.addEventListener('DOMContentLoaded', () => {
             // Initialize Choices.js
-            const selectElements = document.querySelectorAll('select');
+            const selectElements = document.querySelectorAll('select:not(.native-select)');
             selectElements.forEach(el => {
                 new Choices(el, {
                     searchEnabled: false,
