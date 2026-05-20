@@ -98,4 +98,112 @@
     gap: 0;
 }
 
+/* Force Mobile UI Fixes for Application Forms */
+@media (max-width: 768px) {
+    .checkbox-group {
+        display: flex !important;
+        flex-direction: row !important;
+        align-items: flex-start !important;
+        gap: 12px !important;
+    }
+    .checkbox-group input[type="checkbox"] {
+        margin-top: 2px !important;
+    }
+    .declaration-section {
+        padding: 20px 15px !important;
+        overflow: hidden !important;
+    }
+    .date-group, .date-place-group {
+        display: grid !important;
+        grid-template-columns: 1fr !important;
+        gap: 15px !important;
+    }
+    .date-group input, .date-place-group input,
+    input[type="date"], input[type="time"], input[type="datetime-local"] {
+        width: 100% !important;
+        max-width: 100% !important;
+        min-width: 0 !important;
+        box-sizing: border-box !important;
+        -webkit-appearance: none !important;
+        appearance: none !important;
+    }
+}
 
+
+/* Notification Bell Styling */
+.notification-container {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.15);
+    text-decoration: none !important;
+    transition: all 0.3s ease;
+    margin-right: 15px;
+}
+
+.notification-container:hover {
+    background-color: rgba(255, 255, 255, 0.25);
+    transform: translateY(-2px);
+}
+
+.notification-bell {
+    font-size: 1.25rem;
+    color: #ffffff !important;
+    transition: transform 0.3s ease;
+}
+
+.notification-container:hover .notification-bell {
+    transform: rotate(15deg);
+}
+
+.notification-badge {
+    position: absolute;
+    top: -2px;
+    right: -4px;
+    background-color: #f93144;
+    color: white;
+    font-size: 0.7rem;
+    font-weight: bold;
+    min-width: 18px;
+    height: 18px;
+    border-radius: 9px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid #1118a8;
+    padding: 0 4px;
+    box-sizing: border-box;
+}
+
+.notification-badge.hidden {
+    display: none;
+}
+
+/* Fix Logo Wrapping on Mobile */
+.brand-blue, .brand-lime {
+    white-space: nowrap;
+}
+.logo, a.logo {
+    white-space: nowrap !important;
+    display: inline-flex !important;
+    align-items: center;
+    flex-wrap: nowrap;
+}
+.i-wrapper {
+    white-space: nowrap;
+}
+
+
+/* Mobile Logo Size Fix */
+@media (max-width: 480px) {
+    .brand-container {
+        font-size: 24px !important;
+    }
+    header {
+        padding: 0 15px !important;
+    }
+}

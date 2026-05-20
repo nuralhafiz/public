@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GMI HostelKu - Warden Dashboard</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link rel="stylesheet" href="css/global.css">
+    <link rel="stylesheet" href="css/global.css?v=5">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
@@ -708,6 +708,7 @@
             z-index: 50;
         }
     </style>
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 </head>
 <body>
 
@@ -987,6 +988,73 @@
     import { collection, query, where, getDocs, orderBy, limit } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
     import { doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
     
+    
+    window.viewMoveOutRequest = async (reqId) => {
+        Swal.fire({ heightAuto: false,
+            title: 'Loading...',
+            text: 'Fetching request details',
+            allowOutsideClick: false,
+            didOpen: () => {
+                Swal.showLoading();
+            }
+        });
+        
+        try {
+            const reqRef = doc(db, "moveout_requests", reqId);
+            const reqSnap = await getDoc(reqRef);
+            
+            if (reqSnap.exists()) {
+                const req = reqSnap.data();
+                const status = req.status || 'pending';
+                const statusClass = status === 'completed' ? 'status-approved' : (status === 'rejected' ? 'status-rejected' : 'status-pending');
+                const dateStr = req.submittedAt ? req.submittedAt.toDate().toLocaleDateString('en-MY', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute:'2-digit' }) : '-';
+                
+                const htmlContent = `
+                    <div style="text-align: left; background: #f9f9f9; padding: 20px; border-radius: 10px; margin-top: 15px;">
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 10px; border-bottom: 1px solid #eee; padding-bottom: 5px;">
+                            <span style="color: #666; font-weight: 500;">Student Name</span>
+                            <span style="font-weight: 600; color: #0f1638; text-transform: capitalize;">${req.fullName || 'N/A'}</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 10px; border-bottom: 1px solid #eee; padding-bottom: 5px;">
+                            <span style="color: #666; font-weight: 500;">Room Number</span>
+                            <span style="font-weight: 600; color: #0f1638;">${req.unitNo || 'N/A'}</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 10px; border-bottom: 1px solid #eee; padding-bottom: 5px;">
+                            <span style="color: #666; font-weight: 500;">Move-Out Date</span>
+                            <span style="font-weight: 600; color: #0f1638;">${req.moveOutDate || 'N/A'}</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 10px; border-bottom: 1px solid #eee; padding-bottom: 5px;">
+                            <span style="color: #666; font-weight: 500;">Date Applied</span>
+                            <span style="font-weight: 600; color: #0f1638;">${dateStr}</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between;">
+                            <span style="color: #666; font-weight: 500;">Status</span>
+                            <span class="status-badge ${statusClass}" style="text-transform: capitalize;">${status}</span>
+                        </div>
+                    </div>
+                `;
+                
+                Swal.fire({ heightAuto: false,
+                    title: 'Move-Out Request Details',
+                    html: htmlContent,
+                    showCancelButton: true,
+                    confirmButtonText: 'Manage Full Request',
+                    cancelButtonText: 'Close',
+                    confirmButtonColor: '#2d72d2',
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.href = 'warden-moveout.html';
+                    }
+                });
+            } else {
+                Swal.fire('Error', 'Request not found', 'error');
+            }
+        } catch (e) {
+            console.error(e);
+            Swal.fire('Error', 'Failed to fetch details: ' + e.message, 'error');
+        }
+    };
+
     window.viewApplication = async (appId) => {
         Swal.fire({ heightAuto: false,
             title: 'Loading...',
@@ -1309,7 +1377,7 @@
                             <td><span class="status-badge ${statusClass}" style="text-transform: capitalize;">${status}</span></td>
                             <td>
                                 <div class="action-buttons">
-                                    <button class="action-btn action-view" onclick="location.href='warden-moveout.html'" title="View">
+                                    <button class="action-btn action-view" onclick="viewMoveOutRequest('${req.id}')" title="View">
                                         <i class="fas fa-eye"></i>
                                     </button>
                                 </div>
@@ -1368,9 +1436,7 @@
                 maintenanceReqs.push(data);
                 
                 maintCount++;
-                let pClass = 'priority-low';
-                if (data.issueType && (data.issueType.includes('Electrical') || data.issueType.includes('Plumbing'))) pClass = 'priority-high';
-                else if (data.issueType && data.issueType.includes('AC')) pClass = 'priority-medium';
+                let pClass = data.priority ? 'priority-' + data.priority : 'priority-medium';
                 
                 if (pClass === 'priority-high' || pClass === 'priority-medium') {
                     urgentMaintCount++;
@@ -1396,12 +1462,16 @@
                 let maintHtml = '';
                 maintenanceReqs.slice(0, 3).forEach(req => {
                     const studentName = req.userEmail ? req.userEmail.split('@')[0] : 'Student';
-                    // Determine priority based on type (demo logic)
-                    let pClass = 'priority-low';
-                    if (req.issueType && (req.issueType.includes('Electrical') || req.issueType.includes('Plumbing'))) pClass = 'priority-high';
-                    else if (req.issueType && req.issueType.includes('AC')) pClass = 'priority-medium';
+                    // Determine priority based on student input
+                    let pClass = req.priority ? 'priority-' + req.priority : 'priority-medium';
                     
-                    const issueName = req.issueType || 'General Issue';
+                    let priorityLabel = 'Medium Priority';
+                    if (pClass === 'priority-high') priorityLabel = 'High Priority';
+                    else if (pClass === 'priority-low') priorityLabel = 'Low Priority';
+                    
+                    // Use req.category from Firestore
+                    const issueCategory = req.category || req.issueType;
+                    const issueName = (issueCategory && issueCategory !== 'General Issue') ? `${issueCategory} - ${priorityLabel}` : priorityLabel;
                     const timeStr = req.timestamp ? req.timestamp.toDate().toLocaleString('en-MY', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }) : '-';
                     
                     maintHtml += `

@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GMI HostelKu - Room Management</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link rel="stylesheet" href="css/global.css">
+    <link rel="stylesheet" href="css/global.css?v=5">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
@@ -297,8 +297,8 @@
         .filter-group {
             display: flex;
             gap: 10px;
-            flex-wrap: nowrap; /* Force one line */
-            flex: 2; /* Give more space to filters */
+            flex-wrap: nowrap;
+            flex: 0 1 auto;
         }
 
         .filter-select {
@@ -389,6 +389,10 @@
             transition: all 0.3s;
             border-left: 4px solid;
             cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            box-sizing: border-box;
         }
 
         .room-card.available { border-left-color: #4caf50; }
@@ -475,32 +479,26 @@
             font-size: 11px;
             font-weight: 600;
             display: inline-block;
+            margin-top: 10px;
+            margin-bottom: 15px;
         }
 
         .status-available { background: #e8f5e9; color: #4caf50; }
+        .status-partial { background: #fef3c7; color: #d97706; }
         .status-occupied { background: #e3f2fd; color: #2d72d2; }
         .status-maintenance { background: #fff3e0; color: #ff9800; }
         .status-reserved { background: #e3f2fd; color: #2196f3; }
 
         .room-footer {
             display: flex;
-            justify-content: space-between;
+            justify-content: flex-end;
             align-items: center;
-            margin-top: 12px;
+            margin-top: auto;
             padding-top: 12px;
             border-top: 1px solid #f0f0f0;
         }
 
-        .room-price {
-            font-weight: 700;
-            color: #0f1638;
-        }
-
-        .room-price span {
-            font-size: 11px;
-            color: #999;
-            font-weight: 400;
-        }
+        
 
         .room-actions {
             display: flex;
@@ -636,6 +634,7 @@
             z-index: 50;
         }
     </style>
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 </head>
 <body>
     <header>
@@ -675,13 +674,7 @@
                     <i class="fas fa-bed"></i>
                     Room Management
                 </h2>
-                <div class="stats-badge" id="statsBadge">
-                    <span class="stat-badge-item"><i class="fas fa-door-open"></i> Total: <span id="totalRooms">0</span></span>
-                    <span class="stat-badge-item"><i class="fas fa-user-check"></i> Occupied: <span id="occupiedCount">0</span></span>
-                    <span class="stat-badge-item"><i class="fas fa-clock"></i> Available: <span id="availableCount">0</span></span>
-                    <span class="stat-badge-item"><i class="fas fa-tools"></i> Maintenance: <span id="maintenanceCount">0</span></span>
                 </div>
-            </div>
 
             <!-- Summary Cards -->
             <div class="summary-grid">
@@ -758,25 +751,37 @@
                     <select class="filter-select" id="statusFilter">
                         <option value="all">All Status</option>
                         <option value="available">Available</option>
-                        <option value="occupied">Occupied</option>
+                        <option value="occupied">Partially Occupied</option>
+                        <option value="full">Fully Occupied</option>
+                        
+                        
                         <option value="maintenance">Maintenance</option>
-                        <option value="reserved">Reserved</option>
+                        
                     </select>
                     <select class="filter-select" id="typeFilter">
                         <option value="all">All Types</option>
-                        <option value="single">Single</option>
-                        <option value="double">Double</option>
-                        <option value="quad">Quad</option>
+                        <option value="Type A">Type A</option>
+                        <option value="Type B">Type B</option>
+                        <option value="Type C">Type C</option>
                     </select>
                     <select class="filter-select" id="floorFilter">
                         <option value="all">All Floors</option>
-                        <option value="1">Floor 1</option>
-                        <option value="2">Floor 2</option>
-                        <option value="3">Floor 3</option>
-                        <option value="4">Floor 4</option>
-                        <option value="5">Floor 5</option>
+                        <option value="1">Level 1</option>
+                        <option value="2">Level 2</option>
+                        <option value="3">Level 3</option>
+                        <option value="4">Level 4</option>
+                        <option value="5">Level 5</option>
+                        <option value="6">Level 6</option>
+                        <option value="7">Level 7</option>
+                        <option value="8">Level 8</option>
+                        <option value="9">Level 9</option>
+                        <option value="10">Level 10</option>
+                        <option value="11">Level 11</option>
                     </select>
-                    <button class="refresh-btn" id="refreshBtn">
+                    <button class="refresh-btn" id="exportCsvBtn" style="background: #10b981; margin-right: 10px;">
+                            <i class="fas fa-file-csv"></i> Export CSV
+                        </button>
+                        <button class="refresh-btn" id="refreshBtn">
                         <i class="fas fa-sync-alt"></i> Refresh
                     </button>
                 </div>
@@ -871,8 +876,8 @@
                         ...doc.data()
                     });
                 });
-                updateStats();
                 renderRooms();
+                    updateStats();
             }, (error) => {
                 console.error("Error listening to rooms:", error);
             });
@@ -915,14 +920,9 @@
         // Update statistics
         function updateStats() {
             const total = allRooms.length;
-            const occupied = allRooms.filter(room => room.status === 'occupied').length;
-            const available = allRooms.filter(room => room.status === 'available').length;
-            const maintenance = allRooms.filter(room => room.status === 'maintenance').length;
-            
-            document.getElementById('totalRooms').textContent = total;
-            document.getElementById('occupiedCount').textContent = occupied;
-            document.getElementById('availableCount').textContent = available;
-            document.getElementById('maintenanceCount').textContent = maintenance;
+            const occupied = allRooms.filter(room => room.effectiveStatus === 'occupied' || room.effectiveStatus === 'partial').length;
+            const available = allRooms.filter(room => room.effectiveStatus === 'available').length;
+            const maintenance = allRooms.filter(room => room.effectiveStatus === 'maintenance').length;
             
             document.getElementById('totalSummary').textContent = total;
             document.getElementById('occupiedSummary').textContent = occupied;
@@ -937,6 +937,27 @@
             const typeFilter = document.getElementById('typeFilter').value;
             const floorFilter = document.getElementById('floorFilter').value;
             
+            
+            allRooms.forEach(room => {
+                let occCount = 0;
+                if (room.occupants) {
+                    occCount = Object.keys(room.occupants).length;
+                } else if (room.status === 'occupied' && room.occupantName) {
+                    occCount = 1;
+                }
+                
+                let effectiveStatus = room.status;
+                if (effectiveStatus === 'available' && occCount > 0) {
+                    effectiveStatus = occCount >= (room.beds || 6) ? 'occupied' : 'partial';
+                } else if (effectiveStatus === 'occupied' && occCount < (room.beds || 6)) {
+                    effectiveStatus = 'partial';
+                }
+                if (occCount === 0 && effectiveStatus !== 'maintenance' && effectiveStatus !== 'reserved') {
+                    effectiveStatus = 'available';
+                }
+                room.effectiveStatus = effectiveStatus;
+            });
+            
             let filteredRooms = allRooms.filter(room => {
                 // Block filter (handled separately)
                 if (currentBlock !== 'all' && room.block !== currentBlock) return false;
@@ -944,12 +965,26 @@
                 // Search filter
                 if (searchTerm) {
                     const matchesRoom = room.roomNumber?.toLowerCase().includes(searchTerm) || false;
-                    const matchesOccupant = room.occupantName?.toLowerCase().includes(searchTerm) || false;
+                    let matchesOccupant = false;
+                    if (room.occupants) {
+                        matchesOccupant = Object.values(room.occupants).some(occ => occ.name.toLowerCase().includes(searchTerm));
+                    } else if (room.occupantName) {
+                        matchesOccupant = room.occupantName.toLowerCase().includes(searchTerm);
+                    }
                     if (!matchesRoom && !matchesOccupant) return false;
                 }
-                
                 // Status filter
-                if (statusFilter !== 'all' && room.status !== statusFilter) return false;
+                if (statusFilter !== 'all') {
+                    if (statusFilter === 'occupied') {
+                        // "Partially Occupied" option
+                        if (room.effectiveStatus !== 'partial') return false;
+                    } else if (statusFilter === 'full') {
+                        // "Fully Occupied" option
+                        if (room.effectiveStatus !== 'occupied') return false;
+                    } else {
+                        if (room.effectiveStatus !== statusFilter) return false;
+                    }
+                }
                 
                 // Type filter
                 if (typeFilter !== 'all' && room.type !== typeFilter) return false;
@@ -980,9 +1015,9 @@
                 for (const floor of floors) {
                     const floorRooms = blockRooms.filter(room => room.floor === floor);
                     const floorCount = floorRooms.length;
-                    const occupiedCount = floorRooms.filter(r => r.status === 'occupied').length;
-                    const availableCount = floorRooms.filter(r => r.status === 'available').length;
-                    const maintenanceCount = floorRooms.filter(r => r.status === 'maintenance').length;
+                    const occupiedCount = floorRooms.filter(r => r.effectiveStatus === 'occupied' || r.effectiveStatus === 'partial').length;
+                    const availableCount = floorRooms.filter(r => r.effectiveStatus === 'available').length;
+                    const maintenanceCount = floorRooms.filter(r => r.effectiveStatus === 'maintenance').length;
                     
                     const floorSection = document.createElement('div');
                     floorSection.className = 'floor-section';
@@ -1023,37 +1058,57 @@
         }
 
         function getFloorName(floor) {
-            const floorNames = {
-                1: 'Ground Floor',
-                2: 'First Floor',
-                3: 'Second Floor',
-                4: 'Third Floor',
-                5: 'Fourth Floor'
-            };
-            return floorNames[floor] || `Floor ${floor}`;
+            return `Level ${floor}`;
         }
 
         function createRoomCard(room) {
             const card = document.createElement('div');
-            card.className = `room-card ${room.status}`;
-            card.dataset.status = room.status;
+            
+            let occCount = 0;
+            let firstOcc = null;
+            if (room.occupants) {
+                const keys = Object.keys(room.occupants);
+                occCount = keys.length;
+                if (occCount > 0) firstOcc = room.occupants[keys[0]];
+            } else if (room.status === 'occupied' && room.occupantName) {
+                occCount = 1;
+                firstOcc = { name: room.occupantName, id: room.occupantId, phone: room.occupantPhone };
+            }
+
+            let effectiveStatus = room.status;
+            if (effectiveStatus === 'available' && occCount > 0) {
+                 effectiveStatus = occCount >= (room.beds || 6) ? 'occupied' : 'partial';
+            } else if (effectiveStatus === 'occupied' && occCount < (room.beds || 6)) {
+                 effectiveStatus = 'partial';
+            }
+            if (occCount === 0 && effectiveStatus !== 'maintenance' && effectiveStatus !== 'reserved') {
+                 effectiveStatus = 'available';
+            }
+            room.effectiveStatus = effectiveStatus;
+
+            card.className = "room-card " + effectiveStatus;
+            card.dataset.status = effectiveStatus;
             card.dataset.type = room.type;
             card.dataset.floor = room.floor;
             card.dataset.block = room.block;
             
-            const typeNames = { single: 'Single', double: 'Double', quad: 'Quad' };
+            const typeNames = { 'Type A': 'Type A', 'Type B': 'Type B', 'Type C': 'Type C' };
             
             let occupantHtml = '';
-            if (room.status === 'occupied' && room.occupantName) {
+            if (occCount > 0 && firstOcc) {
+                const extra = occCount > 1 ? " (+" + (occCount - 1) + " more)" : '';
                 occupantHtml = `
                     <div class="occupant-info">
-                        <div class="occupant-name">
-                            <i class="fas fa-user"></i> ${room.occupantName}
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 8px;">
+                            <span style="font-size:13px; font-weight:600; color:#0f1638;"><i class="fas fa-users" style="color:#2d72d2; margin-right:5px;"></i> ${occCount} / ${room.beds || 6} Occupied</span>
+                            <span style="font-size:11px; color:#64748b;">${firstOcc.name.substring(0, 15)}${extra}</span>
                         </div>
-                        <div class="occupant-meta">${room.occupantId || ''} • ${room.occupantPhone || ''}</div>
+                        <div style="width: 100%; background: #e2e8f0; height: 6px; border-radius: 3px; overflow: hidden;">
+                            <div style="width: ${(occCount / (room.beds || 6)) * 100}%; background: ${occCount >= (room.beds || 6) ? '#ef4444' : '#f59e0b'}; height: 100%; border-radius: 3px; transition: width 0.3s;"></div>
+                        </div>
                     </div>
                 `;
-            } else if (room.status === 'reserved' && room.reservedFor) {
+            } else if (effectiveStatus === 'reserved' && room.reservedFor) {
                 occupantHtml = `
                     <div class="occupant-info">
                         <div class="occupant-name">
@@ -1065,45 +1120,49 @@
             }
             
             let actionButtons = '';
-            if (room.status === 'available') {
-                actionButtons = `
-                    <button class="room-action-btn" onclick="assignRoom('${room.id}')" title="Assign Student"><i class="fas fa-user-plus"></i></button>
-                    <button class="room-action-btn" onclick="editRoom('${room.id}')" title="Edit Room"><i class="fas fa-edit"></i></button>
-                    <button class="room-action-btn" onclick="markMaintenance('${room.id}')" title="Mark Maintenance"><i class="fas fa-tools"></i></button>
-                `;
-            } else if (room.status === 'occupied') {
-                actionButtons = `
-                    <button class="room-action-btn" onclick="viewOccupant('${room.id}')" title="View Occupant"><i class="fas fa-eye"></i></button>
-                    <button class="room-action-btn" onclick="editRoom('${room.id}')" title="Edit Room"><i class="fas fa-edit"></i></button>
-                    <button class="room-action-btn" onclick="vacateRoom('${room.id}')" title="Vacate Room"><i class="fas fa-user-slash"></i></button>
-                `;
-            } else if (room.status === 'maintenance') {
-                actionButtons = `
-                    <button class="room-action-btn" onclick="editRoom('${room.id}')" title="Edit Room"><i class="fas fa-edit"></i></button>
-                    <button class="room-action-btn" onclick="completeMaintenance('${room.id}')" title="Complete Maintenance"><i class="fas fa-check"></i></button>
-                `;
-            } else if (room.status === 'reserved') {
-                actionButtons = `
-                    <button class="room-action-btn" onclick="editRoom('${room.id}')" title="Edit"><i class="fas fa-edit"></i></button>
-                    <button class="room-action-btn" onclick="cancelReservation('${room.id}')" title="Cancel Reservation"><i class="fas fa-times"></i></button>
-                `;
+            if (effectiveStatus === 'available' || effectiveStatus === 'partial') {
+                actionButtons += `<button class="room-action-btn" onclick="assignRoom('${room.id}')" title="Assign Student"><i class="fas fa-user-plus"></i></button>`;
             }
             
-            card.innerHTML = `
+            if (occCount > 0) {
+                actionButtons += `<button class="room-action-btn" onclick="viewOccupant('${room.id}')" title="Manage Occupants"><i class="fas fa-users-cog"></i></button>`;
+            }
+
+            if (effectiveStatus === 'available' || effectiveStatus === 'partial') {
+                actionButtons += `<button class="room-action-btn" onclick="editRoom('${room.id}')" title="Edit Room"><i class="fas fa-edit"></i></button>`;
+                actionButtons += `<button class="room-action-btn" onclick="markMaintenance('${room.id}')" title="Mark Maintenance"><i class="fas fa-tools"></i></button>`;
+            }
+
+            if (effectiveStatus === 'maintenance') {
+                actionButtons += `<button class="room-action-btn" onclick="editRoom('${room.id}')" title="Edit Room"><i class="fas fa-edit"></i></button>`;
+                actionButtons += `<button class="room-action-btn" onclick="completeMaintenance('${room.id}')" title="Complete Maintenance"><i class="fas fa-check"></i></button>`;
+            } else if (effectiveStatus === 'reserved') {
+                actionButtons += `<button class="room-action-btn" onclick="editRoom('${room.id}')" title="Edit"><i class="fas fa-edit"></i></button>`;
+                actionButtons += `<button class="room-action-btn" onclick="cancelReservation('${room.id}')" title="Cancel Reservation"><i class="fas fa-times"></i></button>`;
+            }
+            
+            let bedsText = (room.beds || 1) + " bed";
+            if (room.beds !== 1) bedsText += "s";
+
+                let badgeText = effectiveStatus.charAt(0).toUpperCase() + effectiveStatus.slice(1);
+                if (effectiveStatus === 'partial') badgeText = 'Partially Occupied';
+                if (effectiveStatus === 'occupied') badgeText = 'Fully Occupied';
+
+                card.innerHTML = `
                 <div class="room-header">
                     <span class="room-number">${room.roomNumber}</span>
                     <span class="room-type">${typeNames[room.type] || room.type}</span>
                 </div>
                 <div class="room-details">
                     <div class="detail-row">
-                        <i class="fas fa-ruler-combined"></i>
-                        <span>${room.size || '180'} sq ft • ${room.beds || 1} bed${room.beds !== 1 ? 's' : ''} • ${room.hasAC ? 'AC' : 'No AC'}</span>
+                        <i class="fas fa-bed"></i>
+                        <span>${bedsText} • ${room.hasAC ? 'AC' : 'No AC'}</span>
                     </div>
                 </div>
                 ${occupantHtml}
-                <div class="status-badge status-${room.status}">${room.status.charAt(0).toUpperCase() + room.status.slice(1)}</div>
+                <div class="status-badge status-${effectiveStatus}">${badgeText}</div>
                 <div class="room-footer">
-                    <div class="room-price">RM ${room.price || 350} <span>/month</span></div>
+                    
                     <div class="room-actions">
                         ${actionButtons}
                     </div>
@@ -1121,128 +1180,359 @@
             renderRooms();
         };
 
+        
         // Room action functions
         window.assignRoom = async (roomId) => {
-            const occupantName = prompt("Enter student name:");
-            if (!occupantName) return;
-            const occupantId = prompt("Enter student ID:");
-            const occupantPhone = prompt("Enter student phone number:");
+            const room = allRooms.find(r => r.id === roomId);
+            if (!room) return;
+
+            const maxP = room.beds || 6;
+            let partitionOptions = '<option value="" disabled selected>Select Partition</option>';
+            let availablePartitions = 0;
             
-            try {
-                await updateDoc(doc(db, "rooms", roomId), {
-                    status: "occupied",
-                    occupantName: occupantName,
-                    occupantId: occupantId,
-                    occupantPhone: occupantPhone,
-                    occupiedAt: new Date().toISOString()
-                });
-                alert(`✅ Student assigned to room successfully!`);
-            } catch (error) {
-                alert("Error assigning student: " + error.message);
+            for (let i = 1; i <= maxP; i++) {
+                const pKey = 'P' + i;
+                if (room.occupants && room.occupants[pKey]) continue; // Already assigned
+                partitionOptions += `<option value="${pKey}">Partition ${i} (${pKey})</option>`;
+                availablePartitions++;
             }
-        };
 
-        window.editRoom = (roomId) => {
-            alert(`✏️ Editing Room ${roomId}\n\nThis feature will be available soon.`);
-        };
+            if (availablePartitions === 0) {
+                Swal.fire({ icon: 'error', title: 'Room Full', text: 'All partitions are currently occupied.' });
+                return;
+            }
 
-        window.markMaintenance = async (roomId) => {
-            if (confirm(`Mark this room for maintenance?`)) {
+            const { value: formValues } = await Swal.fire({
+                title: 'Assign Student',
+                html:
+                    '<input id="swal-input1" class="swal2-input" placeholder="Student Name">' +
+                    '<input id="swal-input2" class="swal2-input" placeholder="Student ID">' +
+                    '<input id="swal-input3" class="swal2-input" placeholder="Phone Number">' +
+                    '<select id="swal-input4" class="swal2-select" style="width: 274px; max-width: 100%; box-sizing: border-box;">' + partitionOptions + '</select>',
+                focusConfirm: false,
+                showCancelButton: true,
+                confirmButtonText: 'Assign',
+                confirmButtonColor: '#2d72d2',
+                preConfirm: () => {
+                    const name = document.getElementById('swal-input1').value;
+                    const id = document.getElementById('swal-input2').value;
+                    const phone = document.getElementById('swal-input3').value;
+                    const partition = document.getElementById('swal-input4').value;
+                    if (!name || !id || !phone || !partition) {
+                        Swal.showValidationMessage('Please fill in all fields and select a partition');
+                    }
+                    return { name, id, phone, partition };
+                }
+            });
+
+            if (formValues) {
                 try {
+                    const newOccupants = room.occupants ? Object.assign({}, room.occupants) : {};
+                    
+                    newOccupants[formValues.partition] = {
+                        name: formValues.name,
+                        id: formValues.id,
+                        phone: formValues.phone,
+                        assignedAt: new Date().toISOString()
+                    };
+                    
+                    const newCount = Object.keys(newOccupants).length;
+                    const newStatus = newCount >= maxP ? 'occupied' : 'partial';
+
                     await updateDoc(doc(db, "rooms", roomId), {
-                        status: "maintenance",
-                        maintenanceReason: prompt("Enter maintenance reason:")
+                        status: newStatus,
+                        occupants: newOccupants
                     });
-                    alert(`🔧 Room marked for maintenance`);
+                    Swal.fire({ heightAuto: false, icon: 'success', title: 'Success', text: 'Student assigned to ' + formValues.partition + ' successfully!' });
                 } catch (error) {
-                    alert("Error: " + error.message);
+                    Swal.fire({ heightAuto: false, icon: 'error', title: 'Error', text: error.message });
                 }
             }
         };
 
-        window.vacateRoom = async (roomId) => {
-            if (confirm(`Vacate this room? This will remove the current occupant.`)) {
+        window.editRoom = async (roomId) => {
+            const room = allRooms.find(r => r.id === roomId);
+            if (!room) return;
+
+            const { value: formValues } = await Swal.fire({
+                title: 'Edit Room ' + room.roomNumber,
+                html:
+                    '<label style="text-align:left;display:block;margin-top:10px;font-size:14px;color:#64748b;">Beds</label>' +
+                    '<input id="swal-edit-beds" type="number" class="swal2-input" value="' + (room.beds || 2) + '">' +
+                    '<label style="text-align:left;display:flex;align-items:center;margin-top:15px;font-size:14px;color:#64748b;gap:10px;">' +
+                    '<input id="swal-edit-ac" type="checkbox" ' + (room.hasAC ? 'checked' : '') + ' style="width:20px;height:20px;">' +
+                    ' Has Air-Conditioner</label>',
+                focusConfirm: false,
+                showCancelButton: true,
+                confirmButtonText: 'Save Changes',
+                confirmButtonColor: '#2d72d2',
+                preConfirm: () => {
+                    
+                    const beds = document.getElementById('swal-edit-beds').value;
+                    const hasAC = document.getElementById('swal-edit-ac').checked;
+                    
+                    if (!beds) {
+                        Swal.showValidationMessage('Please fill in all numerical fields');
+                    }
+                    return { beds: parseInt(beds), hasAC };
+                }
+            });
+
+            if (formValues) {
                 try {
                     await updateDoc(doc(db, "rooms", roomId), {
-                        status: "available",
-                        occupantName: null,
-                        occupantId: null,
-                        occupantPhone: null,
-                        vacatedAt: new Date().toISOString()
+                        
+                        beds: formValues.beds,
+                        hasAC: formValues.hasAC
                     });
-                    alert(`✅ Room vacated successfully`);
+                    Swal.fire({ heightAuto: false, icon: 'success', title: 'Success', text: 'Room details updated successfully!' });
                 } catch (error) {
-                    alert("Error: " + error.message);
+                    Swal.fire({ heightAuto: false, icon: 'error', title: 'Error', text: error.message });
+                }
+            }
+        };
+
+        window.markMaintenance = async (roomId) => {
+            const { value: reason } = await Swal.fire({
+                title: 'Mark Maintenance',
+                input: 'textarea',
+                inputLabel: 'Maintenance Reason',
+                inputPlaceholder: 'Type the issue here...',
+                showCancelButton: true,
+                confirmButtonColor: '#f59e0b',
+                inputValidator: (value) => {
+                    if (!value) return 'You need to provide a reason!'
+                }
+            });
+
+            if (reason) {
+                try {
+                    await updateDoc(doc(db, "rooms", roomId), {
+                        status: "maintenance",
+                        maintenanceReason: reason
+                    });
+                    Swal.fire({ heightAuto: false, icon: 'success', title: 'Marked', text: 'Room marked for maintenance.' });
+                } catch (error) {
+                    Swal.fire({ heightAuto: false, icon: 'error', title: 'Error', text: error.message });
+                }
+            }
+        };
+
+        window.vacatePartition = async (roomId, partitionKey) => {
+            const result = await Swal.fire({
+                title: 'Vacate ' + partitionKey + '?',
+                text: "This will remove the occupant.",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#ef4444',
+                cancelButtonColor: '#64748b',
+                confirmButtonText: 'Yes, vacate it!'
+            });
+
+            if (result.isConfirmed) {
+                try {
+                    const room = allRooms.find(r => r.id === roomId);
+                    let newOccupants = room.occupants ? Object.assign({}, room.occupants) : {};
+                    delete newOccupants[partitionKey];
+                    
+                    const newCount = Object.keys(newOccupants).length;
+                    const newStatus = newCount === 0 ? 'available' : 'partial';
+
+                    await updateDoc(doc(db, "rooms", roomId), {
+                        status: newStatus,
+                        occupants: newOccupants
+                    });
+                    Swal.fire({ heightAuto: false, icon: 'success', title: 'Vacated!', text: 'Partition has been vacated.' });
+                } catch (error) {
+                    Swal.fire({ heightAuto: false, icon: 'error', title: 'Error', text: error.message });
+                }
+            }
+        };
+
+        window.vacateAll = async (roomId) => {
+            const result = await Swal.fire({
+                title: 'Vacate All Students?',
+                text: "This will remove ALL occupants from this room. This action cannot be undone.",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#ef4444',
+                cancelButtonColor: '#64748b',
+                confirmButtonText: 'Yes, vacate all!'
+            });
+
+            if (result.isConfirmed) {
+                try {
+                    await updateDoc(doc(db, "rooms", roomId), {
+                        status: 'available',
+                        occupants: {}
+                    });
+                    Swal.fire({ heightAuto: false, icon: 'success', title: 'Vacated!', text: 'All students have been removed.' });
+                } catch (error) {
+                    Swal.fire({ heightAuto: false, icon: 'error', title: 'Error', text: error.message });
                 }
             }
         };
 
         window.viewOccupant = (roomId) => {
             const room = allRooms.find(r => r.id === roomId);
-            if (room && room.occupantName) {
-                alert(`👤 Occupant Details:\n\nName: ${room.occupantName}\nID: ${room.occupantId || 'N/A'}\nPhone: ${room.occupantPhone || 'N/A'}\nRoom: ${room.roomNumber}`);
-            } else {
-                alert("No occupant information available.");
+            if (!room || (!room.occupants && !room.occupantName)) {
+                Swal.fire({ heightAuto: false, icon: 'info', title: 'No Occupants', text: 'No occupant information available.' });
+                return;
+            }
+
+            let htmlStr = '<div style="text-align:left; background:#f8fafc; padding:15px; border-radius:12px; max-height:400px; overflow-y:auto;">';
+            
+            if (room.occupants && Object.keys(room.occupants).length > 0) {
+                for (const [pKey, occ] of Object.entries(room.occupants)) {
+                    htmlStr += `
+                        <div style="border-bottom:1px solid #e2e8f0; padding:12px 0; display:flex; justify-content:space-between; align-items:center;">
+                            <div>
+                                <h4 style="margin:0 0 5px 0; font-size:15px; color:#0f1638;"><span style="background:#2d72d2; color:white; padding:2px 6px; border-radius:4px; font-size:12px; margin-right:5px;">${pKey}</span> ${occ.name}</h4>
+                                <span style="font-size:12px; color:#64748b;">ID: ${occ.id} | Ph: ${occ.phone}</span>
+                            </div>
+                            <button onclick="Swal.close(); setTimeout(() => window.vacatePartition('${roomId}', '${pKey}'), 300)" style="background:#ef4444; color:white; border:none; padding:6px 12px; border-radius:6px; cursor:pointer; font-size:12px;"><i class="fas fa-user-slash"></i></button>
+                        </div>
+                    `;
+                }
+            } else if (room.occupantName) {
+                htmlStr += `
+                    <div style="border-bottom:1px solid #e2e8f0; padding:12px 0; display:flex; justify-content:space-between; align-items:center;">
+                        <div>
+                            <h4 style="margin:0 0 5px 0; font-size:15px; color:#0f1638;">${room.occupantName}</h4>
+                            <span style="font-size:12px; color:#64748b;">ID: ${room.occupantId || 'N/A'} | Ph: ${room.occupantPhone || 'N/A'}</span>
+                        </div>
+                        <button onclick="Swal.close(); setTimeout(() => window.vacateRoomLegacy('${roomId}'), 300)" style="background:#ef4444; color:white; border:none; padding:6px 12px; border-radius:6px; cursor:pointer; font-size:12px;"><i class="fas fa-user-slash"></i></button>
+                    </div>
+                `;
+            }
+            htmlStr += '</div>';
+            if (Object.keys(room.occupants || {}).length > 1) {
+                htmlStr += `<button onclick="Swal.close(); setTimeout(() => window.vacateAll('${roomId}'), 300)" style="width: 100%; margin-top: 15px; background: #ef4444; color: white; border: none; padding: 10px; border-radius: 8px; cursor: pointer; font-weight: 600;"><i class="fas fa-dumpster"></i> Vacate All Students</button>`;
+            }
+
+            Swal.fire({
+                heightAuto: false,
+                title: 'Occupants in ' + room.roomNumber,
+                html: htmlStr,
+                showConfirmButton: false,
+                showCancelButton: true,
+                cancelButtonText: 'Close',
+                width: 500
+            });
+        };
+
+        window.vacateRoomLegacy = async (roomId) => {
+            const result = await Swal.fire({ title: 'Vacate Room?', text: "This will remove the occupant.", icon: 'warning', showCancelButton: true, confirmButtonColor: '#ef4444', confirmButtonText: 'Yes' });
+            if (result.isConfirmed) {
+                try {
+                    await updateDoc(doc(db, "rooms", roomId), { status: "available", occupantName: null, occupantId: null, occupantPhone: null });
+                    Swal.fire({ heightAuto: false, icon: 'success', title: 'Vacated!' });
+                } catch(e) { Swal.fire({ icon: 'error', text: e.message }); }
             }
         };
 
         window.completeMaintenance = async (roomId) => {
-            if (confirm(`Complete maintenance for this room?`)) {
+            const result = await Swal.fire({
+                title: 'Complete Maintenance?',
+                text: "Are you sure the room is ready for occupancy?",
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#10b981',
+                cancelButtonColor: '#64748b',
+                confirmButtonText: 'Yes, mark as Available'
+            });
+
+            if (result.isConfirmed) {
                 try {
                     await updateDoc(doc(db, "rooms", roomId), {
                         status: "available",
                         maintenanceReason: null,
                         maintenanceCompletedAt: new Date().toISOString()
                     });
-                    alert(`✅ Maintenance completed. Room is now available.`);
+                    Swal.fire({ heightAuto: false, icon: 'success', title: 'Resolved!', text: 'Room is now available.' });
                 } catch (error) {
-                    alert("Error: " + error.message);
+                    Swal.fire({ heightAuto: false, icon: 'error', title: 'Error', text: error.message });
                 }
             }
         };
 
         window.cancelReservation = async (roomId) => {
-            if (confirm(`Cancel reservation for this room?`)) {
+            const result = await Swal.fire({
+                title: 'Cancel Reservation?',
+                text: "This will remove the reservation and make the room available.",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#ef4444',
+                cancelButtonColor: '#64748b',
+                confirmButtonText: 'Yes, cancel it'
+            });
+
+            if (result.isConfirmed) {
                 try {
                     await updateDoc(doc(db, "rooms", roomId), {
                         status: "available",
                         reservedFor: null,
                         reservedMoveIn: null
                     });
-                    alert(`❌ Reservation cancelled. Room is now available.`);
+                    Swal.fire({ heightAuto: false, icon: 'success', title: 'Cancelled', text: 'Reservation cancelled.' });
                 } catch (error) {
-                    alert("Error: " + error.message);
+                    Swal.fire({ heightAuto: false, icon: 'error', title: 'Error', text: error.message });
                 }
             }
         };
 
         window.addNewRoom = async () => {
-            const roomNumber = prompt("Enter room number (e.g., A-1-01):");
-            if (!roomNumber) return;
-            
-            const block = roomNumber.charAt(0);
-            const floor = parseInt(roomNumber.split('-')[1]);
-            const type = prompt("Enter room type (single/double/quad):", "single");
-            const price = prompt("Enter monthly price (RM):", "350");
-            
-            try {
-                await addDoc(collection(db, "rooms"), {
-                    roomNumber: roomNumber,
-                    block: block,
-                    floor: floor,
-                    type: type,
-                    price: parseInt(price),
-                    status: "available",
-                    size: type === 'single' ? 180 : (type === 'double' ? 250 : 400),
-                    beds: type === 'single' ? 1 : (type === 'double' ? 2 : 4),
-                    hasAC: true,
-                    createdAt: new Date().toISOString()
-                });
-                alert(`➕ Room ${roomNumber} added successfully!`);
-            } catch (error) {
-                alert("Error adding room: " + error.message);
+            const { value: formValues } = await Swal.fire({
+                title: 'Add New Room',
+                html:
+                    '<label style="text-align:left;display:block;font-size:14px;color:#64748b;">Room Number (e.g. A1-1-01)</label>' +
+                    '<input id="swal-add-number" class="swal2-input">' +
+                    '<label style="text-align:left;display:block;margin-top:10px;font-size:14px;color:#64748b;">Room Type</label>' +
+                    '<select id="swal-add-type" class="swal2-select" style="width: 274px; max-width: 100%; box-sizing: border-box;"><option value="Type A">Type A</option><option value="Type B">Type B</option><option value="Type C">Type C</option></select>',
+                focusConfirm: false,
+                showCancelButton: true,
+                confirmButtonText: 'Create Room',
+                confirmButtonColor: '#2d72d2',
+                preConfirm: () => {
+                    const number = document.getElementById('swal-add-number').value;
+                    const type = document.getElementById('swal-add-type').value;
+                    
+                    
+                    if (!number) {
+                        Swal.showValidationMessage('Please fill in all fields');
+                    }
+                    
+                    let block = number.split('-')[0];
+                    if (!block && number.charAt(0)) block = 'A' + number.charAt(1); 
+                    
+                    let floor = parseInt(number.split('-')[1]);
+                    if (isNaN(floor)) floor = 1;
+                    
+                    return { number, block, floor, type };
+                }
+            });
+
+            if (formValues) {
+                try {
+                    await addDoc(collection(db, "rooms"), {
+                        roomNumber: formValues.number,
+                        block: formValues.block,
+                        floor: formValues.floor,
+                        type: formValues.type,
+                        
+                        status: "available",
+                        beds: formValues.type === 'Type C' ? 4 : 6,
+                        hasAC: false,
+                        occupants: {},
+                        createdAt: new Date().toISOString()
+                    });
+                    Swal.fire({ heightAuto: false, icon: 'success', title: 'Created!', text: "Room " + formValues.number + " added successfully." });
+                } catch (error) {
+                    Swal.fire({ heightAuto: false, icon: 'error', title: 'Error', text: error.message });
+                }
             }
         };
+
 
         // Event listeners for filters
         document.getElementById('searchInput').addEventListener('input', () => {
@@ -1259,6 +1549,39 @@
 
         document.getElementById('floorFilter').addEventListener('change', () => {
             renderRooms();
+        });
+
+        
+        document.getElementById('exportCsvBtn').addEventListener('click', () => {
+            if (allRooms.length === 0) {
+                alert("No data to export.");
+                return;
+            }
+
+            let csvContent = "data:text/csv;charset=utf-8,";
+            csvContent += "Block,Floor,Room Number,Type,Beds,Status,Partition,Occupant Name,Student ID,Phone\n";
+
+            allRooms.forEach(room => {
+                const baseRow = `${room.block},${room.floor},${room.roomNumber},${room.type},${room.beds || 6},${room.effectiveStatus}`;
+                
+                if (room.occupants && Object.keys(room.occupants).length > 0) {
+                    for (const [pKey, occ] of Object.entries(room.occupants)) {
+                        csvContent += `${baseRow},${pKey},${occ.name || 'N/A'},${occ.id || 'N/A'},${occ.phone || 'N/A'}\n`;
+                    }
+                } else if (room.status === 'occupied' && room.occupantName) {
+                    csvContent += `${baseRow},Legacy,${room.occupantName},${room.occupantId || 'N/A'},${room.occupantPhone || 'N/A'}\n`;
+                } else {
+                    csvContent += `${baseRow},N/A,N/A,N/A,N/A\n`;
+                }
+            });
+
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", "hostelku_rooms_export.csv");
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
         });
 
         document.getElementById('refreshBtn').addEventListener('click', () => {

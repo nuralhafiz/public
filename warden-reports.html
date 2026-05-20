@@ -5,9 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GMI HostelKu - Reports & Analytics</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link rel="stylesheet" href="css/global.css">
+    <link rel="stylesheet" href="css/global.css?v=5">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/xlsx-js-style@1.2.0/dist/xlsx.bundle.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
@@ -598,6 +599,7 @@
             z-index: 50;
         }
     </style>
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 </head>
 <body>
     <header>
@@ -679,15 +681,7 @@
                         </div>
                         <div class="report-info">
                             <h4>Occupancy Report</h4>
-                            <p>View Details →</p>
-                        </div>
-                    </div>
-                    <div class="report-card" onclick="generateQuickReport('financial')">
-                        <div class="report-icon">
-                            <i class="fas fa-money-bill-wave"></i>
-                        </div>
-                        <div class="report-info">
-                            <h4>Financial Report</h4>
+                            <div id="stat-occupancy" style="font-size: 16px; font-weight: 700; color: #1e3a8a; margin: 4px 0;">-- Rooms</div>
                             <p>View Details →</p>
                         </div>
                     </div>
@@ -697,6 +691,7 @@
                         </div>
                         <div class="report-info">
                             <h4>Maintenance Report</h4>
+                            <div id="stat-maintenance" style="font-size: 16px; font-weight: 700; color: #1e3a8a; margin: 4px 0;">-- Requests</div>
                             <p>View Details →</p>
                         </div>
                     </div>
@@ -706,6 +701,17 @@
                         </div>
                         <div class="report-info">
                             <h4>Applications Report</h4>
+                            <div id="stat-applications" style="font-size: 16px; font-weight: 700; color: #1e3a8a; margin: 4px 0;">-- Pending</div>
+                            <p>View Details →</p>
+                        </div>
+                    </div>
+                    <div class="report-card" onclick="generateQuickReport('moveout')">
+                        <div class="report-icon">
+                            <i class="fas fa-sign-out-alt"></i>
+                        </div>
+                        <div class="report-info">
+                            <h4>Move-Out Report</h4>
+                            <div id="stat-moveout" style="font-size: 16px; font-weight: 700; color: #1e3a8a; margin: 4px 0;">-- Pending</div>
                             <p>View Details →</p>
                         </div>
                     </div>
@@ -772,22 +778,6 @@
                         </table>
                     </div>
 
-                    <!-- Revenue Summary -->
-                    <div class="table-card">
-                        <div class="table-header">
-                            <h3><i class="fas fa-coins" style="color: #2d72d2;"></i> Revenue Summary</h3>
-                            <button class="chart-action-btn" onclick="exportTable('revenue')">
-                                <i class="fas fa-download"></i> Export
-                            </button>
-                        </div>
-                        <table class="mini-table" id="revenueTable">
-                            <!-- Dynamic data -->
-                        </table>
-                    </div>
-                </div>
-
-                <!-- More Tables Grid -->
-                <div class="tables-grid">
                     <!-- Maintenance Summary -->
                     <div class="table-card">
                         <div class="table-header">
@@ -813,6 +803,19 @@
                             <!-- Dynamic data -->
                         </table>
                     </div>
+
+                    <!-- Move-Out Summary -->
+                    <div class="table-card">
+                        <div class="table-header">
+                            <h3><i class="fas fa-sign-out-alt" style="color: #2d72d2;"></i> Move-Out Summary</h3>
+                            <button class="chart-action-btn" onclick="exportTable('moveout')">
+                                <i class="fas fa-download"></i> Export
+                            </button>
+                        </div>
+                        <table class="mini-table" id="moveoutTable">
+                            <!-- Dynamic data -->
+                        </table>
+                    </div>
                 </div>
 
                 <!-- Export Section -->
@@ -827,12 +830,6 @@
                         </button>
                         <button class="export-btn" onclick="exportReport('excel')">
                             <i class="fas fa-file-excel"></i> Export as Excel
-                        </button>
-                        <button class="export-btn" onclick="exportReport('csv')">
-                            <i class="fas fa-file-csv"></i> Export as CSV
-                        </button>
-                        <button class="export-btn" onclick="printReport()">
-                            <i class="fas fa-print"></i> Print Report
                         </button>
                     </div>
                 </div>
@@ -976,7 +973,10 @@
             currentEndDate = document.getElementById('endDate').value;
             
             const startDate = new Date(currentStartDate);
+            startDate.setHours(0, 0, 0, 0);
+            
             const endDate = new Date(currentEndDate);
+            endDate.setHours(23, 59, 59, 999);
             
             // Update date range label
             const startStr = startDate.toLocaleDateString('en-MY', { day: 'numeric', month: 'short', year: 'numeric' });
@@ -989,14 +989,17 @@
             const occupiedRooms = roomsData.filter(r => r.status === 'occupied').length;
             const availableRooms = roomsData.filter(r => r.status === 'available').length;
             const maintenanceRooms = roomsData.filter(r => r.status === 'maintenance').length;
-            const reservedRooms = roomsData.filter(r => r.status === 'reserved').length;
+            const partialRooms = roomsData.filter(r => r.status === 'partial').length;
             
             // Calculate occupancy by block
-            const blocks = ['A', 'B', 'C', 'D'];
+            const blocksSet = new Set();
+            roomsData.forEach(r => { if(r.block) blocksSet.add(r.block); });
+            const blocks = Array.from(blocksSet).sort();
+            
             const blockStats = {};
             blocks.forEach(block => {
                 const blockRooms = roomsData.filter(r => r.block === block);
-                const occupied = blockRooms.filter(r => r.status === 'occupied').length;
+                const occupied = blockRooms.filter(r => r.status === 'occupied' || r.status === 'partial').length;
                 blockStats[block] = {
                     total: blockRooms.length,
                     occupied: occupied,
@@ -1008,31 +1011,54 @@
             const occupiedPct = totalRooms > 0 ? Math.round((occupiedRooms / totalRooms) * 100) : 0;
             const availablePct = totalRooms > 0 ? Math.round((availableRooms / totalRooms) * 100) : 0;
             const maintenancePct = totalRooms > 0 ? Math.round((maintenanceRooms / totalRooms) * 100) : 0;
-            const reservedPct = totalRooms > 0 ? Math.round((reservedRooms / totalRooms) * 100) : 0;
+            const partialPct = totalRooms > 0 ? Math.round((partialRooms / totalRooms) * 100) : 0;
             
+            // Helper function to filter by date
+            const isWithinDateRange = (item) => {
+                if (!item.submittedAt) return true;
+                const d = item.submittedAt.toDate ? item.submittedAt.toDate() : new Date(item.submittedAt);
+                return d >= startDate && d <= endDate;
+            };
+
             // Calculate application stats
-            const totalApps = applicationsData.length;
-            const approvedApps = applicationsData.filter(a => a.status === 'approved').length;
-            const pendingApps = applicationsData.filter(a => a.status === 'pending').length;
-            const rejectedApps = applicationsData.filter(a => a.status === 'rejected').length;
+            const filteredApps = applicationsData.filter(isWithinDateRange);
+            const totalApps = filteredApps.length;
+            const approvedApps = filteredApps.filter(a => a.status === 'approved').length;
+            const pendingApps = filteredApps.filter(a => a.status === 'pending').length;
+            const rejectedApps = filteredApps.filter(a => a.status === 'rejected').length;
             
             // Calculate maintenance stats
-            const totalMaintenance = maintenanceData.length;
-            const completedMaintenance = maintenanceData.filter(m => m.status === 'completed').length;
-            const inProgressMaintenance = maintenanceData.filter(m => m.status === 'in-progress').length;
-            const pendingMaintenance = maintenanceData.filter(m => m.status === 'pending').length;
+            const filteredMaintenance = maintenanceData.filter(isWithinDateRange);
+            const totalMaintenance = filteredMaintenance.length;
+            const completedMaintenance = filteredMaintenance.filter(m => m.status === 'completed').length;
+            const inProgressMaintenance = filteredMaintenance.filter(m => m.status === 'in-progress').length;
+            const pendingMaintenance = filteredMaintenance.filter(m => m.status === 'pending').length;
             
             // Render occupancy chart
             renderOccupancyChart(blockStats);
             
             // Render pie chart
-            renderPieChart(occupiedPct, availablePct, maintenancePct, reservedPct);
+            renderPieChart(occupiedPct, availablePct, maintenancePct, partialPct);
             
             // Render tables
             renderTopBlocksTable(blockStats);
-            renderRevenueTable();
             renderMaintenanceTable(totalMaintenance, completedMaintenance, inProgressMaintenance, pendingMaintenance);
             renderApplicationsTable(totalApps, approvedApps, pendingApps, rejectedApps);
+
+            // Calculate moveout stats
+            const filteredMoveouts = moveoutData.filter(isWithinDateRange);
+            const totalMoveouts = filteredMoveouts.length;
+            const pendingMoveouts = filteredMoveouts.filter(m => m.status === 'pending').length;
+            const approvedMoveouts = filteredMoveouts.filter(m => m.status === 'approved').length;
+            const rejectedMoveouts = filteredMoveouts.filter(m => m.status === 'rejected').length;
+
+            renderMoveoutTable(totalMoveouts, approvedMoveouts, pendingMoveouts, rejectedMoveouts);
+
+            // Update Summary Cards
+            document.getElementById('stat-occupancy').innerText = occupiedRooms + ' / ' + totalRooms + ' Fully Occupied';
+            document.getElementById('stat-maintenance').innerText = (pendingMaintenance + inProgressMaintenance) + ' Active Requests';
+            document.getElementById('stat-applications').innerText = pendingApps + ' Pending Apps';
+            document.getElementById('stat-moveout').innerText = pendingMoveouts + ' Pending Move-Outs';
             
             // Update summary text
             document.getElementById('summaryText').innerHTML = `
@@ -1058,7 +1084,7 @@
         
         function renderOccupancyChart(blockStats) {
             const container = document.getElementById('occupancyChart');
-            const blocks = ['A', 'B', 'C', 'D'];
+            const blocks = Object.keys(blockStats).sort();
             let html = '';
             
             blocks.forEach(block => {
@@ -1076,7 +1102,7 @@
             container.innerHTML = html;
         }
         
-        function renderPieChart(occupied, available, maintenance, reserved) {
+        function renderPieChart(occupied, available, maintenance, partial) {
             // Update pie chart conic gradient
             let cumulative = 0;
             const occupiedStart = 0;
@@ -1093,7 +1119,7 @@
             const legendHtml = `
                 <div class="legend-item">
                     <span class="legend-color occupied"></span>
-                    <span>Occupied: ${occupied}%</span>
+                    <span>Fully Occupied: ${occupied}%</span>
                 </div>
                 <div class="legend-item">
                     <span class="legend-color available"></span>
@@ -1105,7 +1131,7 @@
                 </div>
                 <div class="legend-item">
                     <span class="legend-color reserved"></span>
-                    <span>Reserved: ${reserved}%</span>
+                    <span>Partially Occupied: ${partial}%</span>
                 </div>
             `;
             document.getElementById('pieLegend').innerHTML = legendHtml;
@@ -1113,7 +1139,7 @@
         
         function renderTopBlocksTable(blockStats) {
             const container = document.getElementById('topBlocksTable');
-            const blocks = ['A', 'B', 'C', 'D'];
+            const blocks = Object.keys(blockStats).sort((a, b) => blockStats[b].percentage - blockStats[a].percentage);
             let html = '';
             
             blocks.forEach(block => {
@@ -1132,38 +1158,6 @@
             });
             
             container.innerHTML = html;
-        }
-        
-        function renderRevenueTable() {
-            const container = document.getElementById('revenueTable');
-            const totalRooms = roomsData.length;
-            const avgPrice = 450;
-            const monthlyRevenue = totalRooms * avgPrice * 0.75;
-            const quarterlyRevenue = monthlyRevenue * 3;
-            const yearlyRevenue = monthlyRevenue * 12;
-            
-            container.innerHTML = `
-                <tr>
-                    <td><strong>Monthly Revenue</strong></td>
-                    <td class="amount">RM ${Math.round(monthlyRevenue).toLocaleString()}</td>
-                    <td><i class="fas fa-arrow-up" style="color: #4caf50;"></i> +8%</td>
-                </tr>
-                <tr>
-                    <td><strong>Quarterly Revenue</strong></td>
-                    <td class="amount">RM ${Math.round(quarterlyRevenue).toLocaleString()}</td>
-                    <td><i class="fas fa-arrow-up" style="color: #4caf50;"></i> +12%</td>
-                </tr>
-                <tr>
-                    <td><strong>Yearly Revenue</strong></td>
-                    <td class="amount">RM ${Math.round(yearlyRevenue).toLocaleString()}</td>
-                    <td><i class="fas fa-arrow-up" style="color: #4caf50;"></i> +15%</td>
-                </tr>
-                <tr>
-                    <td><strong>Pending Payments</strong></td>
-                    <td class="amount">RM ${Math.round(monthlyRevenue * 0.08).toLocaleString()}</td>
-                    <td><i class="fas fa-exclamation-circle" style="color: #f44336;"></i> 5 students</td>
-                </tr>
-            `;
         }
         
         function renderMaintenanceTable(total, completed, inProgress, pending) {
@@ -1209,23 +1203,47 @@
                     <td class="amount">This period</td>
                 </tr>
                 <tr>
-                    <td><strong>Approved</strong></td>
-                    <td>${approved}</td>
-                    <td><i class="fas fa-check-circle" style="color: #4caf50;"></i> ${approvalRate}%</td>
+                    <td><strong>Pending Review</strong></td>
+                    <td>${pending}</td>
+                    <td><i class="fas fa-clock" style="color: #ff9800;"></i> Needs Action</td>
                 </tr>
                 <tr>
-                    <td><strong>Pending</strong></td>
-                    <td>${pending}</td>
-                    <td><i class="fas fa-clock" style="color: #ff9800;"></i> ${total > 0 ? Math.round((pending / total) * 100) : 0}%</td>
+                    <td><strong>Approved</strong></td>
+                    <td>${approved}</td>
+                    <td><i class="fas fa-check-circle" style="color: #4caf50;"></i> ${approvalRate}% rate</td>
                 </tr>
                 <tr>
                     <td><strong>Rejected</strong></td>
                     <td>${rejected}</td>
-                    <td><i class="fas fa-times-circle" style="color: #f44336;"></i> ${total > 0 ? Math.round((rejected / total) * 100) : 0}%</td>
+                    <td><i class="fas fa-times-circle" style="color: #f44336;"></i> ${total > 0 ? Math.round((rejected / total) * 100) : 0}% rate</td>
+                </tr>
+            `;
+        }
+
+        function renderMoveoutTable(total, approved, pending, rejected) {
+            const container = document.getElementById('moveoutTable');
+            const approvalRate = total > 0 ? Math.round((approved / total) * 100) : 0;
+            
+            container.innerHTML = `
+                <tr>
+                    <td><strong>Total Requests</strong></td>
+                    <td>${total}</td>
+                    <td class="amount">This period</td>
                 </tr>
                 <tr>
-                    <td><strong>Avg Processing Time</strong></td>
-                    <td colspan="2">2.5 days</td>
+                    <td><strong>Pending Clearance</strong></td>
+                    <td>${pending}</td>
+                    <td><i class="fas fa-clock" style="color: #ff9800;"></i> Needs Action</td>
+                </tr>
+                <tr>
+                    <td><strong>Approved & Cleared</strong></td>
+                    <td>${approved}</td>
+                    <td><i class="fas fa-check-circle" style="color: #4caf50;"></i> ${approvalRate}% rate</td>
+                </tr>
+                <tr>
+                    <td><strong>Rejected</strong></td>
+                    <td>${rejected}</td>
+                    <td><i class="fas fa-times-circle" style="color: #f44336;"></i> ${total > 0 ? Math.round((rejected / total) * 100) : 0}% rate</td>
                 </tr>
             `;
         }
@@ -1276,13 +1294,15 @@
         };
         
         window.generateQuickReport = (type) => {
-            const reportNames = {
-                'occupancy': 'Occupancy Report',
-                'financial': 'Financial Report',
-                'maintenance': 'Maintenance Report',
-                'applications': 'Applications Report'
+            const pages = {
+                'occupancy': 'warden-rooms.html',
+                'maintenance': 'warden-maintenance.html',
+                'applications': 'warden-applications.html',
+                'moveout': 'warden-moveout.html'
             };
-            alert(`📈 Generating ${reportNames[type]}...\n\nThis feature will export detailed data soon.`);
+            if (pages[type]) {
+                window.location.href = pages[type];
+            }
         };
         
         window.exportChart = (chart, format) => {
@@ -1312,12 +1332,18 @@
                 doc.setTextColor(102, 126, 234);
                 doc.text("Occupancy Overview", 14, 48);
                 
-                const occupancyRows = [
-                    ["Block A", document.getElementById('topBlocksTable').rows[0] ? document.getElementById('topBlocksTable').rows[0].cells[2].innerText : "N/A"],
-                    ["Block B", document.getElementById('topBlocksTable').rows[1] ? document.getElementById('topBlocksTable').rows[1].cells[2].innerText : "N/A"],
-                    ["Block C", document.getElementById('topBlocksTable').rows[2] ? document.getElementById('topBlocksTable').rows[2].cells[2].innerText : "N/A"],
-                    ["Block D", document.getElementById('topBlocksTable').rows[3] ? document.getElementById('topBlocksTable').rows[3].cells[2].innerText : "N/A"]
-                ];
+                const occupancyRows = [];
+                const topBlocksTable = document.getElementById('topBlocksTable');
+                if (topBlocksTable && topBlocksTable.rows.length > 0) {
+                    for (let i = 0; i < topBlocksTable.rows.length; i++) {
+                        const row = topBlocksTable.rows[i];
+                        if (row.cells && row.cells.length >= 3) {
+                            occupancyRows.push([row.cells[0].innerText, row.cells[2].innerText]);
+                        }
+                    }
+                } else {
+                    occupancyRows.push(["No data", "No data"]);
+                }
                 
                 doc.autoTable({
                     startY: 52,
@@ -1327,15 +1353,57 @@
                     headStyles: { fillColor: [102, 126, 234] }
                 });
                 
+                let nextY = doc.lastAutoTable.finalY + 15;
+                
+                const addPdfTable = (tableId, title, headers) => {
+                    doc.setFontSize(14);
+                    doc.setTextColor(102, 126, 234);
+                    doc.text(title, 14, nextY);
+                    
+                    const rows = [];
+                    const htmlTable = document.getElementById(tableId);
+                    if (htmlTable && htmlTable.rows.length > 0) {
+                        for (let i = 0; i < htmlTable.rows.length; i++) {
+                            const row = htmlTable.rows[i];
+                            const rowData = [];
+                            for (let j = 0; j < headers.length; j++) {
+                                if (row.cells[j]) {
+                                    rowData.push(row.cells[j].innerText.replace(/(\r\n|\n|\r)/gm, " "));
+                                }
+                            }
+                            rows.push(rowData);
+                        }
+                    }
+                    
+                    doc.autoTable({
+                        startY: nextY + 4,
+                        head: [headers],
+                        body: rows,
+                        theme: 'striped',
+                        headStyles: { fillColor: [102, 126, 234] }
+                    });
+                    
+                    nextY = doc.lastAutoTable.finalY + 15;
+                };
+
+                addPdfTable('maintenanceTable', 'Maintenance Summary', ['Metric', 'Value', 'Notes']);
+                
+                if (nextY > 250) { doc.addPage(); nextY = 20; }
+                addPdfTable('applicationsTable', 'Application Summary', ['Metric', 'Value', 'Notes']);
+                
+                if (nextY > 250) { doc.addPage(); nextY = 20; }
+                addPdfTable('moveoutTable', 'Move-Out Summary', ['Metric', 'Value', 'Notes']);
+                
                 // Add Summary text
-                const finalY = doc.lastAutoTable.finalY + 15;
+                if (nextY > 250) { doc.addPage(); nextY = 20; }
                 doc.setFontSize(14);
-                doc.text("Executive Summary", 14, finalY);
+                doc.setTextColor(102, 126, 234);
+                doc.text("Executive Summary", 14, nextY);
                 
                 doc.setFontSize(11);
                 doc.setTextColor(50, 50, 50);
                 const splitText = doc.splitTextToSize(document.getElementById('summaryText').innerText, 180);
-                doc.text(splitText, 14, finalY + 8);
+                doc.text(splitText, 14, nextY + 8);
                 
                 doc.save('GMI-HostelKu-Report.pdf');
                 
@@ -1343,6 +1411,93 @@
                     icon: 'success',
                     title: 'PDF Downloaded',
                     text: 'Your automated report has been generated successfully!',
+                    confirmButtonColor: '#2d72d2'
+                });
+            } else if (format === 'excel') {
+                const wb = XLSX.utils.book_new();
+                
+                // Helper to create a separate sheet for each table
+                const createSheet = (tableId, sheetName, headers) => {
+                    const ws_data = [];
+                    
+                    // Title Styles
+                    const titleStyle = { font: { bold: true, sz: 14, color: { rgb: "2D72D2" } } };
+                    const boldStyle = { font: { bold: true } };
+                    
+                    // Header for every sheet
+                    ws_data.push([{ v: "GMI HOSTELKU - SYSTEM REPORT", s: titleStyle }]);
+                    ws_data.push([{ v: "Date Range", s: boldStyle }, document.getElementById('dateRangeLabel').textContent]);
+                    ws_data.push([{ v: "Generated on", s: boldStyle }, new Date().toLocaleString()]);
+                    ws_data.push([]);
+                    ws_data.push([{ v: sheetName.toUpperCase() + " DATA", s: { font: { bold: true, sz: 12 } } }]);
+                    
+                    // Table Headers with styling
+                    const headerStyle = {
+                        font: { bold: true, color: { rgb: "FFFFFF" } },
+                        fill: { fgColor: { rgb: "2D72D2" } },
+                        border: {
+                            top: { style: "thin", color: { rgb: "000000" } },
+                            bottom: { style: "thin", color: { rgb: "000000" } },
+                            left: { style: "thin", color: { rgb: "000000" } },
+                            right: { style: "thin", color: { rgb: "000000" } }
+                        },
+                        alignment: { vertical: "center", horizontal: "center" }
+                    };
+                    
+                    const styledHeaders = headers.map(h => ({ v: h, s: headerStyle }));
+                    ws_data.push(styledHeaders);
+                    
+                    const cellStyle = {
+                        border: {
+                            top: { style: "thin", color: { rgb: "DDDDDD" } },
+                            bottom: { style: "thin", color: { rgb: "DDDDDD" } },
+                            left: { style: "thin", color: { rgb: "DDDDDD" } },
+                            right: { style: "thin", color: { rgb: "DDDDDD" } }
+                        },
+                        alignment: { vertical: "center" }
+                    };
+                    
+                    const table = document.getElementById(tableId);
+                    if (table) {
+                        for (let i = 0; i < table.rows.length; i++) {
+                            const row = table.rows[i];
+                            let rowData = [];
+                            for (let j = 0; j < headers.length; j++) {
+                                let val = '';
+                                if (row.cells[j]) {
+                                    val = row.cells[j].innerText.replace(/(\r\n|\n|\r)/gm, " ");
+                                }
+                                rowData.push({ v: val, s: cellStyle });
+                            }
+                            ws_data.push(rowData);
+                        }
+                    }
+                    
+                    const ws = XLSX.utils.aoa_to_sheet(ws_data);
+                    
+                    // Add autofilter to headers (Row 6)
+                    const endRow = 6 + (table ? table.rows.length : 0);
+                    const endCol = String.fromCharCode(64 + headers.length); 
+                    ws['!autofilter'] = { ref: `A6:${endCol}${endRow-1}` };
+                    
+                    // Set custom column widths
+                    ws['!cols'] = [ { wch: 28 }, { wch: 22 }, { wch: 20 } ];
+                    XLSX.utils.book_append_sheet(wb, ws, sheetName);
+                };
+                
+                // Create separate tabs!
+                createSheet('topBlocksTable', 'Occupancy', ['Block', 'Occupied / Total', 'Occupancy Rate']);
+                createSheet('maintenanceTable', 'Maintenance', ['Metric', 'Value', 'Notes']);
+                createSheet('applicationsTable', 'Applications', ['Metric', 'Value', 'Notes']);
+                createSheet('moveoutTable', 'Move-Out', ['Metric', 'Value', 'Notes']);
+                
+                // Download
+                XLSX.writeFile(wb, "GMI-HostelKu-Report.xlsx");
+                
+                Swal.fire({ heightAuto: false,
+                    icon: 'success',
+                    title: 'Excel Downloaded',
+                    text: 'Your formatted Excel report has been generated successfully!',
                     confirmButtonColor: '#2d72d2'
                 });
             } else {
@@ -1353,10 +1508,6 @@
                     confirmButtonColor: '#2d72d2'
                 });
             }
-        };
-        
-        window.printReport = () => {
-            window.print();
         };
         
         document.getElementById('refreshBtn').addEventListener('click', () => {

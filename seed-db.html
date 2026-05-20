@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GMI HostelKu | DB Seeder</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+        body { font-family: 'Poppins', sans-serif; background: #f0f3fa; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+        .container { background: white; padding: 40px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); text-align: center; max-width: 500px; width: 100%; }
+        h1 { color: #1e3a8a; font-size: 24px; margin-bottom: 10px; }
+        p { color: #64748b; margin-bottom: 30px; font-size: 14px; }
+        .btn { padding: 15px 25px; border: none; border-radius: 10px; font-size: 16px; font-weight: 600; cursor: pointer; color: white; width: 100%; margin-bottom: 15px; transition: 0.3s; }
+        .btn-blue { background: #2d72d2; }
+        .btn-blue:hover { background: #1e3a8a; }
+        .btn-red { background: #ff3131; }
+        .btn-red:hover { background: #cc0000; }
+        .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+        #status { font-size: 14px; font-weight: 600; color: #1e3a8a; margin-top: 20px; }
+    </style>
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+</head>
+<body>
+    <div class="container">
+        <h1>GMI HostelKu DB Seeder</h1>
+        <p>This tool will automatically populate your Firestore database with the correct room structure (575 rooms total).</p>
+        
+        <button class="btn btn-red" id="btnDelete">1. Delete All Existing Rooms</button>
+        <button class="btn btn-blue" id="btnGenerate">2. Generate 575 Rooms</button>
+        <button class="btn btn-blue" style="background: #64748b; margin-top: 15px;" onclick="window.location.href='warden-rooms.html'">Go back to Room Management</button>
+        
+        <div id="status">Ready.</div>
+    </div>
+
+    <script type="module">
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { getFirestore, collection, getDocs, writeBatch, doc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { db, auth } from "./js/firebase-config.js";
+
+        const statusEl = document.getElementById('status');
+        const btnDelete = document.getElementById('btnDelete');
+        const btnGenerate = document.getElementById('btnGenerate');
+
+        btnDelete.disabled = true;
+        btnGenerate.disabled = true;
+
+        function setStatus(msg) {
+            statusEl.textContent = msg;
+            console.log(msg);
+        }
+
+        setStatus("Checking authentication...");
+
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                if (!user.email.endsWith('@gmi.edu.my') || user.email.includes('@student.')) {
+                    setStatus("❌ Error: Access Denied. Wardens only.");
+                } else {
+                    setStatus("✅ Authenticated as Warden. Ready.");
+                    btnDelete.disabled = false;
+                    btnGenerate.disabled = false;
+                }
+            } else {
+                setStatus("❌ Error: Not logged in. Redirecting...");
+                setTimeout(() => window.location.href = 'warden-login.html', 2000);
+            }
+        });
+
+        // Delete all rooms
+        btnDelete.addEventListener('click', async () => {
+            if (!confirm("Are you sure you want to delete ALL rooms? This cannot be undone.")) return;
+            
+            btnDelete.disabled = true;
+            btnGenerate.disabled = true;
+            setStatus("Fetching existing rooms to delete...");
+
+            try {
+                const querySnapshot = await getDocs(collection(db, "rooms"));
+                let count = 0;
+                let batch = writeBatch(db);
+
+                for (let i = 0; i < querySnapshot.docs.length; i++) {
+                    batch.delete(querySnapshot.docs[i].ref);
+                    count++;
+                    if (count === 400) {
+                        await batch.commit();
+                        batch = writeBatch(db);
+                        count = 0;
+                    }
+                }
+                
+                if (count > 0) {
+                    await batch.commit();
+                }
+
+                setStatus(`✅ Deleted ${querySnapshot.docs.length} rooms successfully!`);
+            } catch (error) {
+                setStatus("❌ Error: " + error.message);
+            }
+            
+            btnDelete.disabled = false;
+            btnGenerate.disabled = false;
+        });
+
+        // Generate rooms
+        btnGenerate.addEventListener('click', async () => {
+            btnDelete.disabled = true;
+            btnGenerate.disabled = true;
+            setStatus("Preparing to generate 575 rooms... Please wait.");
+
+            const rooms = [];
+
+            // Logic 1: Block A1 to A5
+            const mainBlocks = ['A1', 'A2', 'A3', 'A4', 'A5'];
+            mainBlocks.forEach(block => {
+                for (let floor = 1; floor <= 11; floor++) {
+                    for (let room = 1; room <= 10; room++) {
+                        const roomStr = room.toString().padStart(2, '0');
+                        const typeMap = {
+                            1: 'Type B', 2: 'Type A', 3: 'Type A', 4: 'Type B', 5: 'Type A',
+                            6: 'Type B', 7: 'Type A', 8: 'Type B', 9: 'Type B', 10: 'Type A'
+                        };
+                        const roomType = typeMap[room];
+                        rooms.push({
+                            roomNumber: `${block}-${floor}-${roomStr}`,
+                            block: block,
+                            floor: floor,
+                            type: roomType,
+                            price: 150,
+                            status: "available",
+                            beds: 6,
+                            hasAC: false,
+                            createdAt: new Date().toISOString()
+                        });
+                    }
+                }
+            });
+
+            // Logic 2: Block A7
+            for (let floor = 1; floor <= 5; floor++) {
+                for (let room = 1; room <= 5; room++) {
+                    const roomStr = room.toString().padStart(2, '0');
+                    rooms.push({
+                        roomNumber: `A7-${floor}-${roomStr}`,
+                        block: 'A7',
+                        floor: floor,
+                        type: 'Type C',
+                        price: 150,
+                        status: "available",
+                        beds: 4,
+                        hasAC: false,
+                        createdAt: new Date().toISOString()
+                    });
+                }
+            }
+
+            // Batch write
+            try {
+                let batch = writeBatch(db);
+                let count = 0;
+                let totalWritten = 0;
+
+                for (let i = 0; i < rooms.length; i++) {
+                    const roomRef = doc(collection(db, "rooms"));
+                    batch.set(roomRef, rooms[i]);
+                    count++;
+                    totalWritten++;
+
+                    // Firestore max batch size is 500
+                    if (count === 400 || i === rooms.length - 1) {
+                        setStatus(`Writing batch... (${totalWritten}/${rooms.length})`);
+                        await batch.commit();
+                        batch = writeBatch(db);
+                        count = 0;
+                    }
+                }
+
+                setStatus(`✅ Successfully generated ${totalWritten} rooms!`);
+                Swal.fire('Success', '575 Rooms have been added to the database.', 'success');
+            } catch (error) {
+                setStatus("❌ Error: " + error.message);
+                Swal.fire('Error', error.message, 'error');
+            }
+
+            btnDelete.disabled = false;
+            btnGenerate.disabled = false;
+        });
+    </script>
+</body>
+</html>

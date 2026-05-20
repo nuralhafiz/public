@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GMI HostelKu | Smart Student Importer</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+        body { font-family: 'Poppins', sans-serif; background: #f0f3fa; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; padding: 20px; box-sizing: border-box;}
+        .container { background: white; padding: 40px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); max-width: 900px; width: 100%; transition: all 0.3s ease;}
+        h1 { color: #1e3a8a; font-size: 24px; margin-top: 0; margin-bottom: 10px; }
+        p { color: #64748b; margin-bottom: 20px; font-size: 14px; line-height: 1.6;}
+        
+        /* Steps */
+        .step { display: none; }
+        .step.active { display: block; animation: fadeIn 0.5s ease; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        textarea { width: 100%; height: 250px; padding: 15px; border: 2px solid #e2e8f0; border-radius: 10px; font-family: monospace; font-size: 13px; margin-bottom: 20px; resize: vertical; box-sizing: border-box; }
+        textarea:focus { border-color: #2d72d2; outline: none; }
+        
+        .btn { padding: 15px 25px; border: none; border-radius: 10px; font-size: 16px; font-weight: 600; cursor: pointer; color: white; width: 100%; margin-bottom: 15px; transition: 0.3s; }
+        .btn-blue { background: linear-gradient(135deg, #1e3a8a 0%, #2d72d2 100%); }
+        .btn-blue:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(45, 114, 210, 0.4); }
+        .btn-green { background: linear-gradient(135deg, #059669 0%, #10b981 100%); }
+        .btn-green:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(16, 185, 129, 0.4); }
+        .btn-outline { background: transparent; border: 2px solid #64748b; color: #64748b; }
+        .btn-outline:hover { background: #f8fafc; transform: translateY(-2px); }
+        .btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; box-shadow: none; }
+        
+        #status { font-size: 14px; font-weight: 600; color: #1e3a8a; margin-top: 20px; text-align: center;}
+        .info-box { background: #f8fafc; border-left: 4px solid #2d72d2; padding: 15px; margin-bottom: 20px; font-size: 13px; color: #475569; }
+        
+        /* Table Styles */
+        .table-container { max-height: 400px; overflow-y: auto; border: 1px solid #e2e8f0; border-radius: 10px; margin-bottom: 20px; }
+        table { width: 100%; border-collapse: collapse; text-align: left; font-size: 13px; }
+        th { position: sticky; top: 0; background: #f8fafc; padding: 12px 15px; font-weight: 600; color: #1e3a8a; border-bottom: 2px solid #e2e8f0; z-index: 10; }
+        td { padding: 12px 15px; border-bottom: 1px solid #e2e8f0; color: #334155; }
+        tr:last-child td { border-bottom: none; }
+        
+        /* Warning Highlight */
+        .highlight-warning { background-color: #fef08a !important; }
+        .highlight-warning td { color: #854d0e; font-weight: 500; }
+        
+        select { padding: 8px; border-radius: 6px; border: 1px solid #cbd5e1; font-family: 'Poppins', sans-serif; font-size: 13px; width: 100%; cursor: pointer;}
+        select.error { border: 2px solid #ef4444; background-color: #fef2f2; }
+        
+        .flex-buttons { display: flex; gap: 15px; }
+    </style>
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+</head>
+<body>
+    <div class="container">
+        
+        <!-- STEP 1: Input Data -->
+        <div id="step1" class="step active">
+            <h1>🚀 Smart Student Importer</h1>
+            <p>Copy data from Excel and paste it here. Ensure the columns are in this order:<br><strong>Name (Tab) Student ID (Tab) Phone Number (Tab) Email (Optional)</strong></p>
+            <div style="background: #f0f3fa; padding: 15px; border-radius: 8px; font-size: 13px; color: #334155; margin-bottom: 20px;">
+                <strong>How it works:</strong>
+                <ul style="margin: 5px 0 0 20px; padding: 0;">
+                    <li>If a phone number is missing, it will automatically generate '0123456789'.</li>
+                    <li>If an email is missing, it will automatically generate 'studentid@student.gmi.edu.my'.</li>
+                    <li>Students will be randomly distributed into empty rooms across blocks based on gender.</li>
+                    <li>You will be asked to review names without "Bin/Binti" in the next step.</li>
+                </ul>
+            </div>
+
+            <textarea id="rawData" placeholder="Ali bin Abu&#9;SWE24010021&#9;0198765432&#9;ali@student.gmi.edu.my&#10;Siti Nurhaliza binti Tarudin&#9;SWE24010022&#9;&#10;Jacky Chan&#9;SWE24010023&#9;01122334455"></textarea>
+            
+            <button class="btn btn-blue" id="btnAnalyze">Analyze Data</button>
+            <button class="btn btn-outline" onclick="window.location.href='warden-students.html'">Go back to Dashboard</button>
+        </div>
+
+        <!-- STEP 2: Review & Assign Gender -->
+        <div id="step2" class="step">
+            <h1>📋 Review Data</h1>
+            <p>We found <strong id="studentCount">0</strong> students. Please verify the gender for highlighted rows before importing. <br><span style="color: #ea580c; font-size: 12px; font-weight: 600;">⚠️ Highlighted rows indicate non-Malay names (No Bin/Binti). Please select manually.</span></p>
+
+            <div class="table-container">
+                    <table class="students-table" style="margin-top: 20px;">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Name</th>
+                                <th>Student ID</th>
+                                <th>Email</th>
+                                <th>Gender (Block Assignment)</th>
+                            </tr>
+                        </thead>
+                    <tbody id="reviewTableBody">
+                        <!-- Rows will be populated here -->
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="flex-buttons">
+                <button class="btn btn-outline" id="btnBackToStep1">Back to Edit Data</button>
+                <button class="btn btn-green" id="btnConfirmImport">Confirm & Import to Firebase</button>
+            </div>
+        </div>
+
+        <div id="status">Waiting for data...</div>
+    </div>
+
+    <script type="module">
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { getFirestore, collection, getDocs, writeBatch, doc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { db, auth } from "./js/firebase-config.js";
+
+        const statusEl = document.getElementById('status');
+        const btnAnalyze = document.getElementById('btnAnalyze');
+        const btnBack = document.getElementById('btnBackToStep1');
+        const btnConfirm = document.getElementById('btnConfirmImport');
+        const rawDataInput = document.getElementById('rawData');
+        
+        const step1 = document.getElementById('step1');
+        const step2 = document.getElementById('step2');
+        const tbody = document.getElementById('reviewTableBody');
+        const countSpan = document.getElementById('studentCount');
+
+        let parsedStudents = [];
+        const partitionNames = ['partitionA', 'partitionB', 'partitionC', 'partitionD', 'partitionE', 'partitionF'];
+
+        function setStatus(msg) {
+            statusEl.textContent = msg;
+            console.log(msg);
+        }
+
+        function showStep(stepNum) {
+            if (stepNum === 1) {
+                step1.classList.add('active');
+                step2.classList.remove('active');
+                setStatus("Waiting for data...");
+            } else {
+                step1.classList.remove('active');
+                step2.classList.add('active');
+                setStatus("Please review data and confirm.");
+            }
+        }
+
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                if (!user.email.endsWith('@gmi.edu.my') || user.email.includes('@student.')) {
+                    Swal.fire('Access Denied', 'Only wardens can use this tool.', 'error');
+                    btnAnalyze.disabled = true;
+                    return;
+                }
+                setStatus("Ready. Connected to Firebase as Warden.");
+            } else {
+                window.location.href = "warden-login.html";
+            }
+        });
+
+        // STEP 1: ANALYZE DATA
+        btnAnalyze.addEventListener('click', () => {
+            const text = rawDataInput.value.trim();
+            if (!text) {
+                Swal.fire('Error', 'Please paste data into the text box first.', 'warning');
+                return;
+            }
+
+            const lines = text.split('\n');
+            parsedStudents = [];
+            tbody.innerHTML = '';
+
+            let hasUnknowns = false;
+
+            for (let i = 0; i < lines.length; i++) {
+                let line = lines[i].trim();
+                if (!line) continue;
+                
+                let parts = line.split('\t');
+                if (parts.length < 2) {
+                    parts = line.split(',');
+                }
+
+                if (parts.length >= 2) {
+                    let fullName = parts[0].trim();
+                    let studentId = parts[1].trim().toUpperCase();
+                    let phone = (parts.length >= 3 && parts[2].trim() !== '') ? parts[2].trim() : '0123456789';
+                    let email = (parts.length >= 4 && parts[3].trim() !== '') ? parts[3].trim().toLowerCase() : `${studentId}@student.gmi.edu.my`.toLowerCase();
+                    
+                    phone = phone.replace(/[^0-9]/g, '');
+                    if (!phone.startsWith('01')) phone = '0123456789';
+                    studentId = studentId.replace(/[^A-Z0-9]/g, '');
+
+                    // SMART GENDER DETECTION (Bin/Binti ONLY)
+                    let nameUpper = fullName.toUpperCase();
+                    let gender = ''; 
+                    let isUnknown = false;
+                    
+                    if (nameUpper.includes(' BINTI ') || nameUpper.includes(' BT ')) {
+                        gender = 'Female';
+                    } else if (nameUpper.includes(' BIN ') || nameUpper.includes(' B ')) {
+                        gender = 'Male';
+                    } else {
+                        // Unsure! Requires manual review.
+                        gender = '';
+                        isUnknown = true;
+                        hasUnknowns = true;
+                    }
+
+                    parsedStudents.push({
+                        id: i, // unique temp id
+                        fullName,
+                        studentId,
+                        phone,
+                        email,
+                        gender, 
+                        isUnknown,
+                        status: 'active',
+                        course: 'Demo Semester',
+                        emergencyContact: '0199999999'
+                    });
+
+                    // Build Table Row
+                    const tr = document.createElement('tr');
+                    if (isUnknown) tr.classList.add('highlight-warning');
+                    
+                    tr.innerHTML = `
+                        <td>${i + 1}</td>
+                        <td>${fullName}</td>
+                        <td>${studentId}</td>
+                        <td>${email}</td>
+                        <td>
+                            <select id="genderSelect_${i}" ${isUnknown ? '' : ''}>
+                                <option value="" disabled ${gender === '' ? 'selected' : ''}>⚠️ Sila Pilih</option>
+                                <option value="Male" ${gender === 'Male' ? 'selected' : ''}>Lelaki (A2-A5)</option>
+                                <option value="Female" ${gender === 'Female' ? 'selected' : ''}>Perempuan (A1, A7)</option>
+                            </select>
+                        </td>
+                    `;
+                    tbody.appendChild(tr);
+                }
+            }
+
+            if (parsedStudents.length === 0) {
+                Swal.fire('Error', 'No valid student data found. Make sure format is correct.', 'error');
+                return;
+            }
+
+            countSpan.textContent = parsedStudents.length;
+            
+            if (hasUnknowns) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Manual Review Needed',
+                    text: 'Some names do not contain Bin/Binti. Please select their gender from the yellow rows manually.',
+                    confirmButtonColor: '#ea580c'
+                });
+            }
+
+            showStep(2);
+        });
+
+        // STEP 1: BACK BUTTON
+        btnBack.addEventListener('click', () => {
+            showStep(1);
+        });
+
+        // STEP 2: CONFIRM & IMPORT
+        btnConfirm.addEventListener('click', async () => {
+            // 1. Validate all dropdowns
+            let allValid = true;
+            for (let i = 0; i < parsedStudents.length; i++) {
+                const selectEl = document.getElementById(`genderSelect_${parsedStudents[i].id}`);
+                if (!selectEl.value) {
+                    allValid = false;
+                    selectEl.classList.add('error');
+                } else {
+                    selectEl.classList.remove('error');
+                    parsedStudents[i].gender = selectEl.value; // Save manual selection
+                }
+            }
+
+            if (!allValid) {
+                Swal.fire('Error', 'Sila pilih jantina bagi semua pelajar di dalam barisan kuning sebelum Import.', 'error');
+                return;
+            }
+
+            btnConfirm.disabled = true;
+            btnBack.disabled = true;
+            btnConfirm.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Importing to Firebase...';
+            setStatus(`Fetching available rooms from Firestore...`);
+
+            try {
+                // Fetch rooms
+                const roomsSnap = await getDocs(collection(db, "rooms"));
+                let maleRooms = [];
+                let femaleRooms = [];
+                
+                roomsSnap.forEach(docSnap => {
+                    let roomData = docSnap.data();
+                    let occupantsArray = roomData.occupants || []; // Default to empty array if missing
+
+                    if (roomData.status !== 'maintenance' && occupantsArray.length < roomData.beds) {
+                        const roomObj = { id: docSnap.id, ...roomData, occupants: occupantsArray };
+                        
+                        // Separate rooms based on Blocks
+                        if (roomData.block === 'A1' || roomData.block === 'A7') {
+                            femaleRooms.push(roomObj);
+                        } else {
+                            maleRooms.push(roomObj);
+                        }
+                    }
+                });
+
+                if (maleRooms.length === 0 && femaleRooms.length === 0) {
+                    throw new Error("No available rooms found in the database! Cannot assign students.");
+                }
+
+                // Randomize rooms array
+                maleRooms = maleRooms.sort(() => Math.random() - 0.5);
+                femaleRooms = femaleRooms.sort(() => Math.random() - 0.5);
+
+                let batch = writeBatch(db);
+                let operations = 0;
+                let successfullyAssigned = 0;
+
+                setStatus(`Assigning rooms and building batch write...`);
+
+                for (let i = 0; i < parsedStudents.length; i++) {
+                    const student = parsedStudents[i];
+
+                    // Find a room that still has space based on Gender
+                    let targetRooms = student.gender === 'Female' ? femaleRooms : maleRooms;
+                    let assignedRoomIndex = targetRooms.findIndex(r => r.occupants.length < r.beds);
+                    
+                    if (assignedRoomIndex === -1) {
+                        console.warn(`Ran out of empty rooms for ${student.gender}!`);
+                        continue;
+                    }
+
+                    let room = targetRooms[assignedRoomIndex];
+                    
+                    // Determine which partition is free
+                    let occupiedPartitions = room.occupants.map(occ => occ.partition);
+                    let freePartition = '';
+                    for (let p = 0; p < room.beds; p++) {
+                        if (!occupiedPartitions.includes(partitionNames[p])) {
+                            freePartition = partitionNames[p];
+                            break;
+                        }
+                    }
+
+                    // Prepare student doc ref
+                    const newStudentRef = doc(collection(db, "students"));
+                    
+                    // Add occupant to room memory
+                    const newOccupant = {
+                        id: newStudentRef.id,
+                        name: student.fullName,
+                        partition: freePartition
+                    };
+                    room.occupants.push(newOccupant);
+                    
+                    // Update room status if full
+                    if (room.occupants.length >= room.beds) {
+                        room.status = 'occupied';
+                    } else if (room.occupants.length > 0) {
+                        room.status = 'partial';
+                    }
+
+                    // Prepare clean student object
+                    const finalStudentObj = {
+                        fullName: student.fullName,
+                        studentId: student.studentId,
+                        phone: student.phone,
+                        email: student.email,
+                        gender: student.gender,
+                        status: student.status,
+                        course: student.course,
+                        emergencyContact: student.emergencyContact,
+                        roomNumber: room.roomNumber,
+                        block: room.block,
+                        floor: room.floor,
+                        partition: freePartition,
+                        createdAt: serverTimestamp()
+                    };
+
+                    // Batch: Set Student
+                    batch.set(newStudentRef, finalStudentObj);
+                    operations++;
+
+                    // Batch: Update Room
+                    const roomRef = doc(db, "rooms", room.id);
+                    batch.update(roomRef, {
+                        occupants: room.occupants,
+                        status: room.status,
+                        lastUpdated: serverTimestamp()
+                    });
+                    operations++;
+
+                    successfullyAssigned++;
+
+                    if (operations >= 400) {
+                        setStatus(`Committing batch to Firebase...`);
+                        await batch.commit();
+                        batch = writeBatch(db); 
+                        operations = 0;
+                    }
+                }
+
+                // Commit remaining operations
+                if (operations > 0) {
+                    await batch.commit();
+                }
+
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Import Successful!',
+                    text: `Successfully imported and assigned ${successfullyAssigned} students to rooms.`,
+                    confirmButtonText: 'Go to Student Records',
+                    confirmButtonColor: '#2d72d2',
+                    allowOutsideClick: false
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.href = 'warden-students.html';
+                    }
+                });
+
+            } catch (error) {
+                console.error("Import error:", error);
+                Swal.fire('Error', error.message, 'error');
+                btnConfirm.disabled = false;
+                btnBack.disabled = false;
+                btnConfirm.innerHTML = 'Confirm & Import to Firebase';
+            } finally {
+                setStatus("Finished processing.");
+            }
+        });
+    </script>
+</body>
+</html>

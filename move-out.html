@@ -586,17 +586,24 @@
         }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="css/global.css?v=5">
 </head>
 <body>
     <header>
         <div style="display: flex; align-items: center;">
             <i class="fas fa-bars menu-toggle" id="hamburger"></i>
             <div class="brand-container" onclick="window.location.href='student-dashboard.html'">
-            <span class="gmi-wrapper"><span class="brand-blue">GMI</span><span class="brand-dot"></span></span><span class="brand-lime">HostelKu.</span>
+            <span class="brand-blue">GM<span class="i-wrapper">I<span class="brand-dot"></span></span></span><span class="brand-lime">HostelKu.</span>
         </div>
         </div>
         <div style="display: flex; align-items: center; gap: 10px;">
-            <!-- Avatar Icon that links to profile page -->
+                        <!-- Notification Bell -->
+            <a href="#" class="notification-container" id="notificationBell" title="Notifications">
+                <i class="fas fa-bell notification-bell"></i>
+                <span class="notification-badge hidden" id="notificationBadge">0</span>
+            </a>
+            <!-- Avatar Icon -->
             <a href="student-profile.html" class="avatar-container">
                 <i class="fas fa-user-graduate"></i>
             </a>
@@ -972,7 +979,7 @@
 
     <script type="module">
         import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-        import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, collection, query, where, orderBy, onSnapshot, doc, updateDoc, writeBatch, addDoc, serverTimestamp, getDoc, setDoc, getDocs, limit, deleteDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
         
         import { auth, db } from "./js/firebase-config.js";
 
@@ -1252,6 +1259,96 @@
                 submitBtn.disabled = false;
             }
         });
+    
+        // ── Notification Logic ─────────────────────────────────────────────
+        const notificationBell = document.getElementById('notificationBell');
+        const notificationBadge = document.getElementById('notificationBadge');
+        let unreadNotifications = [];
+
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                // Setup realtime listener for notifications
+                const q = query(
+                    collection(db, "notifications"), 
+                    where("recipientEmail", "==", user.email),
+                    where("isRead", "==", false)
+                );
+                
+                onSnapshot(q, (snapshot) => {
+                    unreadNotifications = [];
+                    snapshot.forEach((doc) => {
+                        unreadNotifications.push({ id: doc.id, ...doc.data() });
+                    });
+                    
+                    // Sort by timestamp manually since we can't easily compound order by with inequality without composite index
+                    unreadNotifications.sort((a, b) => {
+                        const timeA = a.timestamp ? a.timestamp.toMillis() : 0;
+                        const timeB = b.timestamp ? b.timestamp.toMillis() : 0;
+                        return timeB - timeA; // descending
+                    });
+
+                    if (unreadNotifications.length > 0) {
+                        notificationBadge.textContent = unreadNotifications.length > 9 ? '9+' : unreadNotifications.length;
+                        notificationBadge.classList.remove('hidden');
+                    } else {
+                        notificationBadge.classList.add('hidden');
+                    }
+                });
+            }
+        });
+
+        if (notificationBell) {
+            notificationBell.addEventListener('click', (e) => {
+                e.preventDefault();
+                
+                if (unreadNotifications.length === 0) {
+                    Swal.fire({ heightAuto: false,
+                        icon: 'info',
+                        title: 'No new messages',
+                        text: 'You have read all your messages.',
+                        confirmButtonColor: '#2d72d2'
+                    });
+                    return;
+                }
+
+                let htmlContent = '<div style="text-align: left; max-height: 300px; overflow-y: auto;">';
+                unreadNotifications.forEach(notif => {
+                    const dateObj = notif.timestamp ? notif.timestamp.toDate() : new Date();
+                    const dateStr = dateObj.toLocaleDateString('en-MY') + ' ' + dateObj.toLocaleTimeString('en-MY', {hour: '2-digit', minute:'2-digit'});
+                    htmlContent += '<div style="background: #f8fafc; padding: 15px; border-radius: 8px; margin-bottom: 10px; border-left: 4px solid #2d72d2;">';
+                    htmlContent += '<div style="display: flex; justify-content: space-between; margin-bottom: 5px;">';
+                    htmlContent += '<strong>' + (notif.sender || 'Warden') + '</strong>';
+                    htmlContent += '<small style="color: #64748b;">' + dateStr + '</small></div>';
+                    htmlContent += '<p style="margin: 0; color: #334155; font-size: 14px;">' + notif.message + '</p></div>';
+                });
+                htmlContent += '</div>';
+
+                Swal.fire({ heightAuto: false,
+                    title: 'Your Messages',
+                    html: htmlContent,
+                    confirmButtonText: 'Mark all as read',
+                    showCancelButton: true,
+                    cancelButtonText: 'Close',
+                    confirmButtonColor: '#2d72d2'
+                }).then(async (result) => {
+                    if (result.isConfirmed) {
+                        // Mark all as read
+                        try {
+                            const batch = writeBatch(db);
+                            unreadNotifications.forEach(notif => {
+                                const ref = doc(db, "notifications", notif.id);
+                                batch.update(ref, { isRead: true });
+                            });
+                            await batch.commit();
+                        } catch (error) {
+                            console.error("Error marking messages as read:", error);
+                        }
+                    }
+                });
+            });
+        }
+        // ───────────────────────────────────────────────────────────────────
+
     </script>
 </body>
 </html>
