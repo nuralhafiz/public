@@ -1558,51 +1558,6 @@
             displaySelectedPartition.textContent = 'None';
             selectedPartitionInput.value = '';
         }
-        });
-
-        btnTypeB.addEventListener('click', () => {
-            btnTypeB.classList.add('active');
-            btnTypeA.classList.remove('active');
-            floorPlanGrid.className = 'grid-layout layout-type-b';
-            blueprintTitle.innerHTML = 'Floor Plan<br>Type B';
-            selectedPartitionInput.setAttribute('data-room-type', 'typeB');
-            loadAvailability('typeB');
-        });
-
-        // ── Partition Click Handler ────────────────────────────────────────
-        document.addEventListener('click', (e) => {
-            const block = e.target.closest('.room-block[data-partition]');
-            if (!block) return;
-
-            if (block.classList.contains('unavailable') || block.classList.contains('loading')) {
-                Swal.fire({ heightAuto: false,
-                    icon: 'error',
-                    title: block.classList.contains('loading') ? 'Loading...' : 'Partition Unavailable',
-                    text: block.classList.contains('loading')
-                        ? 'Please wait while availability is being loaded.'
-                        : 'This partition is already occupied. Please choose a green partition.',
-                    confirmButtonColor: '#ef4444'
-                });
-                return;
-            }
-
-            clearSelection();
-            block.classList.add('selected');
-            const pValue = block.getAttribute('data-partition');
-            const roomType = selectedPartitionInput.getAttribute('data-room-type') || 'typeA';
-            displaySelectedPartition.textContent = `${pValue} (${roomType === 'typeA' ? 'Type A' : 'Type B'})`;
-            selectedPartitionInput.value = `${roomType}:${pValue}`;
-        });
-
-        function clearSelection() {
-            document.querySelectorAll('.room-block[data-partition]').forEach(b => b.classList.remove('selected'));
-            displaySelectedPartition.textContent = 'None';
-            selectedPartitionInput.value = '';
-        }
-
-        // Load Type A by default on page load
-        selectedPartitionInput.setAttribute('data-room-type', 'typeA');
-        loadAvailability('typeA');
 
         document.getElementById('applyForm').addEventListener('submit', async (e) => { 
             e.preventDefault(); 
