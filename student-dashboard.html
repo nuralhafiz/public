@@ -782,8 +782,8 @@
                     
                     // Sort by timestamp manually since we can't easily compound order by with inequality without composite index
                     unreadNotifications.sort((a, b) => {
-                        const timeA = a.timestamp ? a.timestamp.toMillis() : 0;
-                        const timeB = b.timestamp ? b.timestamp.toMillis() : 0;
+                        const timeA = a.timestamp ? (typeof a.timestamp.toMillis === 'function' ? a.timestamp.toMillis() : (a.timestamp.getTime ? a.timestamp.getTime() : 0)) : 0;
+                        const timeB = b.timestamp ? (typeof b.timestamp.toMillis === 'function' ? b.timestamp.toMillis() : (b.timestamp.getTime ? b.timestamp.getTime() : 0)) : 0;
                         return timeB - timeA; // descending
                     });
 
@@ -796,7 +796,7 @@
                         if (alertsContainer) {
                             let alertsHtml = '';
                             unreadNotifications.slice(0, 5).forEach(notif => {
-                                const timeStr = notif.timestamp ? new Date(notif.timestamp.toMillis()).toLocaleString() : '';
+                                const timeStr = notif.timestamp ? new Date(typeof notif.timestamp.toMillis === 'function' ? notif.timestamp.toMillis() : (notif.timestamp.getTime ? notif.timestamp.getTime() : 0)).toLocaleString() : '';
                                 alertsHtml += `
                                     <div class="alert-item info" style="cursor:pointer; background: #f8f9fa; border-left-color: #2d72d2; padding: 15px;" onclick="openNotification('${notif.id}')">
                                         <div style="flex:1;">

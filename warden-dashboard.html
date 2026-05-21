@@ -986,7 +986,7 @@
 
     import { auth, db } from "./js/firebase-config.js";
     import { collection, query, where, getDocs, orderBy, limit } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-    import { doc, getDoc, updateDoc, setDoc, addDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+    import { doc, getDoc, updateDoc, setDoc, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
     
     
     window.viewMoveOutRequest = async (reqId) => {
@@ -1224,7 +1224,7 @@
                         title: `Room Application ${newStatus.charAt(0).toUpperCase() + newStatus.slice(1)}`,
                         message: `Your room application has been ${newStatus} by the warden.`,
                         isRead: false,
-                        timestamp: new Date()
+                        timestamp: serverTimestamp()
                     });
                 } catch (notifErr) {
                     console.warn("Could not send notification:", notifErr);
