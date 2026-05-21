@@ -1558,7 +1558,19 @@
             floorPlanGrid.innerHTML = html;
             
             const bedsCount = type === 'Type C' ? 4 : 6;
-            const occupants = roomData.occupants || {};
+            
+            // Normalize occupants keys to handle legacy array indices (0 -> P1, 1 -> P2, etc.)
+            const occupants = {};
+            if (roomData.occupants) {
+                for (const [key, val] of Object.entries(roomData.occupants)) {
+                    let standardKey = key;
+                    if (!isNaN(key) && key.trim() !== '') {
+                        standardKey = 'P' + (parseInt(key) + 1);
+                    }
+                    occupants[standardKey] = val;
+                }
+            }
+            
             const booked = roomData.bookedPartitions || {};
             
             for (let i = 1; i <= bedsCount; i++) {
