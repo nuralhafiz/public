@@ -986,7 +986,7 @@
 
     import { auth, db } from "./js/firebase-config.js";
     import { collection, query, where, getDocs, orderBy, limit } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-    import { doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+    import { doc, getDoc, updateDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
     
     
     window.viewMoveOutRequest = async (reqId) => {
@@ -1148,18 +1148,73 @@
         
         try {
             const appRef = doc(db, "applications", appId);
-            
-            if (!userEmail) {
-                const appSnap = await getDoc(appRef);
-                if (appSnap.exists()) {
-                    userEmail = appSnap.data().userEmail;
-                }
+            const appSnap = await getDoc(appRef);
+            let appData = null;
+            if (appSnap.exists()) {
+                appData = appSnap.data();
+                if (!userEmail) userEmail = appData.userEmail;
             }
 
             await updateDoc(appRef, {
                 status: newStatus,
                 updatedAt: new Date()
             });
+            
+            // Sync with warden-applications.html: Auto-assign room and update profile when approved
+            if (appData && newStatus === 'approved') {
+                const roomNum = appData.roomNumber;
+                const partitionKey = appData.partition || appData.selectedPartition;
+                
+                if (roomNum && partitionKey) {
+                    const qRoom = query(collection(db, "rooms"), where("roomNumber", "==", roomNum));
+                    const roomSnap = await getDocs(qRoom);
+                    
+                    if (!roomSnap.empty) {
+                        const roomDoc = roomSnap.docs[0];
+                        const roomData = roomDoc.data();
+                        
+                        // Convert array to object if necessary
+                        let currentOccupants = roomData.occupants || {};
+                        if (Array.isArray(currentOccupants)) {
+                            currentOccupants = Object.assign({}, currentOccupants);
+                        }
+                        
+                        // Auto-assign the student to the room partition
+                        currentOccupants[partitionKey] = {
+                            name: appData.fullName || 'Unknown',
+                            id: appData.studentId || 'Unknown',
+                            phone: appData.phone || 'Unknown'
+                        };
+                        
+                        // Check room capacity
+                        const maxCapacity = roomData.capacity || (roomData.type === 'Type C' ? 4 : 6);
+                        const occCount = Object.keys(currentOccupants).length;
+                        let updatedRoomStatus = roomData.status;
+                        if (occCount >= maxCapacity) {
+                            updatedRoomStatus = 'occupied';
+                        } else if (updatedRoomStatus === 'occupied' && occCount < maxCapacity) {
+                            updatedRoomStatus = 'available';
+                        }
+                        
+                        // Update rooms collection
+                        await updateDoc(doc(db, "rooms", roomDoc.id), {
+                            occupants: currentOccupants,
+                            status: updatedRoomStatus
+                        });
+                        
+                        // Update student profile with assigned room
+                        if (appData.userId) {
+                            try {
+                                await setDoc(doc(db, "users", appData.userId), {
+                                    room: `${roomNum} (${partitionKey})`
+                                }, { merge: true });
+                            } catch (userErr) {
+                                console.warn("Could not update user profile room:", userErr);
+                            }
+                        }
+                    }
+                }
+            }
             
             
             Swal.fire({ heightAuto: false,
