@@ -41,35 +41,50 @@ const applyAvatar = (photoURL) => {
 };
 
 // 1. Instantly apply cached avatar if it exists (Zero delay)
-const cachedAvatar = localStorage.getItem('userAvatar');
-if (cachedAvatar) {
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', () => applyAvatar(cachedAvatar));
-    } else {
-        applyAvatar(cachedAvatar);
+const lastUid = localStorage.getItem('currentUserUid');
+if (lastUid) {
+    const cachedAvatar = localStorage.getItem('userAvatar_' + lastUid);
+    if (cachedAvatar) {
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', () => applyAvatar(cachedAvatar));
+        } else {
+            applyAvatar(cachedAvatar);
+        }
     }
 }
 
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 onAuthStateChanged(auth, async (user) => {
     if (user) {
+        localStorage.setItem('currentUserUid', user.uid);
         try {
             // 2. Fetch fresh avatar from Firestore in background
             const docRef = doc(db, "users", user.uid);
             const docSnap = await getDoc(docRef);
             if (docSnap.exists() && docSnap.data().photoURL) {
                 const photoURL = docSnap.data().photoURL;
-                // Cache it for the next page load
-                localStorage.setItem('userAvatar', photoURL);
+                // Cache it for the next page load bound to this specific UID
+                localStorage.setItem('userAvatar_' + user.uid, photoURL);
                 // Apply it
                 applyAvatar(photoURL);
+            } else {
+                // If user doesn't have an avatar, clear any cached avatar for this UID
+                localStorage.removeItem('userAvatar_' + user.uid);
+                // If the DOM was already modified by a lingering cache, reset it to default icon
+                document.querySelectorAll('.avatar-container').forEach(container => {
+                    const isStudent = user.email && user.email.endsWith('@student.gmi.edu.my');
+                    container.innerHTML = `<i class="fas fa-user${isStudent ? '-graduate' : ''}"></i>`;
+                    container.style.background = '';
+                    container.style.padding = '';
+                    container.style.border = '';
+                });
             }
         } catch (e) {
             console.error("Global avatar load error:", e);
         }
     } else {
-        // Clear cache on logout
-        localStorage.removeItem('userAvatar');
+        // Clear current active UID on logout
+        localStorage.removeItem('currentUserUid');
     }
 });
 
