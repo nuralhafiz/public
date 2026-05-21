@@ -798,11 +798,10 @@
                             unreadNotifications.slice(0, 5).forEach(notif => {
                                 const timeStr = notif.timestamp ? new Date(notif.timestamp.toMillis()).toLocaleString() : '';
                                 alertsHtml += `
-                                    <div class="alert-item warning" style="cursor:pointer;" onclick="openNotification('${notif.id}')">
-                                        <i class="fas fa-exclamation-circle"></i>
+                                    <div class="alert-item info" style="cursor:pointer; background: #f8f9fa; border-left-color: #2d72d2; padding: 15px;" onclick="openNotification('${notif.id}')">
                                         <div style="flex:1;">
-                                            <strong>${notif.title || 'Notification'}</strong>
-                                            <p style="margin-top: 5px; color: #666; font-size: 13px;">${notif.message || ''}</p>
+                                            <strong style="color: #0f1638;">${notif.title || 'Notification'}</strong>
+                                            <p style="margin-top: 5px; color: #444; font-size: 13px;">${notif.message || ''}</p>
                                         </div>
                                         ${timeStr ? `<div style="font-size: 11px; color: #999;">${timeStr}</div>` : ''}
                                     </div>

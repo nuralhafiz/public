@@ -945,9 +945,9 @@
                         }
                     }
 
-                    if (app && app.email) {
+                    if (app && (app.userEmail || app.email)) {
                         await addDoc(collection(db, "notifications"), {
-                            recipientEmail: app.email,
+                            recipientEmail: app.userEmail || app.email,
                             title: `Room Application ${status.charAt(0).toUpperCase() + status.slice(1)}`,
                             message: `Your room application has been ${status} by the warden.`,
                             isRead: false,
