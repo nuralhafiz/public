@@ -858,12 +858,13 @@
 
             if (result.isConfirmed) {
                 try {
+                    // Cache the app object BEFORE updating firestore to prevent race condition with onSnapshot
+                    const app = applications.find(a => a.id === id);
+                    
                     await updateDoc(doc(db, "applications", id), {
                         status: status,
                         reviewedAt: new Date()
                     });
-                    
-                    const app = applications.find(a => a.id === id);
                     
                     if (app && status === 'approved') {
                         const roomNum = app.roomNumber;
