@@ -720,7 +720,7 @@
 
     <script type="module">
         import { getAuth, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-        import { getFirestore, collection, query, where, orderBy, getDocs, doc, updateDoc, deleteDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, collection, query, where, orderBy, getDocs, doc, updateDoc, deleteDoc, onSnapshot, addDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         import { auth, db } from "./js/firebase-config.js";
 
@@ -1080,6 +1080,17 @@
                         status: status,
                         updatedAt: new Date()
                     });
+                    
+                    const req = allRequests.find(r => r.id === id);
+                    if (req && req.userEmail) {
+                        await addDoc(collection(db, "notifications"), {
+                            recipientEmail: req.userEmail,
+                            title: `Move-Out ${status.charAt(0).toUpperCase() + status.slice(1)}`,
+                            message: `Your move-out request has been marked as ${status} by the warden.`,
+                            isRead: false,
+                            timestamp: new Date()
+                        });
+                    }
                     Swal.fire({ heightAuto: false,
                         title: 'Success!',
                         text: `Request marked as ${status} successfully.`,

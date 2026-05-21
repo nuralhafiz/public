@@ -563,7 +563,7 @@
 
     <script type="module">
         import { getAuth, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-        import { getFirestore, collection, query, where, orderBy, getDocs, doc, updateDoc, deleteDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, collection, query, where, orderBy, getDocs, doc, updateDoc, deleteDoc, onSnapshot, addDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         import { auth, db } from "./js/firebase-config.js";
 
@@ -854,6 +854,17 @@
                         status: status,
                         reviewedAt: new Date()
                     });
+                    
+                    const app = applications.find(a => a.id === id);
+                    if (app && app.email) {
+                        await addDoc(collection(db, "notifications"), {
+                            recipientEmail: app.email,
+                            title: `Room Application ${status.charAt(0).toUpperCase() + status.slice(1)}`,
+                            message: `Your room application has been ${status} by the warden.`,
+                            isRead: false,
+                            timestamp: new Date()
+                        });
+                    }
                     Swal.fire({ heightAuto: false,
                         title: 'Success!',
                         text: `Application has been ${status}.`,

@@ -475,10 +475,12 @@
                 <i class="fas fa-bell"></i>
                 Alerts & Reminders
             </h2>
-            <div class="alert-item info" style="justify-content: center; opacity: 0.7; padding: 25px;">
-                <i class="fas fa-check-circle" style="color: #4caf50;"></i>
-                <div>
-                    <strong>You're all caught up!</strong> No new alerts at this moment.
+            <div id="alertsContainer">
+                <div class="alert-item info" style="justify-content: center; opacity: 0.7; padding: 25px;">
+                    <i class="fas fa-check-circle" style="color: #4caf50;"></i>
+                    <div>
+                        <strong>You're all caught up!</strong> No new alerts at this moment.
+                    </div>
                 </div>
             </div>
         </section>
@@ -805,8 +807,39 @@
                     if (unreadNotifications.length > 0) {
                         notificationBadge.textContent = unreadNotifications.length > 9 ? '9+' : unreadNotifications.length;
                         notificationBadge.classList.remove('hidden');
+                        
+                        // Render alerts in Dashboard
+                        const alertsContainer = document.getElementById('alertsContainer');
+                        if (alertsContainer) {
+                            let alertsHtml = '';
+                            unreadNotifications.slice(0, 5).forEach(notif => {
+                                const timeStr = notif.timestamp ? new Date(notif.timestamp.toMillis()).toLocaleString() : '';
+                                alertsHtml += `
+                                    <div class="alert-item warning" style="cursor:pointer;" onclick="openNotification('${notif.id}')">
+                                        <i class="fas fa-exclamation-circle"></i>
+                                        <div style="flex:1;">
+                                            <strong>${notif.title || 'Notification'}</strong>
+                                            <p style="margin-top: 5px; color: #666; font-size: 13px;">${notif.message || ''}</p>
+                                        </div>
+                                        ${timeStr ? `<div style="font-size: 11px; color: #999;">${timeStr}</div>` : ''}
+                                    </div>
+                                `;
+                            });
+                            alertsContainer.innerHTML = alertsHtml;
+                        }
                     } else {
                         notificationBadge.classList.add('hidden');
+                        const alertsContainer = document.getElementById('alertsContainer');
+                        if (alertsContainer) {
+                            alertsContainer.innerHTML = `
+                                <div class="alert-item info" style="justify-content: center; opacity: 0.7; padding: 25px;">
+                                    <i class="fas fa-check-circle" style="color: #4caf50;"></i>
+                                    <div>
+                                        <strong>You're all caught up!</strong> No new alerts at this moment.
+                                    </div>
+                                </div>
+                            `;
+                        }
                     }
                 });
             }
@@ -863,6 +896,28 @@
             });
         }
         // ───────────────────────────────────────────────────────────────────
+
+        window.openNotification = async (id) => {
+            const notif = unreadNotifications.find(n => n.id === id);
+            if (!notif) return;
+            
+            Swal.fire({ heightAuto: false,
+                icon: 'info',
+                title: notif.title || 'Announcement Details',
+                html: `<p style="color: #666; font-size: 14px; text-align: left;">${notif.message}</p>`,
+                confirmButtonColor: '#2d72d2',
+                confirmButtonText: 'Mark as Read'
+            }).then(async (result) => {
+                if (result.isConfirmed) {
+                    try {
+                        const ref = doc(db, "notifications", id);
+                        await updateDoc(ref, { isRead: true });
+                    } catch (error) {
+                        console.error("Error marking message as read:", error);
+                    }
+                }
+            });
+        };
 
     </script>
 </body>
