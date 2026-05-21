@@ -900,7 +900,31 @@
                                     occupants: currentOccupants,
                                     status: newStatus
                                 });
+                                
+                                Swal.fire({ heightAuto: false,
+                                    title: 'Success!',
+                                    text: `Application approved and student auto-assigned to ${roomNum} (${partitionKey}).`,
+                                    icon: 'success',
+                                    confirmButtonColor: '#2d72d2'
+                                });
+                                return; // Exit early since we showed the alert
+                            } else {
+                                Swal.fire({ heightAuto: false,
+                                    title: 'Warning',
+                                    text: `Application approved, but Room ${roomNum} could not be found in Room Management!`,
+                                    icon: 'warning',
+                                    confirmButtonColor: '#ff9800'
+                                });
+                                return;
                             }
+                        } else {
+                            Swal.fire({ heightAuto: false,
+                                title: 'Partial Success',
+                                text: `Application approved, but missing room/partition info. Student was NOT auto-assigned.`,
+                                icon: 'info',
+                                confirmButtonColor: '#2d72d2'
+                            });
+                            return;
                         }
                     }
 
@@ -913,6 +937,7 @@
                             timestamp: new Date()
                         });
                     }
+                    
                     Swal.fire({ heightAuto: false,
                         title: 'Success!',
                         text: `Application has been ${status}.`,
