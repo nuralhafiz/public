@@ -1363,11 +1363,32 @@
                 // Pre-fill email field with user's email
                 document.getElementById('email').value = user.email;
                 
-                // Pre-fill name from session if available
-                const savedName = sessionStorage.getItem('userName');
-                if (savedName && !document.getElementById('fullName').value) {
-                    document.getElementById('fullName').value = savedName;
-                }
+                // Fetch profile data to autofill form
+                getDoc(doc(db, "users", user.uid)).then(docSnap => {
+                    if (docSnap.exists()) {
+                        const data = docSnap.data();
+                        if (data.displayName && !document.getElementById('fullName').value) {
+                            document.getElementById('fullName').value = data.displayName;
+                        }
+                        if (data.idNumber) {
+                            document.getElementById('studentId').value = data.idNumber;
+                            // Optionally, if IC is same as Student ID in your system:
+                            // document.getElementById('icNumber').value = data.idNumber;
+                        }
+                        if (data.phoneNumber) {
+                            document.getElementById('phone').value = data.phoneNumber;
+                        }
+                        if (data.course) {
+                            document.getElementById('course').value = data.course;
+                        }
+                    } else {
+                        // Fallback to session name if no profile found
+                        const savedName = sessionStorage.getItem('userName');
+                        if (savedName && !document.getElementById('fullName').value) {
+                            document.getElementById('fullName').value = savedName;
+                        }
+                    }
+                }).catch(err => console.error("Error fetching profile:", err));
             } else { 
                 window.location.href = "student-login.html"; 
             } 

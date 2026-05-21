@@ -563,7 +563,7 @@
 
     <script type="module">
         import { getAuth, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-        import { getFirestore, collection, query, where, orderBy, getDocs, doc, updateDoc, deleteDoc, onSnapshot, addDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, collection, query, where, orderBy, getDocs, doc, updateDoc, deleteDoc, onSnapshot, addDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         import { auth, db } from "./js/firebase-config.js";
 
@@ -906,6 +906,17 @@
                                     occupants: currentOccupants,
                                     status: newStatus
                                 });
+                                
+                                // Update student profile with assigned room
+                                if (app.userId) {
+                                    try {
+                                        await setDoc(doc(db, "users", app.userId), {
+                                            room: `${roomNum} (${partitionKey})`
+                                        }, { merge: true });
+                                    } catch (userErr) {
+                                        console.warn("Could not update user profile room:", userErr);
+                                    }
+                                }
                                 
                                 Swal.fire({ heightAuto: false,
                                     title: 'Success!',

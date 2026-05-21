@@ -1066,11 +1066,33 @@
                 sessionStorage.setItem('userEmail', user.email);
                 sessionStorage.setItem('userName', user.email.split('@')[0]);
                 
-                // Pre-fill name from session if available
-                const savedName = sessionStorage.getItem('userName');
-                if (savedName && !document.getElementById('fullName').value) {
-                    document.getElementById('fullName').value = savedName;
-                }
+                // Fetch profile data to autofill form
+                getDoc(doc(db, "users", user.uid)).then(docSnap => {
+                    if (docSnap.exists()) {
+                        const data = docSnap.data();
+                        if (data.displayName && !document.getElementById('fullName').value) {
+                            document.getElementById('fullName').value = data.displayName;
+                        }
+                        if (data.idNumber) {
+                            document.getElementById('icNo').value = data.idNumber;
+                        }
+                        if (data.phoneNumber) {
+                            document.getElementById('contactNo').value = data.phoneNumber;
+                        }
+                        if (data.course) {
+                            document.getElementById('course').value = data.course;
+                        }
+                        if (data.room && data.room !== '-') {
+                            document.getElementById('unitNo').value = data.room;
+                        }
+                    } else {
+                        // Fallback to session name if no profile found
+                        const savedName = sessionStorage.getItem('userName');
+                        if (savedName && !document.getElementById('fullName').value) {
+                            document.getElementById('fullName').value = savedName;
+                        }
+                    }
+                }).catch(err => console.error("Error fetching profile:", err));
             } else { 
                 window.location.href = "student-login.html"; 
             } 
