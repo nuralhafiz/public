@@ -864,6 +864,45 @@
                     });
                     
                     const app = applications.find(a => a.id === id);
+                    
+                    if (app && status === 'approved') {
+                        const roomNum = app.roomNumber;
+                        const partitionKey = app.partition || app.selectedPartition;
+                        
+                        if (roomNum && partitionKey) {
+                            const qRoom = query(collection(db, "rooms"), where("roomNumber", "==", roomNum));
+                            const roomSnap = await getDocs(qRoom);
+                            
+                            if (!roomSnap.empty) {
+                                const roomDoc = roomSnap.docs[0];
+                                const roomData = roomDoc.data();
+                                const currentOccupants = roomData.occupants || {};
+                                
+                                // Auto-assign the student to the room partition
+                                currentOccupants[partitionKey] = {
+                                    name: app.fullName || 'Unknown',
+                                    id: app.studentId || 'Unknown',
+                                    phone: app.phone || 'Unknown'
+                                };
+                                
+                                // Check if the room capacity is full now
+                                const maxCapacity = roomData.capacity || (roomData.type === 'Type C' ? 4 : 6);
+                                const occCount = Object.keys(currentOccupants).length;
+                                let newStatus = roomData.status;
+                                if (occCount >= maxCapacity) {
+                                    newStatus = 'occupied';
+                                } else if (newStatus === 'occupied' && occCount < maxCapacity) {
+                                    newStatus = 'available';
+                                }
+                                
+                                await updateDoc(doc(db, "rooms", roomDoc.id), {
+                                    occupants: currentOccupants,
+                                    status: newStatus
+                                });
+                            }
+                        }
+                    }
+
                     if (app && app.email) {
                         await addDoc(collection(db, "notifications"), {
                             recipientEmail: app.email,
