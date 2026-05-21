@@ -1441,7 +1441,14 @@
                 snap.forEach(doc => {
                     const data = doc.data();
                     availableRoomsData[data.roomNumber] = { id: doc.id, ...data };
-                    selectRoom.innerHTML += `<option value="${data.roomNumber}">${data.roomNumber} (${data.type})</option>`;
+                    
+                    if (data.status === 'occupied') {
+                        selectRoom.innerHTML += `<option value="${data.roomNumber}" disabled>${data.roomNumber} (Full)</option>`;
+                    } else if (data.status === 'maintenance') {
+                        selectRoom.innerHTML += `<option value="${data.roomNumber}" disabled>${data.roomNumber} (Maintenance)</option>`;
+                    } else {
+                        selectRoom.innerHTML += `<option value="${data.roomNumber}">${data.roomNumber} (${data.type})</option>`;
+                    }
                 });
                 selectRoom.disabled = false;
             } catch (err) {
