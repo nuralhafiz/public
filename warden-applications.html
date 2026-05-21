@@ -811,6 +811,14 @@
                     <p style="margin-bottom: 5px;"><strong>Email:</strong> <a href="mailto:${app.email}" style="color: #2d72d2;" title="Navigation Link">${app.email || 'N/A'}</a></p>
                     <p style="margin-bottom: 5px;"><strong>Phone:</strong> <a href="tel:${app.phone}" style="color: #2d72d2;" title="Navigation Link">${app.phone || 'N/A'}</a></p>
                     <p style="margin-bottom: 5px;"><strong>Address:</strong> ${app.address || 'N/A'}</p>
+                    
+                    <h4 style="color: #2d72d2; border-bottom: 2px solid #e0e0e0; padding-bottom: 8px; margin-top: 25px; margin-bottom: 15px;"><i class="fas fa-bed"></i> Requested Room</h4>
+                    <p style="margin-bottom: 5px;"><strong>Block:</strong> ${app.block || 'N/A'}</p>
+                    <p style="margin-bottom: 5px;"><strong>Floor:</strong> ${app.floor || 'N/A'}</p>
+                    <p style="margin-bottom: 5px;"><strong>Room Number:</strong> ${app.roomNumber || 'N/A'}</p>
+                    <p style="margin-bottom: 5px;"><strong>Partition:</strong> ${app.partition || 'N/A'}</p>
+                    
+                    <h4 style="color: #2d72d2; border-bottom: 2px solid #e0e0e0; padding-bottom: 8px; margin-top: 25px; margin-bottom: 15px;"><i class="fas fa-info-circle"></i> Application Status</h4>
                     <p style="margin-bottom: 5px;"><strong>Submitted:</strong> ${app.submittedAt?.toDate().toLocaleString() || 'N/A'}</p>
                     ${app.referenceNumber ? `<p style="margin-top: 15px;"><strong>Reference Number:</strong> <span style="background: #e8f5e9; color: #4caf50; padding: 4px 10px; border-radius: 6px; font-weight: bold; border: 1px solid #c8e6c9;">${app.referenceNumber}</span></p>` : ''}
                 </div>
