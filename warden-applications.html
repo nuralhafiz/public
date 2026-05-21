@@ -816,7 +816,7 @@
                     <p style="margin-bottom: 5px;"><strong>Block:</strong> ${app.block || 'N/A'}</p>
                     <p style="margin-bottom: 5px;"><strong>Floor:</strong> ${app.floor || 'N/A'}</p>
                     <p style="margin-bottom: 5px;"><strong>Room Number:</strong> ${app.roomNumber || 'N/A'}</p>
-                    <p style="margin-bottom: 5px;"><strong>Partition:</strong> ${app.partition || 'N/A'}</p>
+                    <p style="margin-bottom: 5px;"><strong>Partition:</strong> ${app.partition || app.selectedPartition || 'N/A'}</p>
                     
                     <h4 style="color: #2d72d2; border-bottom: 2px solid #e0e0e0; padding-bottom: 8px; margin-top: 25px; margin-bottom: 15px;"><i class="fas fa-info-circle"></i> Application Status</h4>
                     <p style="margin-bottom: 5px;"><strong>Submitted:</strong> ${app.submittedAt?.toDate().toLocaleString() || 'N/A'}</p>
