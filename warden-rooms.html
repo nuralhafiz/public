@@ -1384,11 +1384,17 @@
             
             if (room.occupants && Object.keys(room.occupants).length > 0) {
                 for (const [pKey, occ] of Object.entries(room.occupants)) {
+                    // Convert old array index to P1, P2 format visually
+                    let displayKey = pKey;
+                    if (!isNaN(pKey) && pKey.trim() !== '') {
+                        displayKey = 'P' + (parseInt(pKey) + 1);
+                    }
+
                     htmlStr += `
                         <div style="border-bottom:1px solid #e2e8f0; padding:12px 0; display:flex; justify-content:space-between; align-items:center;">
                             <div>
-                                <h4 style="margin:0 0 5px 0; font-size:15px; color:#0f1638;"><span style="background:#2d72d2; color:white; padding:2px 6px; border-radius:4px; font-size:12px; margin-right:5px;">${pKey}</span> ${occ.name}</h4>
-                                <span style="font-size:12px; color:#64748b;">ID: ${occ.id} | Ph: ${occ.phone}</span>
+                                <h4 style="margin:0 0 5px 0; font-size:15px; color:#0f1638;"><span style="background:#2d72d2; color:white; padding:2px 6px; border-radius:4px; font-size:12px; margin-right:5px;">${displayKey}</span> ${occ.name}</h4>
+                                <span style="font-size:12px; color:#64748b;">ID: ${occ.id || 'N/A'} | Ph: ${occ.phone || 'N/A'}</span>
                             </div>
                             <button onclick="Swal.close(); setTimeout(() => window.vacatePartition('${roomId}', '${pKey}'), 300)" style="background:#ef4444; color:white; border:none; padding:6px 12px; border-radius:6px; cursor:pointer; font-size:12px;"><i class="fas fa-user-slash"></i></button>
                         </div>
