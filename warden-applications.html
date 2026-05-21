@@ -877,7 +877,13 @@
                             if (!roomSnap.empty) {
                                 const roomDoc = roomSnap.docs[0];
                                 const roomData = roomDoc.data();
-                                const currentOccupants = roomData.occupants || {};
+                                
+                                // Convert array to object if necessary (legacy data was stored as arrays)
+                                // Firebase ignores string keys on Array objects during updateDoc!
+                                let currentOccupants = roomData.occupants || {};
+                                if (Array.isArray(currentOccupants)) {
+                                    currentOccupants = Object.assign({}, currentOccupants);
+                                }
                                 
                                 // Auto-assign the student to the room partition
                                 currentOccupants[partitionKey] = {
