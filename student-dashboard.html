@@ -716,20 +716,6 @@
 
     // Use event delegation for alert items and dynamically added activity items
     document.body.addEventListener('click', function(e) {
-        // Handle alert clicks
-        const alertItem = e.target.closest('.alert-item');
-        if (alertItem) {
-            const title = alertItem.querySelector('strong')?.textContent || 'Alert';
-            Swal.fire({ heightAuto: false,
-                icon: 'info',
-                title: 'Announcement Details',
-                html: `<strong>${title}</strong><br><br><p style="color: #666; font-size: 14px;">This is a system generated announcement. You are all caught up and no further action is required at this time.</p>`,
-                confirmButtonColor: '#2d72d2',
-                confirmButtonText: 'Understood'
-            });
-            return;
-        }
-
         // Handle activity clicks
         const activityItem = e.target.closest('.activity-item');
         if (activityItem) {
@@ -903,7 +889,7 @@
                 title: notif.title || 'Announcement Details',
                 html: `<p style="color: #666; font-size: 14px; text-align: left;">${notif.message}</p>`,
                 confirmButtonColor: '#2d72d2',
-                confirmButtonText: 'Mark as Read'
+                confirmButtonText: 'Understood'
             }).then(async (result) => {
                 if (result.isConfirmed) {
                     try {
