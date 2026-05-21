@@ -579,7 +579,7 @@
                 const data = doc.data();
                 activities.push({
                     title: "Room application submitted",
-                    time: data.timestamp ? data.timestamp.toDate() : new Date(),
+                    time: data.submittedAt ? data.submittedAt.toDate() : (data.timestamp ? data.timestamp.toDate() : new Date()),
                     icon: "fa-bed",
                     type: "info"
                 });
@@ -608,7 +608,7 @@
                 const data = doc.data();
                 activities.push({
                     title: "Move-out request submitted",
-                    time: data.timestamp ? data.timestamp.toDate() : new Date(),
+                    time: data.submittedAt ? data.submittedAt.toDate() : (data.timestamp ? data.timestamp.toDate() : new Date()),
                     icon: "fa-box-open",
                     type: "danger"
                 });
