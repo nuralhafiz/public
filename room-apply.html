@@ -1457,16 +1457,41 @@
             }
         });
 
-        selectRoom.addEventListener('change', () => {
+        selectRoom.addEventListener('change', async () => {
             const roomNum = selectRoom.value;
             if (!roomNum) return;
             
             selectedRoomDoc = availableRoomsData[roomNum];
-            roomTypeIndicator.innerHTML = `<i class="fas fa-door-open"></i> ${selectedRoomDoc.type}`;
-            floorPlanContainer.style.opacity = '1';
-            floorPlanContainer.style.pointerEvents = 'auto';
+            roomTypeIndicator.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Checking partitions...';
+            floorPlanContainer.style.opacity = '0.5';
+            floorPlanContainer.style.pointerEvents = 'none';
             
-            renderFloorPlan(selectedRoomDoc);
+            try {
+                // Fetch pending/approved applications to prevent double booking partitions
+                const appsQuery = query(collection(db, "applications"), where("roomNumber", "==", roomNum));
+                const appsSnap = await getDocs(appsQuery);
+                const bookedPartitions = {};
+                
+                appsSnap.forEach(appDoc => {
+                    const appData = appDoc.data();
+                    if (appData.status !== 'rejected') {
+                        bookedPartitions[appData.partition] = true;
+                    }
+                });
+                
+                selectedRoomDoc.bookedPartitions = bookedPartitions;
+                roomTypeIndicator.innerHTML = `<i class="fas fa-door-open"></i> ${selectedRoomDoc.type}`;
+                floorPlanContainer.style.opacity = '1';
+                floorPlanContainer.style.pointerEvents = 'auto';
+                
+                renderFloorPlan(selectedRoomDoc);
+            } catch (err) {
+                console.error("Error checking partition availability:", err);
+                roomTypeIndicator.innerHTML = `<i class="fas fa-door-open"></i> ${selectedRoomDoc.type}`;
+                floorPlanContainer.style.opacity = '1';
+                floorPlanContainer.style.pointerEvents = 'auto';
+                renderFloorPlan(selectedRoomDoc);
+            }
         });
 
         function resetFloorPlan() {
@@ -1534,6 +1559,7 @@
             
             const bedsCount = type === 'Type C' ? 4 : 6;
             const occupants = roomData.occupants || {};
+            const booked = roomData.bookedPartitions || {};
             
             for (let i = 1; i <= bedsCount; i++) {
                 const pKey = 'P' + i;
@@ -1541,7 +1567,8 @@
                 if (!blockEl) continue;
                 
                 blockEl.classList.remove('loading');
-                if (occupants[pKey]) {
+                // Partition is unavailable if it has an occupant OR if someone already applied for it
+                if (occupants[pKey] || booked[pKey]) {
                     blockEl.classList.add('unavailable');
                 } else {
                     blockEl.classList.add('available');
