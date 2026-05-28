@@ -920,7 +920,6 @@
             document.getElementById('editId').value = document.getElementById('profileId').textContent !== '-' ? document.getElementById('profileId').textContent : '';
             document.getElementById('editPhone').value = document.getElementById('profilePhone').textContent !== '-' ? document.getElementById('profilePhone').textContent : '';
             document.getElementById('editCourse').value = document.getElementById('profileCourse').textContent !== '-' ? document.getElementById('profileCourse').textContent : '';
-            document.getElementById('editRoom').value = document.getElementById('profileRoom').textContent !== '-' ? document.getElementById('profileRoom').textContent : '';
         });
 
         closeBtn.addEventListener('click', () => modal.classList.remove('active'));
@@ -939,7 +938,6 @@
             const newId = document.getElementById('editId').value;
             const newPhone = document.getElementById('editPhone').value;
             const newCourse = document.getElementById('editCourse').value;
-            const newRoom = document.getElementById('editRoom').value || '-';
             const photoFile = document.getElementById('editPhoto').files[0];
             const user = auth.currentUser;
             let newPhotoUrl = user.photoURL;
@@ -963,7 +961,6 @@
                     idNumber: newId,
                     phoneNumber: newPhone,
                     course: newCourse,
-                    room: newRoom,
                     updatedAt: new Date()
                 };
                 if (photoFile) {
@@ -975,7 +972,6 @@
                 document.getElementById('profileId').textContent = newId;
                 document.getElementById('profilePhone').textContent = newPhone;
                 document.getElementById('profileCourse').textContent = newCourse;
-                document.getElementById('profileRoom').textContent = newRoom;
                 
                 modal.classList.remove('active');
                 Swal.fire({ heightAuto: false,
