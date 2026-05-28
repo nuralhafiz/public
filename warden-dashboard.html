@@ -1335,12 +1335,12 @@
                 if (data.status === 'pending' || !data.status) {
                     pendingAppsCount++;
                 }
-                if (data.userEmail) {
+                if (data.status === 'approved' && data.userEmail) {
                     studentSet.add(data.userEmail);
                 }
                 
                 // Check if this month
-                if (data.timestamp) {
+                if (data.status === 'approved' && data.timestamp) {
                     const date = data.timestamp.toDate();
                     const now = new Date();
                     if (date.getMonth() === now.getMonth() && date.getFullYear() === now.getFullYear()) {
