@@ -978,9 +978,19 @@
                 document.getElementById('profileRoom').textContent = newRoom;
                 
                 modal.classList.remove('active');
-                alert("Profile updated successfully!");
+                Swal.fire({ heightAuto: false,
+                    title: 'Success!',
+                    text: 'Profile updated successfully!',
+                    icon: 'success',
+                    confirmButtonColor: '#2d72d2'
+                });
             } catch (error) {
-                alert("Error updating profile: " + error.message);
+                Swal.fire({ heightAuto: false,
+                    title: 'Error!',
+                    text: "Error updating profile: " + error.message,
+                    icon: 'error',
+                    confirmButtonColor: '#f93144'
+                });
             } finally {
                 saveBtn.disabled = false;
                 saveBtn.textContent = 'Save Changes';
@@ -1030,7 +1040,11 @@
 
         function updateAvatarUI(url) {
             if (auth.currentUser) {
-                localStorage.setItem('avatar_' + auth.currentUser.uid, url);
+                try {
+                    localStorage.setItem('avatar_' + auth.currentUser.uid, url);
+                } catch(e) {
+                    console.warn("Could not save avatar to localStorage", e);
+                }
             }
             const mainAvatar = document.querySelector('.profile-avatar');
             if(mainAvatar) mainAvatar.innerHTML = `<img src="${url}" style="width: 140px; height: 140px; border-radius: 50%; object-fit: cover; border: 3px solid #0f1638; box-shadow: 0 10px 30px rgba(0,0,0,0.2);">`;
