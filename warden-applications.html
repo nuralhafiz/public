@@ -929,6 +929,28 @@
                                     }
                                 }
                                 
+                                // NEW: Sync to students Master List
+                                try {
+                                    const newStudentRef = doc(collection(db, "students"));
+                                    await setDoc(newStudentRef, {
+                                        fullName: app.fullName || 'Unknown',
+                                        studentId: app.studentId || 'Unknown',
+                                        phone: app.phone || '0123456789',
+                                        email: (app.userEmail || app.email || '').toLowerCase(),
+                                        gender: app.gender || '',
+                                        status: 'active',
+                                        course: 'Unknown',
+                                        emergencyContact: '-',
+                                        roomNumber: roomNum,
+                                        block: roomData.block || roomNum.charAt(0) || '',
+                                        floor: roomData.floor || '',
+                                        partition: partitionKey,
+                                        createdAt: serverTimestamp()
+                                    });
+                                } catch (studentErr) {
+                                    console.error("Could not add to students master list:", studentErr);
+                                }
+                                
                                 Swal.fire({ heightAuto: false,
                                     title: 'Success!',
                                     text: `Application approved and student auto-assigned to ${roomNum} (${partitionKey}).`,

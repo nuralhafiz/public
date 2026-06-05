@@ -539,6 +539,37 @@
             body { background: white !important; }
             th:last-child, td:last-child { display: none !important; } /* hide actions column */
         }
+        
+        /* Tabs UI */
+        .tabs-container {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #e0e0e0;
+            padding-bottom: 10px;
+        }
+        .tab-btn {
+            background: none;
+            border: none;
+            font-family: 'Poppins', sans-serif;
+            font-size: 16px;
+            font-weight: 500;
+            color: #64748b;
+            cursor: pointer;
+            padding: 10px 20px;
+            border-radius: 10px;
+            transition: all 0.3s;
+        }
+        .tab-btn:hover {
+            color: #2d72d2;
+            background: rgba(45, 114, 210, 0.05);
+        }
+        .tab-btn.active {
+            color: #2d72d2;
+            background: rgba(45, 114, 210, 0.1);
+            font-weight: 600;
+            box-shadow: inset 0 -3px 0 #2d72d2;
+        }
     </style>
     
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -725,6 +756,12 @@
                     </div>
             </div>
 
+            <!-- Tabs UI -->
+            <div class="tabs-container">
+                <button class="tab-btn active" onclick="switchTab('registered')" id="tabRegistered">Registered Accounts</button>
+                <button class="tab-btn" onclick="switchTab('residents')" id="tabResidents">Hostel Residents</button>
+            </div>
+
             <!-- Students Table -->
             <div class="students-table-container">
                 <div id="loadingSpinner" class="loading-spinner">
@@ -837,6 +874,9 @@
         const menuOverlay = document.getElementById('menuOverlay');
         const modal = document.getElementById('studentModal');
 
+        let residentStudents = [];
+        let registeredStudents = [];
+        let currentTab = 'registered';
         let allStudents = [];
         let filteredStudents = [];
         let currentPage = 1;
@@ -871,58 +911,80 @@
             signOut(auth).then(() => window.location.href = "index.html");
         });
 
+        // Switch Tabs Logic
+        window.switchTab = function(tab) {
+            currentTab = tab;
+            document.getElementById('tabRegistered').classList.remove('active');
+            document.getElementById('tabResidents').classList.remove('active');
+            
+            if(tab === 'registered') {
+                document.getElementById('tabRegistered').classList.add('active');
+                allStudents = registeredStudents;
+            } else {
+                document.getElementById('tabResidents').classList.add('active');
+                allStudents = residentStudents;
+            }
+            
+            document.getElementById('totalStudents').textContent = allStudents.length;
+            
+            if (allStudents.length === 0) {
+                document.getElementById('loadingSpinner').style.display = 'none';
+                document.getElementById('emptyState').style.display = 'block';
+                document.getElementById('studentsTableContainer').style.display = 'none';
+            } else {
+                document.getElementById('emptyState').style.display = 'none';
+                document.getElementById('studentsTableContainer').style.display = 'block';
+                filterAndRenderStudents();
+            }
+        };
+
         // Setup real-time listener
         function setupRealtimeListener() {
             const studentsCollection = collection(db, "students");
-            
             onSnapshot(studentsCollection, (snapshot) => {
-                allStudents = [];
+                residentStudents = [];
                 snapshot.forEach((doc) => {
-                    allStudents.push({
+                    residentStudents.push({ id: doc.id, ...doc.data() });
+                });
+                if(currentTab === 'residents') switchTab('residents');
+            }, (error) => console.error(error));
+
+            const usersCollection = collection(db, "users");
+            const qUsers = query(usersCollection, where("role", "==", "student"));
+            onSnapshot(qUsers, (snapshot) => {
+                registeredStudents = [];
+                snapshot.forEach((doc) => {
+                    let d = doc.data();
+                    registeredStudents.push({
                         id: doc.id,
-                        ...doc.data()
+                        fullName: d.displayName || d.fullName || '-',
+                        studentId: d.idNumber || '-',
+                        email: d.email || '-',
+                        phone: d.phoneNumber || '-',
+                        course: d.course || '-',
+                        roomNumber: d.room && d.room !== '-' ? d.room : '-',
+                        status: d.room && d.room !== '-' ? 'active' : 'pending'
                     });
                 });
-                
-                document.getElementById('totalStudents').textContent = allStudents.length;
-                filterAndRenderStudents();
-            }, (error) => {
-                console.error("Error listening to students:", error);
-            });
+                if(currentTab === 'registered') switchTab('registered');
+            }, (error) => console.error(error));
         }
 
         // Load students from Firestore
         async function loadStudents() {
+            document.getElementById('loadingSpinner').style.display = 'flex';
+            document.getElementById('studentsTableContainer').style.display = 'none';
+            document.getElementById('emptyState').style.display = 'none';
+            
             try {
-                document.getElementById('loadingSpinner').style.display = 'flex';
-                document.getElementById('studentsTableContainer').style.display = 'none';
-                document.getElementById('emptyState').style.display = 'none';
-                
-                const studentsCollection = collection(db, "students");
-                const querySnapshot = await getDocs(studentsCollection);
-                
-                allStudents = [];
-                querySnapshot.forEach((doc) => {
-                    allStudents.push({
-                        id: doc.id,
-                        ...doc.data()
-                    });
-                });
-                
-                document.getElementById('totalStudents').textContent = allStudents.length;
-                
-                if (allStudents.length === 0) {
+                // Initial fetch is now completely handled by setupRealtimeListener to avoid double loading
+                // Just wait a tiny bit for the first snapshot to fire
+                setTimeout(() => {
                     document.getElementById('loadingSpinner').style.display = 'none';
-                    document.getElementById('emptyState').style.display = 'block';
-                    document.getElementById('studentsTableContainer').style.display = 'none';
-                } else {
-                    filterAndRenderStudents();
-                }
-                
+                }, 1000);
             } catch (error) {
                 console.error("Error loading students:", error);
                 document.getElementById('loadingSpinner').style.display = 'none';
-                document.getElementById('emptyState').style.display = 'block';
             }
         }
 

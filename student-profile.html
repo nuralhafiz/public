@@ -969,6 +969,26 @@
 
                 await setDoc(doc(db, "users", user.uid), updateData, { merge: true });
 
+                // Sync updates to students Master List if exists
+                try {
+                    const qStudent = query(collection(db, "students"), where("email", "==", user.email.toLowerCase()));
+                    const studentSnap = await getDocs(qStudent);
+                    if (!studentSnap.empty) {
+                        const batch = writeBatch(db);
+                        studentSnap.forEach(docSnap => {
+                            batch.update(docSnap.ref, {
+                                fullName: newName,
+                                studentId: newId,
+                                phone: newPhone,
+                                course: newCourse
+                            });
+                        });
+                        await batch.commit();
+                    }
+                } catch (syncErr) {
+                    console.error("Failed to sync profile update to students collection:", syncErr);
+                }
+
                 document.getElementById('profileId').textContent = newId;
                 document.getElementById('profilePhone').textContent = newPhone;
                 document.getElementById('profileCourse').textContent = newCourse;

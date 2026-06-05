@@ -775,14 +775,15 @@
         <!-- Statistics Cards -->
         <div class="stats-grid">
             <div class="stat-card" onclick="window.location.href='warden-students.html'" style="cursor: pointer;" title="View all students">
-                <div class="stat-icon">
-                    <i class="fas fa-user-graduate"></i>
+                <div class="stat-icon students">
+                    <i class="fas fa-users"></i>
                 </div>
                 <div class="stat-details">
                     <div class="stat-value" id="totalStudents">0</div>
                     <div class="stat-label">Total Students</div>
-                    <div class="stat-trend">
-                        <span id="studentTrend"><i class="fas fa-arrow-up"></i> +0 this month</span>
+                    <div style="font-size: 0.85rem; color: #64748b; margin-top: 5px; display: flex; flex-direction: column; gap: 3px;">
+                        <span><i class="fas fa-id-card" style="width: 16px; color: #2d72d2;"></i> Registered: <span id="registeredCount">0</span></span>
+                        <span><i class="fas fa-bed" style="width: 16px; color: #4caf50;"></i> Hostel Residents: <span id="hostelResidentsCount">0</span></span>
                     </div>
                 </div>
             </div>
@@ -1349,9 +1350,36 @@
                 }
             });
             
+            // -- Fetch Registered Users --
+            let registeredCount = 0;
+            try {
+                const usersRef = collection(db, "users");
+                const qUsers = query(usersRef, where("role", "==", "student"));
+                const usersSnap = await getDocs(qUsers);
+                registeredCount = usersSnap.size;
+            } catch(e) {
+                console.error("Error fetching users:", e);
+            }
+
+            // -- Fetch Hostel Residents (Master List) --
+            let hostelResidentsCount = 0;
+            try {
+                const studentsRef = collection(db, "students");
+                const studentsSnap = await getDocs(studentsRef);
+                hostelResidentsCount = studentsSnap.size;
+            } catch(e) {
+                console.error("Error fetching students:", e);
+            }
+            
             // Update Stats
             document.getElementById('pendingApps').textContent = pendingAppsCount;
-            document.getElementById('totalStudents').textContent = studentSet.size > 0 ? studentSet.size : '-';
+            document.getElementById('totalStudents').textContent = hostelResidentsCount > 0 ? hostelResidentsCount : '0';
+            
+            const hrEl = document.getElementById('hostelResidentsCount');
+            if(hrEl) hrEl.textContent = hostelResidentsCount > 0 ? hostelResidentsCount : '0';
+            
+            const regEl = document.getElementById('registeredCount');
+            if(regEl) regEl.textContent = registeredCount > 0 ? registeredCount : '0';
             const sTrend = document.getElementById('studentTrend');
             if (sTrend) sTrend.innerHTML = '<i class="fas fa-arrow-up"></i> +' + studentsThisMonth.size + ' this month';
             document.getElementById('availableRooms').textContent = '-'; // No real room DB yet

@@ -1206,6 +1206,8 @@
 
                 // Populate checklist data
                 const checklistData = {};
+                let hasFaultyItem = false;
+                
                 for (let id of checklistItems) {
                     const conditionRadio = document.querySelector(`input[name="item_${id}"]:checked`);
                     const remarkInput = document.getElementById(`remark_${id}`).value;
@@ -1213,6 +1215,36 @@
                         condition: conditionRadio ? conditionRadio.value : '',
                         remarks: remarkInput || ''
                     };
+                    
+                    if (conditionRadio && conditionRadio.value === 'Faulty') {
+                        hasFaultyItem = true;
+                    }
+                }
+                
+                // Block submission if any item is Faulty
+                if (hasFaultyItem) {
+                    Swal.fire({ 
+                        heightAuto: false,
+                        icon: 'error',
+                        title: 'Application Blocked',
+                        html: `
+                            <div style="text-align: left; font-size: 14px; line-height: 1.6;">
+                                <p style="margin-bottom: 15px; color: #d32f2f;"><strong>Your application cannot be processed because you have reported faulty/damaged items.</strong></p>
+                                <p style="margin-bottom: 8px; font-weight: bold; color: #0f1638;">Next Steps:</p>
+                                <ol style="padding-left: 20px; margin-bottom: 15px; color: #333;">
+                                    <li style="margin-bottom: 5px;">Please proceed to the <strong>Finance Department</strong> to pay the penalty for the damaged items.</li>
+                                    <li style="margin-bottom: 5px;">Bring the official payment receipt and hand it over to the <strong>Warden</strong>.</li>
+                                    <li>Once the Warden verifies the payment and clears your record, you may re-apply for move-out.</li>
+                                </ol>
+                            </div>
+                        `,
+                        confirmButtonColor: '#2d72d2',
+                        confirmButtonText: 'I Understand'
+                    });
+                    
+                    submitBtn.classList.remove('loading');
+                    submitBtn.disabled = false;
+                    return; // Stop form submission
                 }
 
                 // Simple validation
