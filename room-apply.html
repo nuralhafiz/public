@@ -1026,6 +1026,13 @@
                         <i class="fas fa-info-circle"></i>
                         <p>Please complete all sections below. Your application will be processed within 3-5 working days.</p>
                     </div>
+                    <div id="closedMessage" style="display: none; text-align: center; padding: 40px 20px; background: rgba(244, 67, 54, 0.05); border-radius: 16px; border: 1px dashed #f44336; margin-bottom: 20px;">
+                        <i class="fas fa-calendar-times" style="font-size: 48px; color: #f44336; margin-bottom: 20px;"></i>
+                        <h3 style="color: #0f1638; font-size: 24px; margin-bottom: 15px; font-weight: 700;">Application Closed</h3>
+                        <p id="closedMessageText" style="color: #475569; font-size: 16px; line-height: 1.6;">
+                            The room application period has ended. Please contact the Warden for further assistance.
+                        </p>
+                    </div>
 
                     <form id="applyForm">
                         <!-- Section A: Personal Details -->
@@ -1038,8 +1045,7 @@
                         
 
                         <div class="form-row">
-                            
-        <div class="form-group">
+                            <div class="form-group">
                                 <label class="required">
                                     <i class="fas fa-user"></i>
                                     Full Name
@@ -1049,20 +1055,13 @@
                             <div class="form-group">
                                 <label class="required">
                                     <i class="fas fa-id-card"></i>
-                                    IC Number
+                                    ID NUMBER
                                 </label>
-                                <input type="text" id="icNumber" placeholder="e.g. 990101-01-1234" required>
+                                <input type="text" id="studentId" placeholder="e.g. S12345" required>
                             </div>
                         </div>
 
                         <div class="form-row">
-                            <div class="form-group">
-                                <label class="required">
-                                    <i class="fas fa-qrcode"></i>
-                                    Student ID
-                                </label>
-                                <input type="text" id="studentId" placeholder="e.g. S12345" required>
-                            </div>
                             <div class="form-group">
                                 <label class="required">
                                     <i class="fas fa-book"></i>
@@ -1070,9 +1069,7 @@
                                 </label>
                                 <input type="text" id="course" placeholder="e.g. Diploma in IT" required>
                             </div>
-                        </div>
 
-                        <div class="form-row">
                             <div class="form-group">
                                 <label class="required">
                                     <i class="fas fa-venus-mars"></i>
@@ -1084,6 +1081,9 @@
                                     <option value="Female">Female</option>
                                 </select>
                             </div>
+                        </div>
+
+                        <div class="form-row">
                             <div class="form-group">
                                 <label class="required">
                                     <i class="fas fa-users"></i>
@@ -1094,12 +1094,11 @@
                                     <option value="Malay">Malay</option>
                                     <option value="Chinese">Chinese</option>
                                     <option value="Indian">Indian</option>
+                                    <option value="Bumiputera Sabah">Bumiputera Sabah</option>
+                                    <option value="Bumiputera Sarawak">Bumiputera Sarawak</option>
                                     <option value="Others">Others</option>
                                 </select>
                             </div>
-                        </div>
-
-                        <div class="form-row">
                             <div class="form-group">
                                 <label class="required">
                                     <i class="fas fa-pray"></i>
@@ -1107,6 +1106,9 @@
                                 </label>
                                 <input type="text" id="religion" placeholder="e.g. Islam" required>
                             </div>
+                        </div>
+
+                        <div class="form-row">
                             <div class="form-group">
                                 <label class="required">
                                     <i class="fas fa-phone-alt"></i>
@@ -1114,9 +1116,6 @@
                                 </label>
                                 <input type="tel" id="phone" placeholder="e.g. 012-3456789" required>
                             </div>
-                        </div>
-
-                        <div class="form-row">
                             <div class="form-group">
                                 <label>
                                     <i class="fas fa-phone"></i>
@@ -1124,7 +1123,10 @@
                                 </label>
                                 <input type="tel" id="homePhone" placeholder="e.g. 03-12345678">
                             </div>
-                            <div class="form-group">
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group" style="grid-column: span 2;">
                                 <label class="required">
                                     <i class="fas fa-envelope"></i>
                                     Email
@@ -1273,18 +1275,23 @@
 
         // Set today's date as default for declaration date
                 document.addEventListener('DOMContentLoaded', () => {
-            // Initialize Choices.js
+            window.choicesInstances = {};
             const selectElements = document.querySelectorAll('select:not(.native-select)');
             selectElements.forEach(el => {
-                new Choices(el, {
+                const choice = new Choices(el, {
                     searchEnabled: false,
                     itemSelectText: '',
                     shouldSort: false
                 });
+                if (el.id) {
+                    window.choicesInstances[el.id] = choice;
+                }
             });
 
             const today = new Date().toISOString().split('T')[0];
             document.getElementById('declarationDate').value = today;
+
+            // Timeframe check moved to onAuthStateChanged
 
             // Auto-generate Reference Number
             const generateRefNumber = () => {
@@ -1342,7 +1349,78 @@
             }
         });
 
+
+        function checkTimeframeForSemester(semester) {
+            const today = new Date().toISOString().split('T')[0];
+            getDoc(doc(db, "settings", "application_period")).then(docSnap => {
+                if (docSnap.exists()) {
+                    const data = docSnap.data();
+                    const startDate = data[`sem${semester}_start`];
+                    const endDate = data[`sem${semester}_end`];
+                    
+                    if (!startDate || !endDate || today < startDate || today > endDate) {
+                        // Close application
+                        document.getElementById('applyForm').style.display = 'none';
+                        const infoBanner = document.querySelector('.info-banner');
+                        if (infoBanner) infoBanner.style.display = 'none';
+                        const msgText = document.getElementById('closedMessageText');
+                        
+                        if (!startDate || !endDate) {
+                            msgText.innerHTML = `Permohonan asrama untuk pelajar Semester ${semester} belum dibuka. Sila rujuk jadual.`;
+                        } else if (today < startDate) {
+                            msgText.innerHTML = `Permohonan asrama untuk pelajar Semester ${semester} belum dibuka. Ia akan dibuka pada <strong>${startDate}</strong>.`;
+                        } else {
+                            msgText.innerHTML = `Permohonan asrama untuk pelajar Semester ${semester} telah ditutup pada <strong>${endDate}</strong>.`;
+                        }
+                        document.getElementById('closedMessage').style.display = 'block';
+                    }
+                }
+            }).catch(err => console.error("Error fetching timeframe:", err));
+        }
+
         // Check if user is logged in and pre-fill email
+        let currentUserSemester = '1';
+        let currentUserGender = 'Lelaki';
+
+        window.filterBlocks = function() {
+            const selectBlock = document.getElementById('selectBlock');
+            if (selectBlock) {
+                selectBlock.innerHTML = '<option value="" disabled selected>Choose Block</option>';
+                const s = parseInt(currentUserSemester) || 1;
+                const g = currentUserGender || 'Lelaki';
+                const options = [];
+                if (g === 'Perempuan') {
+                    if (s >= 1 && s <= 3) { options.push({val: 'A1', text: 'Block A1 (Female)'}); }
+                    else if (s >= 4 && s <= 6) { options.push({val: 'A7', text: 'Block A7 (Female - 4 Beds)'}); }
+                } else {
+                    if (s >= 1 && s <= 3) {
+                        options.push({val: 'A2', text: 'Block A2 (Male)'});
+                        options.push({val: 'A3', text: 'Block A3 (Male)'});
+                    } else if (s >= 4 && s <= 6) {
+                        options.push({val: 'A4', text: 'Block A4 (Male)'});
+                        options.push({val: 'A5', text: 'Block A5 (Male)'});
+                    }
+                }
+                options.forEach(opt => {
+                    const o = document.createElement('option');
+                    o.value = opt.val;
+                    o.textContent = opt.text;
+                    selectBlock.appendChild(o);
+                });
+            }
+            const selectFloor = document.getElementById('selectFloor');
+            if (selectFloor) {
+                selectFloor.innerHTML = '<option value="" disabled selected>Choose Floor</option>';
+                selectFloor.disabled = true;
+            }
+            const selectRoom = document.getElementById('selectRoom');
+            if (selectRoom) {
+                selectRoom.innerHTML = '<option value="" disabled selected>Choose Room</option>';
+                selectRoom.disabled = true;
+            }
+            if (typeof resetFloorPlan === 'function') resetFloorPlan();
+        };
+
         onAuthStateChanged(auth, (user) => {
             if (user) {
                 const email = user.email ? user.email.toLowerCase() : '';
@@ -1367,6 +1445,15 @@
                 getDoc(doc(db, "users", user.uid)).then(docSnap => {
                     if (docSnap.exists()) {
                         const data = docSnap.data();
+                        const userSemester = data.semester || '1'; // Default to Semester 1 if missing
+                        
+                        currentUserSemester = userSemester;
+                        currentUserGender = data.gender || 'Lelaki';
+                        filterBlocks();
+
+                        // Check timeframe based on semester
+                        checkTimeframeForSemester(userSemester);
+                        
                         if (data.displayName && !document.getElementById('fullName').value) {
                             document.getElementById('fullName').value = data.displayName;
                         }
@@ -1380,6 +1467,20 @@
                         }
                         if (data.course) {
                             document.getElementById('course').value = data.course;
+                        }
+                        if (data.gender) {
+                            const genSelect = document.getElementById('gender');
+                            if (genSelect) {
+                                const mappedGender = data.gender === 'Lelaki' ? 'Male' : (data.gender === 'Perempuan' ? 'Female' : data.gender);
+                                if (window.choicesInstances && window.choicesInstances['gender']) {
+                                    window.choicesInstances['gender'].setChoiceByValue(mappedGender);
+                                    // window.choicesInstances['gender'].disable(); // Allow edit
+                                } else {
+                                    genSelect.value = mappedGender;
+                                }
+                                // genSelect.style.pointerEvents = 'none'; // Allow edit
+                                // genSelect.style.backgroundColor = '#f0f3fa'; // Allow edit
+                            }
                         }
                     } else {
                         // Fallback to session name if no profile found
@@ -1459,16 +1560,27 @@
                     return;
                 }
 
+                let roomsList = [];
                 snap.forEach(doc => {
                     const data = doc.data();
-                    availableRoomsData[data.roomNumber] = { id: doc.id, ...data };
+                    roomsList.push({ id: doc.id, ...data });
+                });
+
+                roomsList.sort((a, b) => {
+                    const roomA = a.roomNumber || '';
+                    const roomB = b.roomNumber || '';
+                    return roomA.localeCompare(roomB, undefined, { numeric: true, sensitivity: 'base' });
+                });
+
+                roomsList.forEach(data => {
+                    availableRoomsData[data.roomNumber] = data;
                     
                     if (data.status === 'occupied') {
-                        selectRoom.innerHTML += `<option value="${data.roomNumber}" disabled>${data.roomNumber} (Full)</option>`;
+                        selectRoom.innerHTML += `<option value="${data.roomNumber}" data-doc-id="${data.id}" disabled>${data.roomNumber} (Full)</option>`;
                     } else if (data.status === 'maintenance') {
-                        selectRoom.innerHTML += `<option value="${data.roomNumber}" disabled>${data.roomNumber} (Maintenance)</option>`;
+                        selectRoom.innerHTML += `<option value="${data.roomNumber}" data-doc-id="${data.id}" disabled>${data.roomNumber} (Maintenance)</option>`;
                     } else {
-                        selectRoom.innerHTML += `<option value="${data.roomNumber}">${data.roomNumber} (${data.type})</option>`;
+                        selectRoom.innerHTML += `<option value="${data.roomNumber}" data-doc-id="${data.id}">${data.roomNumber} (${data.type})</option>`;
                     }
                 });
                 selectRoom.disabled = false;
@@ -1680,36 +1792,123 @@
             submitBtn.disabled = true;
             
             try {
+                if (!selectedRoomDoc) {
+                    throw new Error("Please select a valid room and partition.");
+                }
+
+                const blockVal = document.getElementById('selectBlock').value || '';
+                const floorVal = document.getElementById('selectFloor').value || '';
+                const roomVal = document.getElementById('selectRoom').value || '';
+                const partitionVal = document.getElementById('selectedPartitionInput').value || 'None';
+                
+                const roomId = selectedRoomDoc.id; // The actual Firestore document ID
+                const semesterInt = parseInt(currentUserSemester) || 1;
+                
+                // Pre-check room for Auto-Approve
+                let appStatus = 'pending';
+                const roomRef = doc(db, "rooms", roomId);
+                const roomSnap = await getDoc(roomRef);
+                
+                if (roomSnap.exists()) {
+                    const roomData = roomSnap.data();
+                    const rStatus = roomData.status || '';
+                    if (rStatus.toLowerCase() !== 'maintenance' && rStatus.toLowerCase() === 'available') {
+                        // Check capacity
+                        const currentOcc = Object.keys(roomData.occupants || {}).length || roomData.currentOccupants || 0;
+                        const maxCap = roomData.capacity || (roomData.type === 'Type C' ? 4 : 6);
+                        
+                        if (currentOcc < maxCap) {
+                            if (semesterInt <= 5) {
+                                appStatus = 'approved';
+                            } else {
+                                appStatus = 'pending'; // Sem 6 goes to pending
+                            }
+                        } else {
+                            throw new Error("This room is already full. Please select another room.");
+                        }
+                    } else {
+                        throw new Error(`This room is ${rStatus || 'not available'} and cannot be booked.`);
+                    }
+                } else {
+                    throw new Error("Selected room data not found in database.");
+                }
+
                 // Collect all form data
                 const formData = {
                     userId: user.uid,
                     userEmail: user.email,
                     referenceNumber: document.getElementById('referenceNumber').value,
                     fullName: document.getElementById('fullName').value,
-                    icNumber: document.getElementById('icNumber').value,
                     studentId: document.getElementById('studentId').value,
                     course: document.getElementById('course').value,
-                    gender: document.getElementById('gender').value,
+                    gender: document.getElementById('gender').value || currentUserGender,
                     race: document.getElementById('race').value,
                     religion: document.getElementById('religion').value,
                     phone: document.getElementById('phone').value,
-                    block: document.getElementById('selectBlock').value || '',
-                    floor: document.getElementById('selectFloor').value || '',
-                    roomNumber: document.getElementById('selectRoom').value || '',
-                    partition: document.getElementById('selectedPartitionInput').value || 'None',
+                    block: blockVal,
+                    floor: floorVal,
+                    roomNumber: roomVal,
+                    partition: partitionVal,
                     roomType: document.getElementById('selectedPartitionInput').getAttribute('data-room-type') || 'typeA',
                     homePhone: document.getElementById('homePhone').value || '',
                     email: document.getElementById('email').value,
                     address: document.getElementById('address').value,
                     declarationDate: document.getElementById('declarationDate').value,
                     declarationPlace: document.getElementById('declarationPlace').value,
-                    status: 'pending', // pending, approved, rejected
+                    status: appStatus, // pending, approved, rejected
                     submittedAt: serverTimestamp(),
                     applicationType: 'room'
                 };
                 
+                if (appStatus === 'approved') {
+                    formData.approvedAt = serverTimestamp();
+                }
+                
                 // Save to Firestore
                 const docRef = await addDoc(collection(db, "applications"), formData);
+                
+                // Auto-Approve room updates
+                if (appStatus === 'approved') {
+                    const roomData = roomSnap.data();
+                    let currentOccupants = roomData.occupants || {};
+                    if (Array.isArray(currentOccupants)) currentOccupants = Object.assign({}, currentOccupants);
+                    
+                    currentOccupants[partitionVal] = {
+                        name: formData.fullName,
+                        id: formData.studentId,
+                        phone: formData.phone
+                    };
+                    
+                    const occCount = Object.keys(currentOccupants).length;
+                    const maxCap = roomData.capacity || (roomData.type === 'Type C' ? 4 : 6);
+                    let newStatus = roomData.status;
+                    if (occCount >= maxCap) newStatus = 'occupied';
+                    
+                    await updateDoc(roomRef, {
+                        occupants: currentOccupants,
+                        status: newStatus,
+                        currentOccupants: occCount
+                    });
+                    
+                    // Create placement record
+                    await addDoc(collection(db, "placements"), {
+                        applicationId: docRef.id,
+                        userId: user.uid,
+                        fullName: formData.fullName,
+                        studentId: formData.studentId,
+                        roomId: roomId,
+                        partition: partitionVal,
+                        status: 'active',
+                        checkInDate: null,
+                        checkOutDate: null,
+                        createdAt: serverTimestamp()
+                    });
+                    
+                    // Update user's profile with assigned room
+                    await updateDoc(doc(db, "users", user.uid), {
+                        room: `${roomVal} (${partitionVal})`
+                    });
+                }
                 
                 // Show success message
                 Swal.fire({ heightAuto: false,

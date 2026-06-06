@@ -603,7 +603,7 @@
         font-size: 14px;
         color: #333;
     }
-    .form-group input {
+    .form-group input, .form-group select {
         width: 100%;
         padding: 12px 15px;
         border: 2px solid #eee;
@@ -613,9 +613,17 @@
         box-sizing: border-box;
         transition: border-color 0.3s;
     }
-    .form-group input:focus {
+    .form-group input:focus, .form-group select:focus {
         border-color: #2d72d2;
         outline: none;
+    }
+    .form-group select {
+        appearance: none;
+        -webkit-appearance: none;
+        background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%2394a3b8%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E");
+        background-repeat: no-repeat;
+        background-position: right 15px center;
+        background-size: 12px auto;
     }
     .save-btn {
         width: 100%;
@@ -720,13 +728,23 @@
                     
                     <div class="detail-item">
                         <i class="fas fa-id-card"></i>
-                        <span class="detail-label">ID / IC Number</span>
+                        <span class="detail-label">ID NUMBER</span>
                         <span class="detail-value" id="profileId">-</span>
                     </div>
                     <div class="detail-item">
                         <i class="fas fa-book"></i>
                         <span class="detail-label">Course</span>
                         <span class="detail-value" id="profileCourse">-</span>
+                    </div>
+                    <div class="detail-item">
+                        <i class="fas fa-venus-mars"></i>
+                        <span class="detail-label">Gender</span>
+                        <span class="detail-value" id="profileGender">-</span>
+                    </div>
+                    <div class="detail-item">
+                        <i class="fas fa-layer-group"></i>
+                        <span class="detail-label">Semester</span>
+                        <span class="detail-value" id="profileSemester">-</span>
                     </div>
                     <div class="detail-item">
                         <i class="fas fa-phone"></i>
@@ -770,7 +788,7 @@
                     <input type="text" id="editName" required>
                 </div>
                 <div class="form-group">
-                    <label>ID / IC Number</label>
+                    <label>ID Number</label>
                     <input type="text" id="editId" required>
                 </div>
                 <div class="form-group">
@@ -780,6 +798,26 @@
                 <div class="form-group">
                     <label>Course</label>
                     <input type="text" id="editCourse" required>
+                </div>
+                <div class="form-group">
+                    <label>Jantina (Gender)</label>
+                    <select id="editGender" required>
+                        <option value="" disabled selected>Pilih Jantina</option>
+                        <option value="Lelaki">Lelaki</option>
+                        <option value="Perempuan">Perempuan</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Current Semester</label>
+                    <select id="editSemester" required>
+                        <option value="" disabled selected>Select Semester</option>
+                        <option value="1">Semester 1</option>
+                        <option value="2">Semester 2</option>
+                        <option value="3">Semester 3</option>
+                        <option value="4">Semester 4</option>
+                        <option value="5">Semester 5</option>
+                        <option value="6">Semester 6</option>
+                    </select>
                 </div>
                 <div class="form-group">
                     <label>Room</label>
@@ -920,6 +958,11 @@
             document.getElementById('editId').value = document.getElementById('profileId').textContent !== '-' ? document.getElementById('profileId').textContent : '';
             document.getElementById('editPhone').value = document.getElementById('profilePhone').textContent !== '-' ? document.getElementById('profilePhone').textContent : '';
             document.getElementById('editCourse').value = document.getElementById('profileCourse').textContent !== '-' ? document.getElementById('profileCourse').textContent : '';
+            const currentSemText = document.getElementById('profileSemester').textContent;
+            const semNum = currentSemText.replace('Semester ', '');
+            document.getElementById('editSemester').value = semNum && semNum !== '-' ? semNum : '';
+            const currentGender = document.getElementById('profileGender').textContent;
+            document.getElementById('editGender').value = currentGender !== '-' ? currentGender : '';
         });
 
         closeBtn.addEventListener('click', () => modal.classList.remove('active'));
@@ -938,6 +981,8 @@
             const newId = document.getElementById('editId').value;
             const newPhone = document.getElementById('editPhone').value;
             const newCourse = document.getElementById('editCourse').value;
+            const newSemester = document.getElementById('editSemester').value;
+            const newGender = document.getElementById('editGender').value;
             const photoFile = document.getElementById('editPhoto').files[0];
             const user = auth.currentUser;
             let newPhotoUrl = user.photoURL;
@@ -961,6 +1006,8 @@
                     idNumber: newId,
                     phoneNumber: newPhone,
                     course: newCourse,
+                    semester: newSemester,
+                    gender: newGender,
                     updatedAt: new Date()
                 };
                 if (photoFile) {
@@ -980,7 +1027,9 @@
                                 fullName: newName,
                                 studentId: newId,
                                 phone: newPhone,
-                                course: newCourse
+                                course: newCourse,
+                                semester: newSemester,
+                                gender: newGender
                             });
                         });
                         await batch.commit();
@@ -992,6 +1041,8 @@
                 document.getElementById('profileId').textContent = newId;
                 document.getElementById('profilePhone').textContent = newPhone;
                 document.getElementById('profileCourse').textContent = newCourse;
+                document.getElementById('profileSemester').textContent = "Semester " + newSemester;
+                document.getElementById('profileGender').textContent = newGender;
                 
                 modal.classList.remove('active');
                 Swal.fire({ heightAuto: false,
@@ -1084,6 +1135,8 @@
                     if(data.idNumber) document.getElementById('profileId').textContent = data.idNumber;
                     if(data.phoneNumber) document.getElementById('profilePhone').textContent = data.phoneNumber;
                     if(data.course) document.getElementById('profileCourse').textContent = data.course;
+                    if(data.semester) document.getElementById('profileSemester').textContent = "Semester " + data.semester;
+                    if(data.gender) document.getElementById('profileGender').textContent = data.gender;
                     if(data.room) document.getElementById('profileRoom').textContent = data.room;
                     if(data.displayName) document.getElementById('profileName').textContent = data.displayName;
                     if(data.photoURL) updateAvatarUI(data.photoURL);

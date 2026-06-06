@@ -752,6 +752,8 @@
                 </a>
                 <a href="warden-reports.html" class="nav-item" title="Navigation Link">
                     <i class="fas fa-chart-bar"></i> Analytics & Reports</a>
+            
+                <a href="warden-settings.html" class="nav-item" title="Navigation Link"><i class="fas fa-cog"></i> Settings</a>
             </div>
 
         <!-- Logout Button -->
@@ -986,7 +988,7 @@
     import { getAuth, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
     import { auth, db } from "./js/firebase-config.js";
-    import { collection, query, where, getDocs, orderBy, limit } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+    import { collection, query, where, getDocs, orderBy, limit, getCountFromServer } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
     import { doc, getDoc, updateDoc, setDoc, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
     
     
@@ -1350,25 +1352,25 @@
                 }
             });
             
-            // -- Fetch Registered Users --
+            // -- Fetch Registered Users (OPTIMIZED) --
             let registeredCount = 0;
             try {
                 const usersRef = collection(db, "users");
                 const qUsers = query(usersRef, where("role", "==", "student"));
-                const usersSnap = await getDocs(qUsers);
-                registeredCount = usersSnap.size;
+                const usersSnap = await getCountFromServer(qUsers);
+                registeredCount = usersSnap.data().count;
             } catch(e) {
-                console.error("Error fetching users:", e);
+                console.error("Error fetching users count:", e);
             }
 
-            // -- Fetch Hostel Residents (Master List) --
+            // -- Fetch Hostel Residents (OPTIMIZED) --
             let hostelResidentsCount = 0;
             try {
                 const studentsRef = collection(db, "students");
-                const studentsSnap = await getDocs(studentsRef);
-                hostelResidentsCount = studentsSnap.size;
+                const studentsSnap = await getCountFromServer(studentsRef);
+                hostelResidentsCount = studentsSnap.data().count;
             } catch(e) {
-                console.error("Error fetching students:", e);
+                console.error("Error fetching students count:", e);
             }
             
             // Update Stats

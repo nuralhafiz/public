@@ -12,6 +12,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Poppins', sans-serif; display: flex; flex-direction: column; height: 100vh; background: #f0f3fa; overflow: hidden; }
@@ -629,8 +630,10 @@
                 <a href="warden-students.html" class="nav-item" title="Navigation Link"><i class="fas fa-users"></i> Student Records</a>
                 <a href="warden-rooms.html" class="nav-item" title="Navigation Link"><i class="fas fa-bed"></i> Room Management</a>
                 <a href="warden-reports.html" class="nav-item active" title="Navigation Link"><i class="fas fa-chart-bar"></i> Analytics & Reports</a>
+            
+                <a href="warden-settings.html" class="nav-item" title="Navigation Link"><i class="fas fa-cog"></i> Settings</a>
             </div>
-            <a href="#" class="nav-item logout-btn" id="logoutBtn" aria-label="Logout"><i class="fas fa-sign-out-alt"></i> Logout</a>
+        <a href="#" class="nav-item logout-btn" id="logoutBtn" aria-label="Logout"><i class="fas fa-sign-out-alt"></i> Logout</a>
         </nav>
 
         <main id="mainContent">
@@ -732,10 +735,8 @@
                                 </button>
                             </div>
                         </div>
-                        <div class="chart-container">
-                            <div class="bar-chart" id="occupancyChart">
-                                <!-- Dynamic bar chart will be populated here -->
-                            </div>
+                        <div class="chart-container" style="position: relative; height:300px; width:100%; display: flex; justify-content: center; align-items: center;">
+                            <canvas id="occupancyChartCanvas"></canvas>
                         </div>
                     </div>
 
@@ -752,13 +753,8 @@
                                 </button>
                             </div>
                         </div>
-                        <div class="chart-container">
-                            <div class="pie-chart" id="pieChart">
-                                <div class="pie" id="pieVisual"></div>
-                                <div class="pie-legend" id="pieLegend">
-                                    <!-- Dynamic legend will be populated here -->
-                                </div>
-                            </div>
+                        <div class="chart-container" style="position: relative; height:300px; width:100%; display: flex; justify-content: center; align-items: center;">
+                            <canvas id="pieChartCanvas"></canvas>
                         </div>
                     </div>
                 </div>
@@ -878,6 +874,9 @@
 
         let currentStartDate = null;
         let currentEndDate = null;
+        
+        let occChartInstance = null;
+        let distChartInstance = null;
 
         function closeSidebar() { sidebar.classList.remove('open'); menuOverlay.classList.remove('active'); }
         function openSidebar() { sidebar.classList.add('open'); menuOverlay.classList.add('active'); }
@@ -933,7 +932,30 @@
                 // Load rooms
                 const roomsSnapshot = await getDocs(collection(db, "rooms"));
                 roomsData = [];
-                roomsSnapshot.forEach(doc => roomsData.push({ id: doc.id, ...doc.data() }));
+                roomsSnapshot.forEach(doc => {
+                    let room = { id: doc.id, ...doc.data() };
+                    
+                    // SMART FORMULA: Calculate effective status based on occupants (synced with warden-rooms.html)
+                    let occCount = 0;
+                    if (room.occupants) {
+                        occCount = Object.keys(room.occupants).length;
+                    } else if (room.status === 'occupied' && room.occupantName) {
+                        occCount = 1;
+                    }
+                    
+                    let effectiveStatus = room.status;
+                    if (effectiveStatus === 'available' && occCount > 0) {
+                        effectiveStatus = occCount >= (room.beds || 6) ? 'occupied' : 'partial';
+                    } else if (effectiveStatus === 'occupied' && occCount < (room.beds || 6)) {
+                        effectiveStatus = 'partial';
+                    }
+                    if (occCount === 0 && effectiveStatus !== 'maintenance' && effectiveStatus !== 'reserved') {
+                        effectiveStatus = 'available';
+                    }
+                    room.status = effectiveStatus; // override raw status with effective status for reporting
+                    
+                    roomsData.push(room);
+                });
 
                 // Load applications
                 const appsSnapshot = await getDocs(collection(db, "applications"));
@@ -1038,7 +1060,7 @@
             renderOccupancyChart(blockStats);
             
             // Render pie chart
-            renderPieChart(occupiedPct, availablePct, maintenancePct, partialPct);
+            renderPieChart(occupiedRooms, availableRooms, maintenanceRooms, partialRooms, totalRooms);
             
             // Render tables
             renderTopBlocksTable(blockStats);
@@ -1054,19 +1076,24 @@
 
             renderMoveoutTable(totalMoveouts, approvedMoveouts, pendingMoveouts, rejectedMoveouts);
 
+            const activeRooms = occupiedRooms + partialRooms;
+            const activePct = totalRooms > 0 ? Math.round((activeRooms / totalRooms) * 100) : 0;
+
             // Update Summary Cards
-            document.getElementById('stat-occupancy').innerText = occupiedRooms + ' / ' + totalRooms + ' Fully Occupied';
-            document.getElementById('stat-maintenance').innerText = (pendingMaintenance + inProgressMaintenance) + ' Active Requests';
-            document.getElementById('stat-applications').innerText = pendingApps + ' Pending Apps';
-            document.getElementById('stat-moveout').innerText = pendingMoveouts + ' Pending Move-Outs';
+            const activeMaint = pendingMaintenance + inProgressMaintenance;
+            document.getElementById('stat-occupancy').innerText = activeRooms + ' / ' + totalRooms + ' Rooms Occupied';
+            document.getElementById('stat-maintenance').innerText = activeMaint + (activeMaint === 1 ? ' Active Request' : ' Active Requests');
+            document.getElementById('stat-applications').innerText = pendingApps + (pendingApps === 1 ? ' Pending Application' : ' Pending Applications');
+            document.getElementById('stat-moveout').innerText = pendingMoveouts + (pendingMoveouts === 1 ? ' Pending Move-Out' : ' Pending Move-Outs');
             
             // Update summary text
+            
             document.getElementById('summaryText').innerHTML = `
                 This report covers the period from <strong>${startStr}</strong> to <strong>${endStr}</strong>. 
-                Overall hostel occupancy is at <strong>${occupiedPct}%</strong> with ${occupiedRooms} occupied rooms out of ${totalRooms} total rooms. 
+                Currently, the hostel is operating at a <strong>${activePct}%</strong> overall occupancy rate, with <strong>${activeRooms} active rooms</strong> out of ${totalRooms} available rooms. 
                 ${getTopBlockText(blockStats)} 
-                There are currently <strong>${pendingMaintenance + inProgressMaintenance} active maintenance requests</strong>.
-                Total applications received: <strong>${totalApps}</strong> with ${approvedApps} approved.
+                On the operational front, there are <strong>${pendingMaintenance + inProgressMaintenance} active maintenance requests</strong> in progress, 
+                and the management has successfully processed <strong>${totalApps} new applications</strong> (with ${approvedApps} approved).
             `;
         }
         
@@ -1079,62 +1106,119 @@
                     topBlock = block;
                 }
             }
-            return `Block ${topBlock} has the highest occupancy rate at ${topPct}%.`;
+            if (topPct === 0) return "Currently, there are no occupied blocks.";
+            return `<strong>Block ${topBlock}</strong> is currently the most populated block.`;
         }
         
         function renderOccupancyChart(blockStats) {
-            const container = document.getElementById('occupancyChart');
-            const blocks = Object.keys(blockStats).sort();
-            let html = '';
-            
-            blocks.forEach(block => {
-                const stats = blockStats[block] || { percentage: 0 };
-                const barHeight = stats.percentage * 1.5;
-                html += `
-                    <div class="bar-group">
-                        <span class="bar-label">Block ${block}</span>
-                        <div class="bar" style="height: ${barHeight}px;"></div>
-                        <span class="bar-percentage">${stats.percentage}%</span>
-                    </div>
-                `;
+            try {
+                const canvas = document.getElementById('occupancyChartCanvas');
+                if (!canvas) throw new Error("Canvas not found!");
+                const ctx = canvas.getContext('2d');
+                const blocks = Object.keys(blockStats).sort();
+                const percentages = blocks.map(b => blockStats[b].percentage);
+                
+                if (occChartInstance) {
+                    occChartInstance.destroy();
+                }
+                
+                occChartInstance = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: blocks.map(b => 'Block ' + b),
+                    datasets: [{
+                        label: 'Occupancy Rate (%)',
+                        data: percentages,
+                        backgroundColor: '#2d72d2',
+                        borderRadius: 5,
+                        barThickness: 30
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 100,
+                            grid: { color: '#f0f0f0' }
+                        },
+                        x: {
+                            grid: { display: false }
+                        }
+                    },
+                    plugins: {
+                        legend: { display: false }
+                    }
+                }
             });
-            
-            container.innerHTML = html;
+            } catch (err) {
+                console.error("renderOccupancyChart error", err);
+                alert("Error in occupancy chart: " + err.message);
+            }
         }
         
-        function renderPieChart(occupied, available, maintenance, partial) {
-            // Update pie chart conic gradient
-            let cumulative = 0;
-            const occupiedStart = 0;
-            const occupiedEnd = occupied;
-            const availableStart = occupiedEnd;
-            const availableEnd = occupiedEnd + available;
-            const maintenanceStart = availableEnd;
-            const maintenanceEnd = availableEnd + maintenance;
-            
-            const pieStyle = `conic-gradient(#2d72d2 0% ${occupied}%, #4caf50 ${occupied}% ${occupied + available}%, #ff9800 ${occupied + available}% ${occupied + available + maintenance}%, #2196f3 ${occupied + available + maintenance}% 100%)`;
-            document.getElementById('pieVisual').style.background = pieStyle;
-            
-            // Update legend
-            const legendHtml = `
-                <div class="legend-item">
-                    <span class="legend-color occupied"></span>
-                    <span>Fully Occupied: ${occupied}%</span>
-                </div>
-                <div class="legend-item">
-                    <span class="legend-color available"></span>
-                    <span>Available: ${available}%</span>
-                </div>
-                <div class="legend-item">
-                    <span class="legend-color maintenance"></span>
-                    <span>Maintenance: ${maintenance}%</span>
-                </div>
-                <div class="legend-item">
-                    <span class="legend-color reserved"></span>
-                    <span>Partially Occupied: ${partial}%</span>
-                </div>
-            `;
-            document.getElementById('pieLegend').innerHTML = legendHtml;
+        function renderPieChart(occupied, available, maintenance, partial, total) {
+            try {
+                const canvas = document.getElementById('pieChartCanvas');
+                if (!canvas) throw new Error("Canvas not found!");
+                const ctx = canvas.getContext('2d');
+                
+                if (distChartInstance) {
+                    distChartInstance.destroy();
+                }
+                
+                const occPct = total > 0 ? Math.round((occupied / total) * 100) : 0;
+                const availPct = total > 0 ? Math.round((available / total) * 100) : 0;
+                const maintPct = total > 0 ? Math.round((maintenance / total) * 100) : 0;
+                const partPct = total > 0 ? Math.round((partial / total) * 100) : 0;
+                
+                distChartInstance = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: [
+                        `Fully Occupied: ${occupied} bilik (${occPct}%)`, 
+                        `Available: ${available} bilik (${availPct}%)`, 
+                        `Maintenance: ${maintenance} bilik (${maintPct}%)`, 
+                        `Partially Occupied: ${partial} bilik (${partPct}%)`
+                    ],
+                    datasets: [{
+                        data: [occupied, available, maintenance, partial],
+                        backgroundColor: ['#2d72d2', '#4caf50', '#ff9800', '#2196f3'],
+                        borderWidth: 2,
+                        borderColor: '#ffffff'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    // Custom tooltip to show the label cleanly
+                                    return context.label;
+                                }
+                            }
+                        },
+                        legend: {
+                            position: 'right',
+                            labels: {
+                                padding: 20,
+                                font: {
+                                    family: "'Poppins', sans-serif",
+                                    size: 13
+                                }
+                            }
+                        }
+                    },
+                    cutout: '65%'
+                }
+            });
+            } catch (err) {
+                console.error("renderPieChart error", err);
+                alert("Error in pie chart: " + err.message);
+            }
         }
         
         function renderTopBlocksTable(blockStats) {
@@ -1305,12 +1389,130 @@
             }
         };
         
-        window.exportChart = (chart, format) => {
-            alert(`📥 Exporting ${chart} chart as ${format.toUpperCase()}\n\nThis feature will be available soon.`);
+        window.exportChart = (chartType, format) => {
+            const chartId = chartType === 'occupancy' ? 'occupancyChartCanvas' : 'pieChartCanvas';
+            const card = document.getElementById(chartId).closest('.chart-card');
+            const actions = card.querySelector('.chart-actions');
+            
+            // Hide buttons during capture
+            actions.style.display = 'none';
+            
+            html2canvas(card, { scale: 2, backgroundColor: '#ffffff' }).then(canvas => {
+                // Restore buttons
+                actions.style.display = 'flex';
+                
+                if (format === 'png') {
+                    const link = document.createElement('a');
+                    link.download = `GMI_HostelKu_${chartType}_Chart.png`;
+                    link.href = canvas.toDataURL('image/png');
+                    link.click();
+                    Swal.fire({ heightAuto: false, icon: 'success', title: 'Exported', text: 'Chart saved as PNG.', confirmButtonColor: '#2d72d2' });
+                } else if (format === 'pdf') {
+                    const { jsPDF } = window.jspdf;
+                    const pdf = new jsPDF('l', 'mm', 'a4');
+                    const imgData = canvas.toDataURL('image/png');
+                    
+                    const imgProps = pdf.getImageProperties(imgData);
+                    const pdfWidth = pdf.internal.pageSize.getWidth() - 20;
+                    const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+                    
+                    pdf.setFillColor(255, 255, 255);
+                    pdf.rect(0, 0, pdf.internal.pageSize.getWidth(), pdf.internal.pageSize.getHeight(), 'F');
+                    pdf.addImage(imgData, 'PNG', 10, 10, pdfWidth, pdfHeight);
+                    pdf.save(`GMI_HostelKu_${chartType}_Chart.pdf`);
+                    Swal.fire({ heightAuto: false, icon: 'success', title: 'Exported', text: 'Chart saved as PDF.', confirmButtonColor: '#2d72d2' });
+                }
+            }).catch(err => {
+                actions.style.display = 'flex';
+                console.error('Error capturing chart:', err);
+                Swal.fire({ heightAuto: false, icon: 'error', title: 'Export Failed', text: 'An error occurred during export.', confirmButtonColor: '#2d72d2' });
+            });
         };
         
-        window.exportTable = (table) => {
-            alert(`📥 Exporting ${table} table data\n\nThis feature will be available soon.`);
+        window.exportTable = (tableType) => {
+            const tableIdMap = {
+                'top-blocks': 'topBlocksTable',
+                'maintenance': 'maintenanceTable',
+                'applications': 'applicationsTable',
+                'moveout': 'moveoutTable'
+            };
+            const sheetNameMap = {
+                'top-blocks': 'Occupancy Data',
+                'maintenance': 'Maintenance Data',
+                'applications': 'Applications Data',
+                'moveout': 'Move-Out Data'
+            };
+            const headersMap = {
+                'top-blocks': ['Block', 'Occupied / Total', 'Occupancy Rate', 'Trend'],
+                'maintenance': ['Metric', 'Value', 'Status/Trend'],
+                'applications': ['Metric', 'Value', 'Status'],
+                'moveout': ['Metric', 'Value', 'Status']
+            };
+
+            const tableId = tableIdMap[tableType];
+            const tableEl = document.getElementById(tableId);
+            
+            if (!tableEl) {
+                Swal.fire({ heightAuto: false, icon: 'error', title: 'Error', text: 'Table data not found.', confirmButtonColor: '#2d72d2' });
+                return;
+            }
+
+            const wb = XLSX.utils.book_new();
+            const ws_data = [];
+            const sheetName = sheetNameMap[tableType];
+            const headers = headersMap[tableType];
+
+            const titleStyle = { font: { bold: true, sz: 14, color: { rgb: "2D72D2" } } };
+            const boldStyle = { font: { bold: true } };
+
+            ws_data.push([{ v: "GMI HOSTELKU - " + sheetName.toUpperCase(), s: titleStyle }]);
+            ws_data.push([{ v: "Date Range", s: boldStyle }, document.getElementById('dateRangeLabel').textContent]);
+            ws_data.push([{ v: "Generated on", s: boldStyle }, new Date().toLocaleString()]);
+            ws_data.push([]);
+            
+            const headerStyle = {
+                font: { bold: true, color: { rgb: "FFFFFF" } },
+                fill: { fgColor: { rgb: "2D72D2" } },
+                border: {
+                    top: { style: "thin", color: { rgb: "000000" } },
+                    bottom: { style: "thin", color: { rgb: "000000" } },
+                    left: { style: "thin", color: { rgb: "000000" } },
+                    right: { style: "thin", color: { rgb: "000000" } }
+                },
+                alignment: { vertical: "center", horizontal: "center" }
+            };
+
+            const styledHeaders = headers.map(h => ({ v: h, s: headerStyle }));
+            ws_data.push(styledHeaders);
+
+            const cellStyle = {
+                border: {
+                    top: { style: "thin", color: { rgb: "DDDDDD" } },
+                    bottom: { style: "thin", color: { rgb: "DDDDDD" } },
+                    left: { style: "thin", color: { rgb: "DDDDDD" } },
+                    right: { style: "thin", color: { rgb: "DDDDDD" } }
+                },
+                alignment: { vertical: "center" }
+            };
+
+            for (let i = 0; i < tableEl.rows.length; i++) {
+                const row = tableEl.rows[i];
+                let rowData = [];
+                for (let j = 0; j < headers.length; j++) {
+                    let val = '';
+                    if (row.cells[j]) val = row.cells[j].innerText.replace(/(\r\n|\n|\r)/gm, " ");
+                    rowData.push({ v: val, s: cellStyle });
+                }
+                ws_data.push(rowData);
+            }
+
+            const ws = XLSX.utils.aoa_to_sheet(ws_data);
+            ws['!cols'] = [ { wch: 28 }, { wch: 22 }, { wch: 20 }, { wch: 15 } ];
+            XLSX.utils.book_append_sheet(wb, ws, sheetName);
+
+            XLSX.writeFile(wb, `GMI_HostelKu_${sheetName.replace(/\s+/g, '_')}.xlsx`);
+
+            Swal.fire({ heightAuto: false, icon: 'success', title: 'Exported', text: `${sheetName} exported as Excel.`, confirmButtonColor: '#2d72d2' });
         };
         
         window.exportReport = (format) => {

@@ -766,7 +766,7 @@
                             
                             <div class="form-row">
                                 <div class="form-group">
-                                    <label class="required">IC No / Passport No</label>
+                                    <label class="required">ID Number</label>
                                     <input type="text" id="icNo" required>
                                 </div>
                                 <div class="form-group">
@@ -1081,6 +1081,11 @@
                         }
                         if (data.course) {
                             document.getElementById('course').value = data.course;
+                        }
+                        if (data.semester) {
+                            const semValue = data.semester.toString().includes('Semester') ? data.semester : 'Semester ' + data.semester;
+                            const semSelect = document.getElementById('semester');
+                            if (semSelect) semSelect.value = semValue;
                         }
                         if (data.room && data.room !== '-') {
                             document.getElementById('unitNo').value = data.room;

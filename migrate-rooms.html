@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Migrate Rooms DB</title>
+</head>
+<body>
+    <h1>Room Migration Script</h1>
+    <button id="startBtn">Start Migration</button>
+    <div id="log" style="white-space: pre-wrap; font-family: monospace; margin-top: 20px;"></div>
+
+    <script type="module">
+        import { auth, db } from "./js/firebase-config.js";
+        import { collection, getDocs, doc, setDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+
+        function logMsg(msg) {
+            document.getElementById('log').textContent += msg + '\n';
+            console.log(msg);
+        }
+
+        let isAuth = false;
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                logMsg(`Authenticated as: ${user.email}`);
+                isAuth = true;
+            } else {
+                logMsg(`NOT AUTHENTICATED. Please go to warden-login.html and log in first.`);
+                isAuth = false;
+            }
+        });
+
+        document.getElementById('startBtn').addEventListener('click', async () => {
+            if (!isAuth) {
+                logMsg("ERROR: You must be logged in as Warden to run this. Please open another tab, log in to warden dashboard, then refresh this page.");
+                return;
+            }
+            document.getElementById('startBtn').disabled = true;
+            logMsg("Starting migration...");
+            try {
+                const roomsSnap = await getDocs(collection(db, "rooms"));
+                let count = 0;
+                let migrated = 0;
+                
+                logMsg(`Found ${roomsSnap.size} total rooms.`);
+
+                for (const roomDoc of roomsSnap.docs) {
+                    count++;
+                    const data = roomDoc.data();
+                    let oldRoomNumber = data.roomNumber || "";
+                    
+                    if (!oldRoomNumber) {
+                        logMsg(`[SKIP] Doc ${roomDoc.id} has no roomNumber`);
+                        continue;
+                    }
+
+                    // Remove leading zeros: A4-1-09 -> A4-1-9, A4-01-09 -> A4-1-9
+                    let parts = oldRoomNumber.split('-');
+                    if (parts.length >= 3) {
+                        parts[1] = parseInt(parts[1], 10).toString();
+                        parts[2] = parseInt(parts[2], 10).toString();
+                    }
+                    let newRoomNumber = parts.join('-');
+                    
+                    // If the document ID is already exactly newRoomNumber, and roomNumber field is updated, skip creating new
+                    if (roomDoc.id === newRoomNumber && data.roomNumber === newRoomNumber) {
+                        logMsg(`[SKIP] Room ${newRoomNumber} already migrated.`);
+                        continue;
+                    }
+
+                    logMsg(`Migrating: ${roomDoc.id} (${oldRoomNumber}) -> ${newRoomNumber}`);
+                    
+                    // 1. Create new doc
+                    const newData = { ...data, roomNumber: newRoomNumber };
+                    await setDoc(doc(db, "rooms", newRoomNumber), newData);
+                    
+                    // 2. Delete old doc IF its ID is different from newRoomNumber
+                    if (roomDoc.id !== newRoomNumber) {
+                        await deleteDoc(doc(db, "rooms", roomDoc.id));
+                        logMsg(`  -> Deleted old doc: ${roomDoc.id}`);
+                    }
+                    
+                    migrated++;
+                }
+
+                logMsg(`\nMigration complete! Successfully migrated ${migrated} out of ${count} rooms.`);
+            } catch (error) {
+                logMsg(`ERROR: ${error.message}`);
+                console.error(error);
+            }
+            document.getElementById('startBtn').disabled = false;
+        });
+    </script>
+</body>
+</html>

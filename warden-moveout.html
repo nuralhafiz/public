@@ -639,8 +639,10 @@
                 <a href="warden-students.html" class="nav-item" title="Navigation Link"><i class="fas fa-users"></i> Student Records</a>
                 <a href="warden-rooms.html" class="nav-item" title="Navigation Link"><i class="fas fa-bed"></i> Room Management</a>
                 <a href="warden-reports.html" class="nav-item" title="Navigation Link"><i class="fas fa-chart-bar"></i> Analytics & Reports</a>
+            
+                <a href="warden-settings.html" class="nav-item" title="Navigation Link"><i class="fas fa-cog"></i> Settings</a>
             </div>
-            <a href="#" class="nav-item logout-btn" id="logoutBtn" aria-label="Logout"><i class="fas fa-sign-out-alt"></i> Logout</a>
+        <a href="#" class="nav-item logout-btn" id="logoutBtn" aria-label="Logout"><i class="fas fa-sign-out-alt"></i> Logout</a>
         </nav>
 
         <main id="mainContent">
@@ -658,19 +660,19 @@
 
             <!-- Status Tabs -->
             <div class="status-tabs">
-                <button class="tab-btn active" onclick="filterStatus('all')">
+                <button class="neo-tab-btn active" onclick="filterStatus('all')">
                     <i class="fas fa-list"></i> All Requests
                 </button>
-                <button class="tab-btn" onclick="filterStatus('pending')">
+                <button class="neo-tab-btn" onclick="filterStatus('pending')">
                     <i class="fas fa-clock"></i> Pending
                 </button>
-                <button class="tab-btn" onclick="filterStatus('scheduled')">
+                <button class="neo-tab-btn" onclick="filterStatus('scheduled')">
                     <i class="fas fa-calendar-check"></i> Scheduled
                 </button>
-                <button class="tab-btn" onclick="filterStatus('inspected')">
+                <button class="neo-tab-btn" onclick="filterStatus('inspected')">
                     <i class="fas fa-clipboard-check"></i> Inspected
                 </button>
-                <button class="tab-btn" onclick="filterStatus('completed')">
+                <button class="neo-tab-btn" onclick="filterStatus('completed')">
                     <i class="fas fa-check-double"></i> Completed
                 </button>
             </div>
@@ -992,7 +994,7 @@
 
         // Global functions
         window.filterStatus = (status) => {
-            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.neo-tab-btn').forEach(btn => btn.classList.remove('active'));
             event.target.classList.add('active');
             currentStatus = status;
             currentPage = 1;

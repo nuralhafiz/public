@@ -664,8 +664,10 @@
                 <a href="warden-students.html" class="nav-item" title="Navigation Link"><i class="fas fa-users"></i> Student Records</a>
                 <a href="warden-rooms.html" class="nav-item active" title="Navigation Link"><i class="fas fa-bed"></i> Room Management</a>
                 <a href="warden-reports.html" class="nav-item" title="Navigation Link"><i class="fas fa-chart-bar"></i> Analytics & Reports</a>
+            
+                <a href="warden-settings.html" class="nav-item" title="Navigation Link"><i class="fas fa-cog"></i> Settings</a>
             </div>
-            <a href="#" class="nav-item logout-btn" id="logoutBtn" aria-label="Logout"><i class="fas fa-sign-out-alt"></i> Logout</a>
+        <a href="#" class="nav-item logout-btn" id="logoutBtn" aria-label="Logout"><i class="fas fa-sign-out-alt"></i> Logout</a>
         </nav>
 
         <main id="mainContent">
@@ -717,27 +719,27 @@
             </div>
 
             <!-- Block Tabs -->
-            <div class="block-tabs" style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 20px;">
-                <button class="block-tab active" onclick="filterBlock('all')">
+            <div class="neo-tabs-container" style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 20px;">
+                <button class="neo-tab-btn active" onclick="filterBlock('all')">
                     <i class="fas fa-building"></i> All Blocks
                 </button>
-                <button class="block-tab" onclick="filterBlock('A1')">
-                    <i class="fas fa-female"></i> Block A1 (Female)
+                <button class="neo-tab-btn" onclick="filterBlock('A1')">
+                    <i class="fas fa-female" style="color: #ec4899; width: 16px; text-align: center;"></i> Block A1 (Female)
                 </button>
-                <button class="block-tab" onclick="filterBlock('A2')">
-                    <i class="fas fa-male"></i> Block A2 (Male)
+                <button class="neo-tab-btn" onclick="filterBlock('A2')">
+                    <i class="fas fa-male" style="color: #3b82f6; width: 16px; text-align: center;"></i> Block A2 (Male)
                 </button>
-                <button class="block-tab" onclick="filterBlock('A3')">
-                    <i class="fas fa-male"></i> Block A3 (Male)
+                <button class="neo-tab-btn" onclick="filterBlock('A3')">
+                    <i class="fas fa-male" style="color: #3b82f6; width: 16px; text-align: center;"></i> Block A3 (Male)
                 </button>
-                <button class="block-tab" onclick="filterBlock('A4')">
-                    <i class="fas fa-male"></i> Block A4 (Male)
+                <button class="neo-tab-btn" onclick="filterBlock('A4')">
+                    <i class="fas fa-male" style="color: #3b82f6; width: 16px; text-align: center;"></i> Block A4 (Male)
                 </button>
-                <button class="block-tab" onclick="filterBlock('A5')">
-                    <i class="fas fa-male"></i> Block A5 (Male)
+                <button class="neo-tab-btn" onclick="filterBlock('A5')">
+                    <i class="fas fa-male" style="color: #3b82f6; width: 16px; text-align: center;"></i> Block A5 (Male)
                 </button>
-                <button class="block-tab" onclick="filterBlock('A7')">
-                    <i class="fas fa-female"></i> Block A7 (Female)
+                <button class="neo-tab-btn" onclick="filterBlock('A7')">
+                    <i class="fas fa-female" style="color: #ec4899; width: 16px; text-align: center;"></i> Block A7 (Female)
                 </button>
             </div>
 
@@ -812,7 +814,7 @@
 
     <script type="module">
         import { getAuth, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-        import { getFirestore, collection, query, where, getDocs, onSnapshot, doc, updateDoc, addDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, collection, query, where, getDocs, onSnapshot, doc, updateDoc, addDoc, setDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         import { auth, db } from "./js/firebase-config.js";
 
@@ -1013,7 +1015,11 @@
                 const floors = [...new Set(blockRooms.map(room => room.floor))].sort((a,b) => a-b);
                 
                 for (const floor of floors) {
-                    const floorRooms = blockRooms.filter(room => room.floor === floor);
+                    const floorRooms = blockRooms.filter(room => room.floor === floor).sort((a, b) => {
+                        const roomA = a.roomNumber || '';
+                        const roomB = b.roomNumber || '';
+                        return roomA.localeCompare(roomB, undefined, { numeric: true, sensitivity: 'base' });
+                    });
                     const floorCount = floorRooms.length;
                     const occupiedCount = floorRooms.filter(r => r.effectiveStatus === 'occupied' || r.effectiveStatus === 'partial').length;
                     const availableCount = floorRooms.filter(r => r.effectiveStatus === 'available').length;
@@ -1174,7 +1180,7 @@
 
         // Filter functions
         window.filterBlock = (block) => {
-            document.querySelectorAll('.block-tab').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.neo-tab-btn').forEach(btn => btn.classList.remove('active'));
             event.target.classList.add('active');
             currentBlock = block;
             renderRooms();
@@ -1513,14 +1519,22 @@
                     
                     let floor = parseInt(number.split('-')[1]);
                     if (isNaN(floor)) floor = 1;
+
+                    // Strip leading zeros
+                    let parts = number.split('-');
+                    if (parts.length >= 3) {
+                        parts[1] = parseInt(parts[1], 10).toString();
+                        parts[2] = parseInt(parts[2], 10).toString();
+                    }
+                    const cleanNumber = parts.join('-');
                     
-                    return { number, block, floor, type };
+                    return { number: cleanNumber, block, floor, type };
                 }
             });
 
             if (formValues) {
                 try {
-                    await addDoc(collection(db, "rooms"), {
+                    await setDoc(doc(db, "rooms", formValues.number), {
                         roomNumber: formValues.number,
                         block: formValues.block,
                         floor: formValues.floor,

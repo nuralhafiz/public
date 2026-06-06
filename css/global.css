@@ -207,3 +207,41 @@
         padding: 0 15px !important;
     }
 }
+
+/* Neo-Brutalism Tabs UI */
+.neo-tabs-container {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    border-bottom: 2px solid #e0e0e0;
+    padding-bottom: 15px;
+}
+
+.neo-tab-btn {
+    background: none;
+    border: 2px solid transparent;
+    font-family: 'Poppins', sans-serif;
+    font-size: 15px;
+    font-weight: 500;
+    color: #64748b;
+    cursor: pointer;
+    padding: 10px 20px;
+    border-radius: 8px;
+    transition: all 0.2s cubic-bezier(0.25, 0.8, 0.25, 1);
+    white-space: nowrap;
+}
+
+.neo-tab-btn:hover:not(.active) {
+    color: #2d72d2;
+    background: rgba(45, 114, 210, 0.05);
+}
+
+.neo-tab-btn.active {
+    background: #e3f2fd;
+    color: #2d72d2;
+    border: 2px solid #0f1638;
+    box-shadow: 3px 3px 0px #2d72d2;
+    font-weight: 600;
+    transform: translateY(-2px);
+}
