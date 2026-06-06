@@ -646,6 +646,13 @@
                     });
                 });
                 
+                // Sort applications by newest first
+                applications.sort((a, b) => {
+                    const timeA = a.submittedAt ? (a.submittedAt.toMillis ? a.submittedAt.toMillis() : 0) : 0;
+                    const timeB = b.submittedAt ? (b.submittedAt.toMillis ? b.submittedAt.toMillis() : 0) : 0;
+                    return timeB - timeA;
+                });
+                
                 // Update stats
                 updateStats();
                 
@@ -670,6 +677,13 @@
                         id: doc.id,
                         ...doc.data()
                     });
+                });
+                
+                // Sort applications by newest first
+                applications.sort((a, b) => {
+                    const timeA = a.submittedAt ? (a.submittedAt.toMillis ? a.submittedAt.toMillis() : 0) : 0;
+                    const timeB = b.submittedAt ? (b.submittedAt.toMillis ? b.submittedAt.toMillis() : 0) : 0;
+                    return timeB - timeA;
                 });
                 
                 // Update stats
@@ -738,9 +752,11 @@
                 const row = document.createElement('tr');
                 
                 // Format date
+                // Get date and time
+                const dateOptions = { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true };
                 const appliedDate = app.submittedAt?.toDate ? 
-                    app.submittedAt.toDate().toLocaleDateString('en-MY') : 
-                    new Date().toLocaleDateString('en-MY');
+                    app.submittedAt.toDate().toLocaleString('en-MY', dateOptions) : 
+                    new Date().toLocaleString('en-MY', dateOptions);
                 
                 row.innerHTML = `
                     <td>

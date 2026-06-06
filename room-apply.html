@@ -1811,8 +1811,10 @@
                 
                 if (roomSnap.exists()) {
                     const roomData = roomSnap.data();
-                    const rStatus = roomData.status || '';
-                    if (rStatus.toLowerCase() !== 'maintenance' && rStatus.toLowerCase() === 'available') {
+                    const rStatus = (roomData.status || '').toLowerCase();
+                    
+                    // Auto-approve if room is not under maintenance and not fully occupied
+                    if (rStatus !== 'maintenance' && rStatus !== 'occupied') {
                         // Check capacity
                         const currentOcc = Object.keys(roomData.occupants || {}).length || roomData.currentOccupants || 0;
                         const maxCap = roomData.capacity || (roomData.type === 'Type C' ? 4 : 6);
