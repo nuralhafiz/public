@@ -659,7 +659,202 @@
         }
     }
     
+    // Check Room Inventory Status
+    async function checkRoomInventory(user) {
+        try {
+            let roomId, roomName, partition;
+            
+            // 1. Check users collection first (this is where student's own room assignment is stored)
+            const userSnap = await getDoc(doc(db, "users", user.uid));
+            
+            if (userSnap.exists()) {
+                const userData = userSnap.data();
+                if (userData.room && userData.room !== '-' && userData.room !== 'Not assigned') {
+                    roomName = userData.room;
+                    roomId = userData.roomId || roomName;
+                    partition = userData.partition || '';
+                }
+            }
+            
+            // 2. Fallback to approved applications if not found in users
+            if (!roomId) {
+                const appQuery = query(collection(db, "applications"), where("userEmail", "==", user.email), where("status", "==", "approved"));
+                const appSnap = await getDocs(appQuery);
+                
+                if (!appSnap.empty) {
+                    let apps = [];
+                    appSnap.forEach(doc => apps.push({ id: doc.id, ...doc.data() }));
+                    apps.sort((a, b) => {
+                        const tA = a.submittedAt ? a.submittedAt.toMillis() : 0;
+                        const tB = b.submittedAt ? b.submittedAt.toMillis() : 0;
+                        return tB - tA;
+                    });
+                    const latestApp = apps[0];
+                    roomId = latestApp.assignedRoomId || latestApp.roomId;
+                    partition = latestApp.assignedPartition || latestApp.partition || '';
+                    roomName = latestApp.assignedRoom || latestApp.roomNumber || roomId;
+                }
+            }
+            
+            if (!roomId) return; // No room assigned
+            
+            // 2. Check if inventory already submitted for this room
+            const invQuery = query(collection(db, "room_inventories"), where("userEmail", "==", user.email), where("roomId", "==", roomId));
+            const invSnap = await getDocs(invQuery);
+            
+            if (!invSnap.empty) return; // Already submitted
+            
+            // 3. Show Check-in Banner
+            showCheckInBanner(user, roomId, roomName, partition);
+            
+        } catch(error) {
+            console.error("Error checking room inventory:", error);
+        }
+    }
+    
+    function showCheckInBanner(user, roomId, roomName, partition) {
+        const alertsContainer = document.getElementById('alertsContainer');
+        const bannerHtml = `
+            <div class="alert-item warning" style="background: #fff3e0; border-left-color: #ff9800; cursor: pointer; padding: 20px; box-shadow: 0 4px 15px rgba(255, 152, 0, 0.2);" id="checkInBanner">
+                <div style="flex:1;">
+                    <strong style="color: #e65100; font-size: 16px;"><i class="fas fa-clipboard-check"></i> Action Required: Room Check-In</strong>
+                    <p style="margin-top: 5px; color: #555; font-size: 14px;">Welcome to <b>${roomName}</b>${partition ? ` (Partition ${partition})` : ''}! Please complete your room inventory check-in form to verify the condition of the items.</p>
+                </div>
+                <button class="action-btn" style="background: #ff9800; padding: 10px 20px; margin-left: 15px; border-radius: 8px;">Start Check-In</button>
+            </div>
+        `;
+        
+        alertsContainer.insertAdjacentHTML('afterbegin', bannerHtml);
+        
+        document.getElementById('checkInBanner').addEventListener('click', () => {
+            openCheckInModal(user, roomId, roomName, partition);
+        });
+    }
+    
+    function openCheckInModal(user, roomId, roomName, partition) {
+        const items = ['Single Bed & Mattress', 'Wardrobe & Accessories', 'Study Table', 'Study Chair', 'Curtain Rail', 'Main Entrance Door', 'Toilet Main Entrance Door', 'Toilet Door', 'Shower Door', 'Cleanliness (Overall)'];
+        let itemsHtml = '<div style="text-align: left; margin-top: 15px;">';
+        
+        items.forEach((item, index) => {
+            const safeId = 'item_' + index;
+            itemsHtml += `
+                <div style="margin-bottom: 15px; padding: 10px; background: #f8f9fa; border-radius: 8px; border: 1px solid #e0e0e0;">
+                    <div style="font-weight: 600; margin-bottom: 8px; color: #333;">${item}</div>
+                    <div style="display: flex; gap: 15px;">
+                        <label style="cursor: pointer; display: flex; align-items: center; gap: 5px;">
+                            <input type="radio" name="${safeId}" value="Good" checked> <span style="color: #4caf50;"><i class="fas fa-check-circle"></i> Good</span>
+                        </label>
+                        <label style="cursor: pointer; display: flex; align-items: center; gap: 5px;">
+                            <input type="radio" name="${safeId}" value="Faulty"> <span style="color: #f44336;"><i class="fas fa-times-circle"></i> Faulty</span>
+                        </label>
+                    </div>
+                </div>
+            `;
+        });
+        
+        itemsHtml += `
+            <div style="margin-top: 15px;">
+                <label style="font-weight: 600; display: block; margin-bottom: 5px; color: #333;">Remarks (If any damage):</label>
+                <textarea id="inventoryRemarks" rows="3" style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #ddd; font-family: inherit;" placeholder="Describe any damages here..."></textarea>
+            </div>
+            <div style="margin-top: 15px; padding: 10px; background: #e3f2fd; border-radius: 8px; font-size: 13px; color: #1565c0;">
+                <label style="display: flex; align-items: flex-start; gap: 8px; cursor: pointer;">
+                    <input type="checkbox" id="inventoryDeclaration" style="margin-top: 3px;">
+                    <span>I declare that I have physically inspected the room and the condition of the items listed above is accurate. I understand that any unreported damages may be charged to me upon move-out.</span>
+                </label>
+            </div>
+        </div>`;
 
+        Swal.fire({ heightAuto: false,
+            title: 'Room Check-In Inventory',
+            html: itemsHtml,
+            showCancelButton: true,
+            confirmButtonText: '<i class="fas fa-paper-plane"></i> Submit Record',
+            confirmButtonColor: '#2d72d2',
+            cancelButtonColor: '#aaa',
+            width: '600px',
+            preConfirm: () => {
+                const isDeclared = document.getElementById('inventoryDeclaration').checked;
+                if (!isDeclared) {
+                    Swal.showValidationMessage('You must check the declaration box to proceed.');
+                    return false;
+                }
+                
+                const results = {};
+                let hasDamage = false;
+                items.forEach((item, index) => {
+                    const val = document.querySelector(`input[name="item_${index}"]:checked`).value;
+                    results[item] = val;
+                    if (val === 'Faulty') hasDamage = true;
+                });
+                
+                return {
+                    results: results,
+                    hasDamage: hasDamage,
+                    remarks: document.getElementById('inventoryRemarks').value
+                };
+            }
+        }).then(async (result) => {
+            if (result.isConfirmed) {
+                try {
+                    Swal.fire({ heightAuto: false, title: 'Submitting...', text: 'Saving your inventory record.', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
+                    
+                    const data = result.value;
+                    const studentName = sessionStorage.getItem('userName') || user.displayName || user.email.split('@')[0];
+                    
+                    // Save to room_inventories
+                    await addDoc(collection(db, "room_inventories"), {
+                        userEmail: user.email,
+                        studentName: studentName,
+                        roomId: roomId,
+                        roomName: roomName,
+                        partition: partition,
+                        items: data.results,
+                        remarks: data.remarks,
+                        hasDamage: data.hasDamage,
+                        submittedAt: serverTimestamp()
+                    });
+                    
+                    // If damage exists, create maintenance request automatically
+                    if (data.hasDamage) {
+                        const damagedItems = Object.entries(data.results).filter(([k,v]) => v === 'Faulty').map(([k,v]) => k).join(', ');
+                        let desc = `Check-In Damage Report.<br><br>`;
+                        if (data.remarks && data.remarks.trim() !== '') {
+                            desc += `<strong>Remarks:</strong> ${data.remarks}<br>`;
+                        }
+                        desc += `<strong>Damaged items:</strong> ${damagedItems}`;
+                        
+                        await addDoc(collection(db, "maintenance_requests"), {
+                            userEmail: user.email,
+                            studentName: studentName,
+                            roomId: roomId,
+                            room: roomName,
+                            category: 'Furniture/Asset',
+                            issueType: 'Check-In Damage Report',
+                            description: desc,
+                            status: 'pending',
+                            submittedAt: serverTimestamp(),
+                            autoGenerated: true
+                        });
+                    }
+                    
+                    document.getElementById('checkInBanner')?.remove();
+                    
+                    Swal.fire({ heightAuto: false,
+                        icon: 'success',
+                        title: 'Check-In Complete!',
+                        text: data.hasDamage ? 'Your record is saved and a maintenance request has been automatically created for the damaged items.' : 'Your record has been securely saved. Have a great stay!',
+                        confirmButtonColor: '#4caf50'
+                    });
+                    
+                } catch(error) {
+                    console.error("Error submitting inventory:", error);
+                    Swal.fire('Error', 'Failed to submit check-in record.', 'error');
+                }
+            }
+        });
+    }
+    
     window.addEventListener('resize', () => {
         if (window.innerWidth > 768) {
             // On desktop, ensure sidebar is visible and overlay is hidden
@@ -690,6 +885,9 @@
             if (user) {
             // Load activities dynamically
             loadRecentActivity(user.email);
+            
+            // Check if user needs to submit room inventory
+            checkRoomInventory(user);
             
             // Store user email in session storage for profile page to use
             sessionStorage.setItem('userEmail', user.email);

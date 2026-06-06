@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Database Cleanup Script</title>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 50px; text-align: center; }
+        button { padding: 15px 30px; font-size: 16px; background-color: #2d72d2; color: white; border: none; border-radius: 8px; cursor: pointer; }
+        button:hover { background-color: #1e3a8a; }
+        #log { margin-top: 30px; text-align: left; background: #f4f4f4; padding: 20px; height: 300px; overflow-y: scroll; border: 1px solid #ccc; font-family: monospace;}
+    </style>
+</head>
+<body>
+    <h2>GMI HostelKu Database Partition Cleanup</h2>
+    <p>This script will convert all old dummy data (partitionA, partitionB...) to the new standard (P1, P2...).</p>
+    <button id="runBtn">Run Cleanup Migration</button>
+
+    <div id="log">Logs will appear here...<br></div>
+
+    <script type="module">
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { getFirestore, collection, getDocs, doc, updateDoc, writeBatch } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { db, auth } from "./js/firebase-config.js";
+
+        const runBtn = document.getElementById('runBtn');
+        const logDiv = document.getElementById('log');
+
+        function log(message) {
+            logDiv.innerHTML += message + '<br>';
+            logDiv.scrollTop = logDiv.scrollHeight;
+        }
+
+        const map = {
+            'partitionA': 'P1',
+            'partitionB': 'P2',
+            'partitionC': 'P3',
+            'partitionD': 'P4',
+            'partitionE': 'P5',
+            'partitionF': 'P6'
+        };
+
+        runBtn.addEventListener('click', async () => {
+            runBtn.disabled = true;
+            runBtn.innerText = 'Running...';
+            log('<b>Starting migration...</b>');
+
+            try {
+                let batch = writeBatch(db);
+                let operations = 0;
+                let countStudents = 0;
+                let countRooms = 0;
+                let countUsers = 0;
+
+                // 1. UPDATE STUDENTS
+                log('Fetching students...');
+                const studentsSnap = await getDocs(collection(db, "students"));
+                studentsSnap.forEach(docSnap => {
+                    const data = docSnap.data();
+                    if (data.partition && map[data.partition]) {
+                        batch.update(docSnap.ref, { partition: map[data.partition] });
+                        operations++;
+                        countStudents++;
+                    }
+                });
+
+                // 2. UPDATE ROOMS
+                log('Fetching rooms...');
+                const roomsSnap = await getDocs(collection(db, "rooms"));
+                roomsSnap.forEach(docSnap => {
+                    const data = docSnap.data();
+                    let updated = false;
+                    let newOccupants = [];
+                    if (data.occupants && Array.isArray(data.occupants)) {
+                        newOccupants = data.occupants.map(occ => {
+                            if (occ.partition && map[occ.partition]) {
+                                updated = true;
+                                return { ...occ, partition: map[occ.partition] };
+                            }
+                            return occ;
+                        });
+                    }
+                    if (updated) {
+                        batch.update(docSnap.ref, { occupants: newOccupants });
+                        operations++;
+                        countRooms++;
+                    }
+                });
+
+                // 3. UPDATE USERS
+                log('Fetching users...');
+                const usersSnap = await getDocs(collection(db, "users"));
+                usersSnap.forEach(docSnap => {
+                    const data = docSnap.data();
+                    if (data.room && data.room.includes('partition')) {
+                        let newRoom = data.room;
+                        for (let key in map) {
+                            if (newRoom.includes(key)) {
+                                newRoom = newRoom.replace(key, map[key]);
+                            }
+                        }
+                        batch.update(docSnap.ref, { room: newRoom });
+                        operations++;
+                        countUsers++;
+                    }
+                });
+
+                log(`Batch ready: ${operations} total updates.`);
+                if (operations > 0) {
+                    await batch.commit();
+                    log(`<b>SUCCESS!</b> Updated ${countStudents} students, ${countRooms} rooms, and ${countUsers} users.`);
+                    Swal.fire('Success', 'Migration Completed Successfully!', 'success');
+                } else {
+                    log('No old partition data found. Nothing to update.');
+                    Swal.fire('Info', 'Database is already clean!', 'info');
+                }
+            } catch (error) {
+                console.error(error);
+                log('<span style="color:red">Error: ' + error.message + '</span>');
+                Swal.fire('Error', error.message, 'error');
+            }
+
+            runBtn.innerText = 'Completed';
+        });
+
+    </script>
+</body>
+</html>

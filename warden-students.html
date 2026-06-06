@@ -850,6 +850,11 @@
                 </div>
                 
             </div>
+            
+            <div id="modalInventorySection" style="margin-bottom: 20px; padding: 15px; background: #f8f9fa; border-radius: 10px; border: 1px solid #e0e0e0; display: none;">
+                <h5 style="margin-top: 0; margin-bottom: 10px; font-size: 14px; color: #2d72d2;"><i class="fas fa-clipboard-check"></i> Room Check-In Inventory</h5>
+                <div id="modalInventoryContent" style="font-size: 13px; color: #555;">Loading...</div>
+            </div>
 
             <div style="display: flex; gap: 10px; margin-top: 20px;">
                 <button class="quick-action-btn" style="flex: 1;" onclick="editCurrentStudent()">
@@ -867,7 +872,7 @@
 
     <script type="module">
         import { getAuth, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-        import { getFirestore, collection, query, orderBy, getDocs, onSnapshot, doc, updateDoc, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, collection, query, where, orderBy, getDocs, onSnapshot, doc, updateDoc, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
         import { auth, db } from "./js/firebase-config.js";
 
         const hamburger = document.getElementById('hamburger');
@@ -952,21 +957,24 @@
             }, (error) => console.error(error));
 
             const usersCollection = collection(db, "users");
-            const qUsers = query(usersCollection, where("role", "==", "student"));
-            onSnapshot(qUsers, (snapshot) => {
+            // Remove 'role' filter to include older registered students
+            onSnapshot(usersCollection, (snapshot) => {
                 registeredStudents = [];
                 snapshot.forEach((doc) => {
                     let d = doc.data();
-                    registeredStudents.push({
-                        id: doc.id,
-                        fullName: d.displayName || d.fullName || '-',
-                        studentId: d.idNumber || '-',
-                        email: d.email || '-',
-                        phone: d.phoneNumber || '-',
-                        course: d.course || '-',
-                        roomNumber: d.room && d.room !== '-' ? d.room : '-',
-                        status: d.room && d.room !== '-' ? 'active' : 'pending'
-                    });
+                    // Filter manually by student email domain to avoid picking up wardens
+                    if (d.email && d.email.includes('@student.')) {
+                        registeredStudents.push({
+                            id: doc.id,
+                            fullName: d.displayName || d.fullName || '-',
+                            studentId: d.idNumber || '-',
+                            email: d.email || '-',
+                            phone: d.phoneNumber || '-',
+                            course: d.course || '-',
+                            roomNumber: d.room && d.room !== '-' ? d.room : '-',
+                            status: d.room && d.room !== '-' ? 'active' : 'pending'
+                        });
+                    }
                 });
                 if(currentTab === 'registered') switchTab('registered');
             }, (error) => console.error(error));
@@ -1049,6 +1057,9 @@
                 const initials = student.fullName ? student.fullName.split(' ').map(n => n[0]).join('').toUpperCase().substring(0, 2) : '?';
                 let roomNumber = student.roomNumber || 'Not assigned';
                 roomNumber = roomNumber.replace(/-0+(\d+)/g, '-$1');
+                if (student.partition && student.partition !== '-') {
+                    roomNumber += ` (${student.partition})`;
+                }
                 const course = student.course || 'N/A';
                 const phone = student.phone || 'N/A';
                 const status = student.status || 'pending';
@@ -1110,7 +1121,7 @@
         }
 
         // Global functions
-        window.viewStudent = (id) => {
+        window.viewStudent = async (id) => {
             const student = allStudents.find(s => s.id === id);
             if (student) {
                 document.getElementById('modalAvatar').textContent = student.fullName ? student.fullName.charAt(0).toUpperCase() : '?';
@@ -1123,6 +1134,51 @@
                 document.getElementById('modalEmergency').textContent = student.emergencyContact || 'N/A';
                 document.getElementById('modalMoveIn').textContent = student.moveInDate || 'N/A';
                 document.getElementById('modalStatus').textContent = (student.status || 'pending').toUpperCase();
+                
+                // Fetch Room Check-in Inventory
+                const invSection = document.getElementById('modalInventorySection');
+                const invContent = document.getElementById('modalInventoryContent');
+                invSection.style.display = 'none';
+                
+                if (student.email) {
+                    try {
+                        const invQuery = query(collection(db, "room_inventories"), where("userEmail", "==", student.email));
+                        const invSnap = await getDocs(invQuery);
+                        if (!invSnap.empty) {
+                            let invs = [];
+                            invSnap.forEach(doc => invs.push(doc.data()));
+                            invs.sort((a, b) => {
+                                const tA = a.submittedAt ? a.submittedAt.toMillis() : 0;
+                                const tB = b.submittedAt ? b.submittedAt.toMillis() : 0;
+                                return tB - tA;
+                            });
+                            const latestInv = invs[0];
+                            
+                            let html = `<div style="margin-bottom: 5px;"><strong>Room:</strong> ${latestInv.roomName} ${latestInv.partition ? `(P${latestInv.partition})` : ''}</div>`;
+                            const dateStr = latestInv.submittedAt ? new Date(latestInv.submittedAt.toMillis()).toLocaleString('en-MY') : 'N/A';
+                            html += `<div style="margin-bottom: 10px;"><strong>Submitted:</strong> ${dateStr}</div>`;
+                            
+                            html += `<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">`;
+                            for (const [item, status] of Object.entries(latestInv.items || {})) {
+                                const isGood = status === 'Good' || status === 'good';
+                                const color = isGood ? '#4caf50' : '#f44336';
+                                const icon = isGood ? 'fa-check' : 'fa-times';
+                                html += `<div><span style="color: ${color};"><i class="fas ${icon}"></i></span> ${item}</div>`;
+                            }
+                            html += `</div>`;
+                            
+                            if (latestInv.remarks) {
+                                html += `<div style="margin-top: 10px; padding: 8px; background: #fff; border-radius: 6px; border: 1px solid #ddd;"><strong>Remarks:</strong> ${latestInv.remarks}</div>`;
+                            }
+                            
+                            invContent.innerHTML = html;
+                            invSection.style.display = 'block';
+                        }
+                    } catch (error) {
+                        console.error("Error fetching inventory:", error);
+                    }
+                }
+                
                 modal.classList.add('active');
             } else {
                 alert("Student data not found. Please ensure data is imported.");

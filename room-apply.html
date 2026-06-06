@@ -1607,7 +1607,7 @@
                 
                 appsSnap.forEach(appDoc => {
                     const appData = appDoc.data();
-                    if (appData.status !== 'rejected') {
+                    if (appData.status === 'pending') {
                         bookedPartitions[appData.partition] = true;
                     }
                 });

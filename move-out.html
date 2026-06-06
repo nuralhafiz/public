@@ -708,8 +708,8 @@
                                     <i class="fas fa-door-open"></i>
                                     Unit No
                                 </label>
-                                <input type="text" id="unitNo" placeholder="e.g. A-3-12" required>
-                            </div>
+                                <input type="text" id="unitNo" readonly style="background: #f1f5f9; cursor: not-allowed; color: #64748b; font-weight: bold; border-color: #cbd5e1;" required>
+                                <small style="display: block; margin-top: 5px; color: #64748b; font-size: 11px;"><i class="fas fa-lock"></i> Auto-fetched from database</small>                            </div>
                         </div>
 
                         <div class="form-group">
@@ -799,33 +799,26 @@
                                                 <th style="padding: 12px; text-align: left; border-bottom: 2px solid #e0e0e0; color: #0f1638;">Items</th>
                                                 <th style="padding: 12px; text-align: center; border-bottom: 2px solid #e0e0e0; width: 80px; color: #4caf50;">Good</th>
                                                 <th style="padding: 12px; text-align: center; border-bottom: 2px solid #e0e0e0; width: 80px; color: #f44336;">Faulty</th>
-                                                <th style="padding: 12px; text-align: left; border-bottom: 2px solid #e0e0e0; color: #0f1638;">Remarks</th>
                                             </tr>
                                         </thead>
                                         <tbody>
 
                                             <tr>
-                                                <td style="padding: 12px; border-bottom: 1px solid #eee;">Single Bed c/w Mattress</td>
+                                                <td style="padding: 12px; border-bottom: 1px solid #eee;">Single Bed & Mattress</td>
                                                 <td style="padding: 12px; text-align: center; border-bottom: 1px solid #eee;">
                                                     <input type="radio" name="item_SingleBedcwMattress" value="Good" required style="width: 18px; height: 18px; margin: 0; padding: 0;">
                                                 </td>
                                                 <td style="padding: 12px; text-align: center; border-bottom: 1px solid #eee;">
                                                     <input type="radio" name="item_SingleBedcwMattress" value="Faulty" style="width: 18px; height: 18px; margin: 0; padding: 0;">
                                                 </td>
-                                                <td style="padding: 12px; border-bottom: 1px solid #eee;">
-                                                    <input type="text" id="remark_SingleBedcwMattress" placeholder="Remarks (optional)" style="padding: 8px 12px; margin: 0; min-width: 150px; border: 1px solid #e0e0e0; border-radius: 6px;">
-                                                </td>
                                             </tr>
                                             <tr>
-                                                <td style="padding: 12px; border-bottom: 1px solid #eee;">Wardrobe s/w Accessories</td>
+                                                <td style="padding: 12px; border-bottom: 1px solid #eee;">Wardrobe & Accessories</td>
                                                 <td style="padding: 12px; text-align: center; border-bottom: 1px solid #eee;">
                                                     <input type="radio" name="item_WardrobeswAccessories" value="Good" required style="width: 18px; height: 18px; margin: 0; padding: 0;">
                                                 </td>
                                                 <td style="padding: 12px; text-align: center; border-bottom: 1px solid #eee;">
                                                     <input type="radio" name="item_WardrobeswAccessories" value="Faulty" style="width: 18px; height: 18px; margin: 0; padding: 0;">
-                                                </td>
-                                                <td style="padding: 12px; border-bottom: 1px solid #eee;">
-                                                    <input type="text" id="remark_WardrobeswAccessories" placeholder="Remarks (optional)" style="padding: 8px 12px; margin: 0; min-width: 150px; border: 1px solid #e0e0e0; border-radius: 6px;">
                                                 </td>
                                             </tr>
                                             <tr>
@@ -836,9 +829,6 @@
                                                 <td style="padding: 12px; text-align: center; border-bottom: 1px solid #eee;">
                                                     <input type="radio" name="item_StudyTable" value="Faulty" style="width: 18px; height: 18px; margin: 0; padding: 0;">
                                                 </td>
-                                                <td style="padding: 12px; border-bottom: 1px solid #eee;">
-                                                    <input type="text" id="remark_StudyTable" placeholder="Remarks (optional)" style="padding: 8px 12px; margin: 0; min-width: 150px; border: 1px solid #e0e0e0; border-radius: 6px;">
-                                                </td>
                                             </tr>
                                             <tr>
                                                 <td style="padding: 12px; border-bottom: 1px solid #eee;">Study Chair</td>
@@ -847,9 +837,6 @@
                                                 </td>
                                                 <td style="padding: 12px; text-align: center; border-bottom: 1px solid #eee;">
                                                     <input type="radio" name="item_StudyChair" value="Faulty" style="width: 18px; height: 18px; margin: 0; padding: 0;">
-                                                </td>
-                                                <td style="padding: 12px; border-bottom: 1px solid #eee;">
-                                                    <input type="text" id="remark_StudyChair" placeholder="Remarks (optional)" style="padding: 8px 12px; margin: 0; min-width: 150px; border: 1px solid #e0e0e0; border-radius: 6px;">
                                                 </td>
                                             </tr>
                                             <tr>
@@ -860,9 +847,6 @@
                                                 <td style="padding: 12px; text-align: center; border-bottom: 1px solid #eee;">
                                                     <input type="radio" name="item_CurtainRail" value="Faulty" style="width: 18px; height: 18px; margin: 0; padding: 0;">
                                                 </td>
-                                                <td style="padding: 12px; border-bottom: 1px solid #eee;">
-                                                    <input type="text" id="remark_CurtainRail" placeholder="Remarks (optional)" style="padding: 8px 12px; margin: 0; min-width: 150px; border: 1px solid #e0e0e0; border-radius: 6px;">
-                                                </td>
                                             </tr>
                                             <tr>
                                                 <td style="padding: 12px; border-bottom: 1px solid #eee;">Main Entrance Door</td>
@@ -871,9 +855,6 @@
                                                 </td>
                                                 <td style="padding: 12px; text-align: center; border-bottom: 1px solid #eee;">
                                                     <input type="radio" name="item_MainEntranceDoor" value="Faulty" style="width: 18px; height: 18px; margin: 0; padding: 0;">
-                                                </td>
-                                                <td style="padding: 12px; border-bottom: 1px solid #eee;">
-                                                    <input type="text" id="remark_MainEntranceDoor" placeholder="Remarks (optional)" style="padding: 8px 12px; margin: 0; min-width: 150px; border: 1px solid #e0e0e0; border-radius: 6px;">
                                                 </td>
                                             </tr>
                                             <tr>
@@ -884,9 +865,6 @@
                                                 <td style="padding: 12px; text-align: center; border-bottom: 1px solid #eee;">
                                                     <input type="radio" name="item_ToiletMainEntranceDoor" value="Faulty" style="width: 18px; height: 18px; margin: 0; padding: 0;">
                                                 </td>
-                                                <td style="padding: 12px; border-bottom: 1px solid #eee;">
-                                                    <input type="text" id="remark_ToiletMainEntranceDoor" placeholder="Remarks (optional)" style="padding: 8px 12px; margin: 0; min-width: 150px; border: 1px solid #e0e0e0; border-radius: 6px;">
-                                                </td>
                                             </tr>
                                             <tr>
                                                 <td style="padding: 12px; border-bottom: 1px solid #eee;">Toilet Door</td>
@@ -895,9 +873,6 @@
                                                 </td>
                                                 <td style="padding: 12px; text-align: center; border-bottom: 1px solid #eee;">
                                                     <input type="radio" name="item_ToiletDoor" value="Faulty" style="width: 18px; height: 18px; margin: 0; padding: 0;">
-                                                </td>
-                                                <td style="padding: 12px; border-bottom: 1px solid #eee;">
-                                                    <input type="text" id="remark_ToiletDoor" placeholder="Remarks (optional)" style="padding: 8px 12px; margin: 0; min-width: 150px; border: 1px solid #e0e0e0; border-radius: 6px;">
                                                 </td>
                                             </tr>
                                             <tr>
@@ -908,9 +883,6 @@
                                                 <td style="padding: 12px; text-align: center; border-bottom: 1px solid #eee;">
                                                     <input type="radio" name="item_ShowerDoor" value="Faulty" style="width: 18px; height: 18px; margin: 0; padding: 0;">
                                                 </td>
-                                                <td style="padding: 12px; border-bottom: 1px solid #eee;">
-                                                    <input type="text" id="remark_ShowerDoor" placeholder="Remarks (optional)" style="padding: 8px 12px; margin: 0; min-width: 150px; border: 1px solid #e0e0e0; border-radius: 6px;">
-                                                </td>
                                             </tr>
                                             <tr>
                                                 <td style="padding: 12px; border-bottom: 1px solid #eee;">Cleanliness (Overall)</td>
@@ -920,12 +892,13 @@
                                                 <td style="padding: 12px; text-align: center; border-bottom: 1px solid #eee;">
                                                     <input type="radio" name="item_CleanlinessOverall" value="Faulty" style="width: 18px; height: 18px; margin: 0; padding: 0;">
                                                 </td>
-                                                <td style="padding: 12px; border-bottom: 1px solid #eee;">
-                                                    <input type="text" id="remark_CleanlinessOverall" placeholder="Remarks (optional)" style="padding: 8px 12px; margin: 0; min-width: 150px; border: 1px solid #e0e0e0; border-radius: 6px;">
-                                                </td>
                                             </tr>
                                         </tbody>
                                     </table>
+                                </div>
+                                <div style="margin-top: 15px;">
+                                    <label style="font-weight: 600; display: block; margin-bottom: 5px; color: #333;">Remarks (If any damage):</label>
+                                    <textarea id="inventoryRemarks" name="inventoryRemarks" rows="4" style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #ddd; font-family: inherit;" placeholder="Describe any damages here..."></textarea>
                                 </div>
                             </div>
 
@@ -1209,25 +1182,57 @@
                     submittedAt: serverTimestamp()
                 };
 
+                // Fetch previous room_inventory for cross-checking
+                let previousInventory = null;
+                try {
+                    const invQuery = query(collection(db, "room_inventories"), where("userEmail", "==", user.email), orderBy("submittedAt", "desc"), limit(1));
+                    const invSnap = await getDocs(invQuery);
+                    if (!invSnap.empty) {
+                        previousInventory = invSnap.docs[0].data();
+                    }
+                } catch (e) {
+                    console.error("Error fetching room inventory:", e);
+                }
+
                 // Populate checklist data
                 const checklistData = {};
-                let hasFaultyItem = false;
+                let hasNewlyFaultyItem = false;
+                
+                // Mapping Move-Out items to Check-In items
+                const inventoryMapping = {
+                    "SingleBedcwMattress": "Single Bed & Mattress",
+                    "WardrobeswAccessories": "Wardrobe & Accessories",
+                    "StudyTable": "Study Table",
+                    "StudyChair": "Study Chair",
+                    "CurtainRail": "Curtain Rail",
+                    "MainEntranceDoor": "Main Entrance Door",
+                    "ToiletMainEntranceDoor": "Toilet Main Entrance Door",
+                    "ToiletDoor": "Toilet Door",
+                    "ShowerDoor": "Shower Door",
+                    "CleanlinessOverall": "Cleanliness (Overall)"
+                };
                 
                 for (let id of checklistItems) {
                     const conditionRadio = document.querySelector(`input[name="item_${id}"]:checked`);
-                    const remarkInput = document.getElementById(`remark_${id}`).value;
-                    checklistData[id] = {
-                        condition: conditionRadio ? conditionRadio.value : '',
-                        remarks: remarkInput || ''
-                    };
+                    checklistData[id] = conditionRadio ? conditionRadio.value : '';
                     
                     if (conditionRadio && conditionRadio.value === 'Faulty') {
-                        hasFaultyItem = true;
+                        // CROSS-CHECK LOGIC
+                        let wasAlreadyFaulty = false;
+                        if (previousInventory && previousInventory.items && inventoryMapping[id]) {
+                            if (previousInventory.items[inventoryMapping[id]] === 'Faulty') {
+                                wasAlreadyFaulty = true;
+                            }
+                        }
+                        
+                        if (!wasAlreadyFaulty) {
+                            hasNewlyFaultyItem = true;
+                        }
                     }
                 }
                 
-                // Block submission if any item is Faulty
-                if (hasFaultyItem) {
+                // Block submission if any item is NEWLY Faulty
+                if (hasNewlyFaultyItem) {
                     Swal.fire({ 
                         heightAuto: false,
                         icon: 'error',

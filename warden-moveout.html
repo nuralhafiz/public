@@ -908,8 +908,8 @@
             let html = '';
             pageItems.forEach(req => {
                 const submittedDate = req.submittedAt?.toDate ? 
-                    req.submittedAt.toDate().toLocaleDateString('en-MY') : 
-                    new Date().toLocaleDateString('en-MY');
+                    req.submittedAt.toDate().toLocaleString('en-MY', { day: '2-digit', month: '2-digit', year: 'numeric', hour: 'numeric', minute: '2-digit', hour12: true }) : 
+                    new Date().toLocaleString('en-MY', { day: '2-digit', month: '2-digit', year: 'numeric', hour: 'numeric', minute: '2-digit', hour12: true });
                 
                 const moveOutDate = req.moveOutDate ? 
                     new Date(req.moveOutDate).toLocaleDateString('en-MY', { day: 'numeric', month: 'short', year: 'numeric' }) : 
@@ -1031,23 +1031,23 @@
                                 <tr>
                                     <th style="text-align: left; padding: 5px; border-bottom: 1px solid #ddd;">Item</th>
                                     <th style="text-align: center; padding: 5px; border-bottom: 1px solid #ddd;">Status</th>
-                                    <th style="text-align: left; padding: 5px; border-bottom: 1px solid #ddd;">Remarks</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 ${Object.entries(req.checklist).map(([key, value]) => {
                                     const friendlyKey = key.replace(/([A-Z])/g, ' $1').trim();
-                                    const statusColor = value.condition === 'Good' ? '#4caf50' : (value.condition === 'Faulty' ? '#f44336' : '#999');
+                                    const statusColor = value === 'Good' ? '#4caf50' : (value === 'Faulty' ? '#f44336' : '#999');
                                     return `
                                     <tr>
                                         <td style="padding: 5px; border-bottom: 1px solid #eee;">${friendlyKey}</td>
-                                        <td style="padding: 5px; text-align: center; border-bottom: 1px solid #eee; color: ${statusColor}; font-weight: bold;">${value.condition || '-'}</td>
-                                        <td style="padding: 5px; border-bottom: 1px solid #eee; color: #666;">${value.remarks || '-'}</td>
+                                        <td style="padding: 5px; text-align: center; border-bottom: 1px solid #eee; color: ${statusColor}; font-weight: bold;">${value || '-'}</td>
                                     </tr>`;
                                 }).join('')}
                             </tbody>
                         </table>
-                    </div>` : '<p style="color: #999; font-style: italic;">No checklist data available.</p>'}
+                    </div>
+                    ${req.inventoryRemarks ? `<div style="margin-top: 10px; padding: 8px; background: #fff; border-radius: 6px; border: 1px solid #ddd;"><strong>Remarks:</strong> ${req.inventoryRemarks}</div>` : ''}
+                    ` : '<p style="color: #999; font-style: italic;">No checklist data available.</p>'}
                 </div>
             `;
 
@@ -1078,12 +1078,93 @@
 
             if (result.isConfirmed) {
                 try {
+                    Swal.fire({ heightAuto: false, title: 'Processing...', text: 'Updating records...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
+
                     await updateDoc(doc(db, "moveout_requests", id), {
                         status: status,
                         updatedAt: new Date()
                     });
                     
                     const req = allRequests.find(r => r.id === id);
+                    
+                    if (status === 'completed' && req) {
+                        // AUTOMATION: Cross-collection updates
+                        let roomNum = req.unitNo || '';
+                        let partitionKey = null;
+                        if (roomNum.includes('(')) {
+                            partitionKey = roomNum.split('(')[1].replace(')', '').trim();
+                            roomNum = roomNum.split('(')[0].trim();
+                        }
+                        
+                        // 1. Update Users Collection
+                        if (req.userId) {
+                            try {
+                                await updateDoc(doc(db, "users", req.userId), { room: '-' });
+                            } catch (e) { console.error("Failed to update user:", e); }
+                        }
+                        
+                        // 2. Update Rooms Collection
+                        if (roomNum) {
+                            const roomsQ = query(collection(db, "rooms"), where("roomNumber", "==", roomNum));
+                            const roomsSnap = await getDocs(roomsQ);
+                            if (!roomsSnap.empty) {
+                                const roomDoc = roomsSnap.docs[0];
+                                const roomData = roomDoc.data();
+                                let occupantsObj = roomData.occupants || {};
+                                let isArray = Array.isArray(occupantsObj);
+                                let occCount = 0;
+                                
+                                if (isArray) {
+                                    if (partitionKey) {
+                                        occupantsObj = occupantsObj.filter(o => o.partition !== partitionKey);
+                                    } else {
+                                        occupantsObj = occupantsObj.filter(o => o.name !== req.fullName);
+                                    }
+                                    occCount = occupantsObj.length;
+                                } else {
+                                    if (partitionKey && occupantsObj[partitionKey]) {
+                                        delete occupantsObj[partitionKey];
+                                    } else {
+                                        for (const key in occupantsObj) {
+                                            if (occupantsObj[key].name === req.fullName) {
+                                                delete occupantsObj[key];
+                                            }
+                                        }
+                                    }
+                                    occCount = Object.keys(occupantsObj).length;
+                                }
+                                
+                                let newStatus = 'available';
+                                if (occCount === 0) newStatus = 'available';
+                                else if (occCount < roomData.beds) newStatus = 'partial';
+                                else newStatus = 'occupied';
+                                
+                                await updateDoc(roomDoc.ref, {
+                                    occupants: occupantsObj,
+                                    status: newStatus,
+                                    lastUpdated: new Date()
+                                });
+                            }
+                        }
+                        
+                        // 3. Update Students Master List
+                        if (req.userEmail) {
+                            const stuQ = query(collection(db, "students"), where("email", "==", req.userEmail));
+                            const stuSnap = await getDocs(stuQ);
+                            if (!stuSnap.empty) {
+                                for (let sDoc of stuSnap.docs) {
+                                    await updateDoc(sDoc.ref, {
+                                        status: 'Moved Out',
+                                        roomNumber: '',
+                                        block: '',
+                                        floor: '',
+                                        partition: ''
+                                    });
+                                }
+                            }
+                        }
+                    }
+
                     if (req && req.userEmail) {
                         await addDoc(collection(db, "notifications"), {
                             recipientEmail: req.userEmail,
@@ -1093,9 +1174,15 @@
                             timestamp: new Date()
                         });
                     }
+                    
+                    let successText = `Request marked as ${status} successfully.`;
+                    if (status === 'completed' && req) {
+                        successText = `Student successfully removed from Room ${req.unitNo || 'Unknown'}.`;
+                    }
+                    
                     Swal.fire({ heightAuto: false,
                         title: 'Success!',
-                        text: `Request marked as ${status} successfully.`,
+                        text: successText,
                         icon: 'success',
                         confirmButtonColor: '#2d72d2'
                     });
