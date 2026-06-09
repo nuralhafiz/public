@@ -632,9 +632,9 @@
                                 Priority Level
                             </label>
                             <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-top: 10px;">
-                                <span class="priority-badge priority-high" onclick="setPriority('high')" style="cursor: pointer;">?? High</span>
-                                <span class="priority-badge priority-medium" onclick="setPriority('medium')" style="cursor: pointer;">?? Medium</span>
-                                <span class="priority-badge priority-low" onclick="setPriority('low')" style="cursor: pointer;">?? Low</span>
+                                <span class="priority-badge priority-high" style="cursor: not-allowed;">🔴 High</span>
+                                <span class="priority-badge priority-medium" style="cursor: not-allowed;">🟡 Medium</span>
+                                <span class="priority-badge priority-low" style="cursor: not-allowed;">🟢 Low</span>
                             </div>
                             <input type="hidden" id="priority" value="medium">
                         </div>
@@ -790,14 +790,28 @@
                 badge.style.transform = 'scale(0.95)';
             });
             
-            event.target.style.opacity = '1';
-            event.target.style.transform = 'scale(1.05)';
+            const targetBadge = document.querySelector(`.priority-${level}`);
+            if (targetBadge) {
+                targetBadge.style.opacity = '1';
+                targetBadge.style.transform = 'scale(1.05)';
+            }
         };
+
+        // Auto priority based on category
+        document.getElementById('category').addEventListener('change', function(e) {
+            const val = e.target.value;
+            if (val === 'Electrical' || val === 'Plumbing') {
+                setPriority('high');
+            } else if (val === 'Air Conditioning' || val === 'Internet') {
+                setPriority('medium');
+            } else {
+                setPriority('low');
+            }
+        });
 
         // Set default priority indicator
         setTimeout(() => {
-            document.querySelector('.priority-medium').style.opacity = '1';
-            document.querySelector('.priority-medium').style.transform = 'scale(1.05)';
+            setPriority('medium');
         }, 100);
 
                 // Image compression helper

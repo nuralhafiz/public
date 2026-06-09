@@ -1445,6 +1445,26 @@
                 getDoc(doc(db, "users", user.uid)).then(docSnap => {
                     if (docSnap.exists()) {
                         const data = docSnap.data();
+                        
+                        // BLOKER DOUBLE-BOOKING: Check if user already has a room
+                        if (data.room && data.room !== '-' && data.room.trim() !== '') {
+                            Swal.fire({
+                                heightAuto: false,
+                                icon: 'error',
+                                title: 'Application Blocked',
+                                html: `You are currently registered in <b>Room ${data.room}</b>.<br><br>Please submit a Move-Out request for your current room before applying for a new one.`,
+                                confirmButtonColor: '#2d72d2',
+                                allowOutsideClick: false,
+                                allowEscapeKey: false
+                            }).then(() => {
+                                window.location.href = 'student-dashboard.html';
+                            });
+                            
+                            // Lock down form
+                            document.querySelectorAll('#applyForm input, #applyForm select, #applyForm button').forEach(el => el.disabled = true);
+                            return; // Stop execution
+                        }
+
                         const userSemester = data.semester || '1'; // Default to Semester 1 if missing
                         
                         currentUserSemester = userSemester;

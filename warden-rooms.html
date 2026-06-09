@@ -780,6 +780,9 @@
                         <option value="10">Level 10</option>
                         <option value="11">Level 11</option>
                     </select>
+                    <button class="refresh-btn" id="bulkVacateBtn" style="background: #ef4444; margin-right: 10px;">
+                        <i class="fas fa-dumpster-fire"></i> Bulk Vacate Block
+                    </button>
                     <button class="refresh-btn" id="exportCsvBtn" style="background: #10b981; margin-right: 10px;">
                             <i class="fas fa-file-csv"></i> Export CSV
                         </button>
@@ -814,7 +817,7 @@
 
     <script type="module">
         import { getAuth, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-        import { getFirestore, collection, query, where, getDocs, onSnapshot, doc, updateDoc, addDoc, setDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, collection, query, where, getDocs, onSnapshot, doc, updateDoc, addDoc, setDoc, deleteDoc, writeBatch } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         import { auth, db } from "./js/firebase-config.js";
 
@@ -1339,6 +1342,7 @@
                 try {
                     const room = allRooms.find(r => r.id === roomId);
                     let newOccupants = room.occupants ? Object.assign({}, room.occupants) : {};
+                    const occ = newOccupants[partitionKey];
                     delete newOccupants[partitionKey];
                     
                     const newCount = Object.keys(newOccupants).length;
@@ -1348,6 +1352,19 @@
                         status: newStatus,
                         occupants: newOccupants
                     });
+
+                    if (occ && occ.id) {
+                        try {
+                            const uQ = query(collection(db, "users"), where("idNumber", "==", occ.id));
+                            const uS = await getDocs(uQ);
+                            uS.forEach(async (d) => await updateDoc(d.ref, { room: '-' }));
+
+                            const sQ = query(collection(db, "students"), where("studentId", "==", occ.id));
+                            const sS = await getDocs(sQ);
+                            sS.forEach(async (d) => await updateDoc(d.ref, { status: 'Moved Out', roomNumber: '', block: '', floor: '', partition: '' }));
+                        } catch (e) { console.error("Sync error:", e); }
+                    }
+
                     Swal.fire({ heightAuto: false, icon: 'success', title: 'Vacated!', text: 'Partition has been vacated.' });
                 } catch (error) {
                     Swal.fire({ heightAuto: false, icon: 'error', title: 'Error', text: error.message });
@@ -1368,10 +1385,28 @@
 
             if (result.isConfirmed) {
                 try {
+                    const room = allRooms.find(r => r.id === roomId);
+                    const occupantsList = room.occupants ? Object.values(room.occupants) : [];
+
                     await updateDoc(doc(db, "rooms", roomId), {
                         status: 'available',
                         occupants: {}
                     });
+
+                    for (const occ of occupantsList) {
+                        if (occ && occ.id) {
+                            try {
+                                const uQ = query(collection(db, "users"), where("idNumber", "==", occ.id));
+                                const uS = await getDocs(uQ);
+                                uS.forEach(async (d) => await updateDoc(d.ref, { room: '-' }));
+
+                                const sQ = query(collection(db, "students"), where("studentId", "==", occ.id));
+                                const sS = await getDocs(sQ);
+                                sS.forEach(async (d) => await updateDoc(d.ref, { status: 'Moved Out', roomNumber: '', block: '', floor: '', partition: '' }));
+                            } catch (e) { console.error("Sync error:", e); }
+                        }
+                    }
+
                     Swal.fire({ heightAuto: false, icon: 'success', title: 'Vacated!', text: 'All students have been removed.' });
                 } catch (error) {
                     Swal.fire({ heightAuto: false, icon: 'error', title: 'Error', text: error.message });
@@ -1437,7 +1472,20 @@
             const result = await Swal.fire({ title: 'Vacate Room?', text: "This will remove the occupant.", icon: 'warning', showCancelButton: true, confirmButtonColor: '#ef4444', confirmButtonText: 'Yes' });
             if (result.isConfirmed) {
                 try {
+                    const room = allRooms.find(r => r.id === roomId);
                     await updateDoc(doc(db, "rooms", roomId), { status: "available", occupantName: null, occupantId: null, occupantPhone: null });
+                    
+                    if (room && room.occupantId) {
+                        try {
+                            const uQ = query(collection(db, "users"), where("idNumber", "==", room.occupantId));
+                            const uS = await getDocs(uQ);
+                            uS.forEach(async (d) => await updateDoc(d.ref, { room: '-' }));
+
+                            const sQ = query(collection(db, "students"), where("studentId", "==", room.occupantId));
+                            const sS = await getDocs(sQ);
+                            sS.forEach(async (d) => await updateDoc(d.ref, { status: 'Moved Out', roomNumber: '', block: '', floor: '', partition: '' }));
+                        } catch (e) { console.error("Sync error:", e); }
+                    }
                     Swal.fire({ heightAuto: false, icon: 'success', title: 'Vacated!' });
                 } catch(e) { Swal.fire({ icon: 'error', text: e.message }); }
             }
@@ -1572,6 +1620,73 @@
         });
 
         
+        document.getElementById('bulkVacateBtn').addEventListener('click', async () => {
+            const { value: block } = await Swal.fire({
+                title: 'Bulk Vacate Block',
+                input: 'select',
+                inputOptions: { 'A1': 'Block A1', 'A2': 'Block A2', 'A3': 'Block A3', 'A4': 'Block A4', 'A5': 'Block A5', 'A7': 'Block A7' },
+                inputPlaceholder: 'Select block to vacate',
+                showCancelButton: true,
+                confirmButtonColor: '#ef4444',
+                confirmButtonText: 'Proceed'
+            });
+
+            if (block) {
+                const confirm = await Swal.fire({
+                    title: `Are you absolutely sure?`,
+                    text: `This will remove ALL students from ALL rooms in Block ${block}. This action cannot be reversed!`,
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#ef4444',
+                    confirmButtonText: `YES, Vacate Block ${block}`,
+                    cancelButtonText: 'Cancel'
+                });
+
+                if (confirm.isConfirmed) {
+                    Swal.fire({ heightAuto: false, title: 'Processing...', text: 'Vacating all rooms in Block ' + block + '. Please wait...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
+                    try {
+                        const blockRooms = allRooms.filter(r => r.block === block);
+                        let studentIdsToClear = [];
+                        let batch = writeBatch(db);
+                        let operationCount = 0;
+
+                        for (const room of blockRooms) {
+                            if (room.occupants) {
+                                Object.values(room.occupants).forEach(occ => { if (occ && occ.id) studentIdsToClear.push(occ.id); });
+                            }
+                            if (room.occupantId) studentIdsToClear.push(room.occupantId);
+
+                            const roomRef = doc(db, "rooms", room.id);
+                            batch.update(roomRef, { status: 'available', occupants: {}, occupantName: null, occupantId: null, occupantPhone: null });
+                            operationCount++;
+                            
+                            if (operationCount >= 400) { await batch.commit(); batch = writeBatch(db); operationCount = 0; }
+                        }
+                        if (operationCount > 0) { await batch.commit(); batch = writeBatch(db); operationCount = 0; }
+
+                        studentIdsToClear = [...new Set(studentIdsToClear)];
+
+                        for (const sId of studentIdsToClear) {
+                            const uQ = query(collection(db, "users"), where("idNumber", "==", sId));
+                            const uS = await getDocs(uQ);
+                            uS.forEach(d => { batch.update(d.ref, { room: '-' }); operationCount++; });
+                            if (operationCount >= 400) { await batch.commit(); batch = writeBatch(db); operationCount = 0; }
+
+                            const sQ = query(collection(db, "students"), where("studentId", "==", sId));
+                            const sS = await getDocs(sQ);
+                            sS.forEach(d => { batch.update(d.ref, { status: 'Moved Out', roomNumber: '', block: '', floor: '', partition: '' }); operationCount++; });
+                            if (operationCount >= 400) { await batch.commit(); batch = writeBatch(db); operationCount = 0; }
+                        }
+                        if (operationCount > 0) { await batch.commit(); }
+
+                        Swal.fire({ heightAuto: false, icon: 'success', title: 'Vacated!', text: `Successfully vacated all rooms in Block ${block}.` });
+                    } catch (error) {
+                        Swal.fire({ heightAuto: false, icon: 'error', title: 'Error', text: error.message });
+                    }
+                }
+            }
+        });
+
         document.getElementById('exportCsvBtn').addEventListener('click', () => {
             if (allRooms.length === 0) {
                 alert("No data to export.");

@@ -303,10 +303,15 @@
         .room-badge {
             background: #e8f5e9;
             color: #4caf50;
-            padding: 5px 10px;
-            border-radius: 5px;
+            padding: 6px 12px;
+            border-radius: 6px;
             font-size: 12px;
             font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            min-width: 110px;
         }
 
         .status-badge {
@@ -758,6 +763,14 @@
                     app.submittedAt.toDate().toLocaleString('en-MY', dateOptions) : 
                     new Date().toLocaleString('en-MY', dateOptions);
                 
+                const requestedRoomStr = (app.roomNumber && (app.partition || app.selectedPartition)) ? 
+                    `${app.roomNumber} (${app.partition || app.selectedPartition})` : 
+                    (app.roomNumber || 'Not Assigned');
+                
+                const roomDisplay = requestedRoomStr !== 'Not Assigned' ? 
+                    `<span class="room-badge" style="background: #e3f2fd; color: #2196f3;"><i class="fas fa-bed"></i> ${requestedRoomStr}</span>` : 
+                    `<span class="room-badge" style="background: #ffebee; color: #f44336;">Not Assigned</span>`;
+                
                 row.innerHTML = `
                     <td>
                         <div class="student-info">
@@ -769,7 +782,7 @@
                         </div>
                     </td>
                     <td>${app.studentId || 'N/A'}</td>
-                    <td><span class="room-badge">Not Assigned</span></td>
+                    <td>${roomDisplay}</td>
                     <td>${app.roomType || 'Not Specified'}</td>
                     <td>${appliedDate}</td>
                     <td><span class="status-badge status-${app.status || 'pending'}">${(app.status || 'pending').toUpperCase()}</span></td>

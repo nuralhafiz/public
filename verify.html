@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GMI HostelKu Verification</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f7fa;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .verify-card {
+            background: white;
+            padding: 40px 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            text-align: center;
+            max-width: 400px;
+            width: 90%;
+        }
+        .icon-container {
+            width: 80px;
+            height: 80px;
+            background: #e6f8f0;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+        }
+        .icon-container i {
+            font-size: 40px;
+            color: #10b981;
+        }
+        .error-icon {
+            background: #ffebe9;
+        }
+        .error-icon i {
+            color: #ef4444;
+        }
+        h2 {
+            color: #1e293b;
+            margin: 0 0 10px;
+            font-size: 24px;
+        }
+        p.subtitle {
+            color: #64748b;
+            margin: 0 0 30px;
+            font-size: 14px;
+        }
+        .info-box {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 20px;
+            text-align: left;
+            margin-bottom: 20px;
+        }
+        .info-row {
+            margin-bottom: 15px;
+        }
+        .info-row:last-child {
+            margin-bottom: 0;
+        }
+        .info-label {
+            font-size: 12px;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        .info-value {
+            font-size: 16px;
+            color: #0f172a;
+            font-weight: 500;
+        }
+        .footer {
+            margin-top: 30px;
+            font-size: 12px;
+            color: #94a3b8;
+        }
+    </style>
+</head>
+<body>
+
+<div class="verify-card" id="card">
+    <div class="icon-container" id="statusIcon">
+        <i class="fas fa-spinner fa-spin" style="color: #2d72d2;"></i>
+    </div>
+    <h2 id="statusTitle">Verifying...</h2>
+    <p class="subtitle" id="statusSubtitle">Please wait</p>
+
+    <div class="info-box" id="infoBox" style="display: none;">
+        <div class="info-row">
+            <div class="info-label">Student Name</div>
+            <div class="info-value" id="valName">-</div>
+        </div>
+        <div class="info-row">
+            <div class="info-label">Student ID</div>
+            <div class="info-value" id="valId">-</div>
+        </div>
+        <div class="info-row">
+            <div class="info-label">Room Number</div>
+            <div class="info-value" id="valRoom">-</div>
+        </div>
+    </div>
+
+    <div class="footer">
+        GMI HostelKu System &copy; 2026
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const urlParams = new URLSearchParams(window.location.search);
+        const dataParam = urlParams.get('d');
+
+        const statusIcon = document.getElementById('statusIcon');
+        const statusTitle = document.getElementById('statusTitle');
+        const statusSubtitle = document.getElementById('statusSubtitle');
+        const infoBox = document.getElementById('infoBox');
+
+        function showError(msg) {
+            statusIcon.className = 'icon-container error-icon';
+            statusIcon.innerHTML = '<i class="fas fa-times"></i>';
+            statusTitle.textContent = 'Verification Failed';
+            statusTitle.style.color = '#ef4444';
+            statusSubtitle.textContent = msg;
+        }
+
+        function showSuccess(data) {
+            statusIcon.className = 'icon-container';
+            statusIcon.innerHTML = '<i class="fas fa-check"></i>';
+            statusTitle.textContent = 'Digital ID Verified';
+            statusSubtitle.textContent = 'Official GMI HostelKu Student';
+            
+            document.getElementById('valName').textContent = data.name || '-';
+            document.getElementById('valId').textContent = data.id || '-';
+            document.getElementById('valRoom').textContent = data.room || '-';
+            
+            infoBox.style.display = 'block';
+        }
+
+        if (!dataParam) {
+            showError('Invalid or missing QR Code data.');
+            return;
+        }
+
+        try {
+            // Decode Base64 and parse JSON
+            const decodedStr = decodeURIComponent(atob(dataParam));
+            const data = JSON.parse(decodedStr);
+
+            if (data && data.name && data.id) {
+                showSuccess(data);
+            } else {
+                showError('Data is corrupted or incomplete.');
+            }
+        } catch (error) {
+            console.error(error);
+            showError('Invalid QR Code format.');
+        }
+    });
+</script>
+
+</body>
+</html>

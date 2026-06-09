@@ -762,9 +762,14 @@
                     </div>
                 </div>
 
-                <button class="edit-profile-btn" id="editProfileBtn">
-                    <i class="fas fa-edit"></i> Edit Profile
-                </button>
+                <div style="display: flex; gap: 15px; width: 100%; margin-top: 40px;">
+                    <button class="edit-profile-btn" id="showQrBtn" style="margin-top: 0; background: linear-gradient(135deg, #10b981 0%, #059669 100%);">
+                        <i class="fas fa-qrcode"></i> Digital ID
+                    </button>
+                    <button class="edit-profile-btn" id="editProfileBtn" style="margin-top: 0;">
+                        <i class="fas fa-edit"></i> Edit Profile
+                    </button>
+                </div>
             </div>
         </main>
     </div>
@@ -817,10 +822,6 @@
                         <option value="5">Semester 5</option>
                         <option value="6">Semester 6</option>
                     </select>
-                </div>
-                <div class="form-group">
-                    <label>Room</label>
-                    <input type="text" id="editRoom" placeholder="e.g. A1-01-01" required>
                 </div>
                 <button type="submit" class="save-btn" id="saveProfileBtn">Save Changes</button>
             </form>
@@ -950,6 +951,37 @@
         const closeBtn = document.getElementById('closeModalBtn');
         const editForm = document.getElementById('editProfileForm');
         
+        // Show QR Logic
+        const showQrBtn = document.getElementById('showQrBtn');
+        if (showQrBtn) {
+            showQrBtn.addEventListener('click', () => {
+                const name = document.getElementById('profileName').textContent;
+                let id = document.getElementById('profileId').textContent;
+                let room = document.getElementById('profileRoom').textContent;
+                
+                if (id === '-') id = 'Belum Kemaskini';
+                if (room === '-') room = 'Belum Ditetapkan';
+
+                // Gunakan URL untuk Verification Page
+                const studentData = { name: name, id: id, room: room };
+                const encodedData = btoa(encodeURIComponent(JSON.stringify(studentData)));
+                const verifyUrl = `${window.location.origin}/verify.html?d=${encodedData}`;
+                
+                const qrUrl = `https://quickchart.io/qr?size=250&text=${encodeURIComponent(verifyUrl)}&margin=2`;
+
+                Swal.fire({ heightAuto: false,
+                    title: 'Digital Student ID',
+                    text: 'Tunjukkan QR Code ini kepada Warden untuk pengesahan pantas.',
+                    imageUrl: qrUrl,
+                    imageWidth: 250,
+                    imageHeight: 250,
+                    imageAlt: 'QR Code ID',
+                    confirmButtonText: 'Tutup',
+                    confirmButtonColor: '#2d72d2'
+                });
+            });
+        }
+
         editBtn.addEventListener('click', () => {
             modal.classList.add('active');
             // Pre-fill form

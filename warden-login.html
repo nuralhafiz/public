@@ -729,8 +729,8 @@
             return;
         }
 
-        if (!emailAddress.endsWith('@student.gmi.edu.my')) {
-            alert("❌ Invalid email format! Password reset requires your @student.gmi.edu.my email address.");
+        if (!emailAddress.endsWith('@gmi.edu.my') || emailAddress.includes('@student.')) {
+            alert("❌ Invalid email format! Password reset requires your official @gmi.edu.my email address.");
             emailInput.focus();
             return;
         }

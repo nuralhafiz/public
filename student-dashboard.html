@@ -578,10 +578,13 @@
             appSnap.forEach(doc => {
                 const data = doc.data();
                 activities.push({
+                    id: doc.id,
+                    type_id: "application",
                     title: "Room application submitted",
                     time: data.submittedAt ? data.submittedAt.toDate() : (data.timestamp ? data.timestamp.toDate() : new Date()),
                     icon: "fa-bed",
-                    type: "info"
+                    type: data.status === 'approved' ? "success" : "info",
+                    rawData: data
                 });
             });
 
@@ -913,7 +916,7 @@
     });
 
     // Use event delegation for alert items and dynamically added activity items
-    document.body.addEventListener('click', function(e) {
+    document.body.addEventListener('click', async function(e) {
         // Handle activity clicks
         const activityItem = e.target.closest('.activity-item');
         if (activityItem) {
@@ -932,16 +935,60 @@
 
             let extraHtml = '';
             let popupWidth = '32em';
+            
+            // Queue Calculation Logic
+            let queuePositionText = '';
+            if (itemData && itemData.rawData && itemData.rawData.status === 'pending' && itemData.rawData.submittedAt) {
+                // Show a loading indicator first
+                Swal.fire({
+                    title: 'Calculating queue position...',
+                    allowOutsideClick: false,
+                    didOpen: () => { Swal.showLoading(); }
+                });
+                
+                try {
+                    let colName = '';
+                    if (itemData.type_id === 'application') colName = 'applications';
+                    if (itemData.type_id === 'maintenance') colName = 'maintenance_requests';
+                    
+                    if (colName) {
+                        const myTime = itemData.rawData.submittedAt;
+                        const queueQ = query(
+                            collection(db, colName),
+                            where("status", "==", "pending"),
+                            where("submittedAt", "<", myTime)
+                        );
+                        // Using getDocs to count
+                        const queueSnap = await getDocs(queueQ);
+                        const position = queueSnap.size + 1;
+                        queuePositionText = `<div style="margin-top: 15px; padding: 12px; background: #fff8e1; border-radius: 8px; border-left: 4px solid #ff9800; color: #e65100;"><strong><i class="fas fa-users"></i> Queue Position: #${position}</strong><br><span style="font-size: 13px;">There are ${position - 1} pending request(s) ahead of you.</span></div>`;
+                    }
+                } catch(err) {
+                    console.error('Error calculating queue:', err);
+                }
+            }
+
             if (itemData && itemData.type_id === 'maintenance' && itemData.rawData) {
                 const req = itemData.rawData;
                 extraHtml += `<hr style="margin: 15px 0; border: 0; border-top: 1px solid #ddd;">
                               <p style="margin-bottom: 5px;"><strong>Status:</strong> <span style="text-transform: uppercase; font-weight: 600; color: ${req.status === 'completed' ? '#4caf50' : '#ff9800'};">${(req.status || 'pending').replace('-', ' ')}</span></p>
-                              <p style="margin-bottom: 5px;"><strong>Description:</strong> ${req.description || 'N/A'}</p>`;
+                              <p style="margin-bottom: 5px;"><strong>Description:</strong> ${req.description || 'N/A'}</p>
+                              ${queuePositionText}`;
                 
                 if (req.completionPhotoData) {
                     extraHtml += `<div style="margin-top:15px; border-top: 1px solid #e0e0e0; padding-top: 15px;"><p style="margin-bottom: 10px; color: #4caf50;"><strong><i class="fas fa-check-circle"></i> Completion Proof Photo:</strong></p><img src="${req.completionPhotoData}" style="max-width: 100%; border-radius: 8px; border: 1px solid #4caf50; cursor: pointer;" onclick="window.open(this.src, '_blank')" /></div>`;
                     popupWidth = '500px';
                 }
+            } else if (itemData && itemData.type_id === 'application' && itemData.rawData) {
+                const req = itemData.rawData;
+                let statusColor = '#ff9800';
+                if(req.status === 'approved') statusColor = '#4caf50';
+                if(req.status === 'rejected') statusColor = '#f44336';
+                
+                extraHtml += `<hr style="margin: 15px 0; border: 0; border-top: 1px solid #ddd;">
+                              <p style="margin-bottom: 5px;"><strong>Status:</strong> <span style="text-transform: uppercase; font-weight: 600; color: ${statusColor};">${(req.status || 'pending')}</span></p>
+                              <p style="margin-bottom: 5px;"><strong>Room:</strong> ${req.roomNumber || 'N/A'} (Partition ${req.partition || 'N/A'})</p>
+                              ${queuePositionText}`;
             }
 
             Swal.fire({ heightAuto: false,
@@ -994,7 +1041,8 @@
                         if (alertsContainer) {
                             let alertsHtml = '';
                             unreadNotifications.slice(0, 5).forEach(notif => {
-                                const timeStr = notif.timestamp ? new Date(typeof notif.timestamp.toMillis === 'function' ? notif.timestamp.toMillis() : (notif.timestamp.getTime ? notif.timestamp.getTime() : 0)).toLocaleString() : '';
+                                const timeOptions = { day: 'numeric', month: 'short', year: 'numeric', hour: 'numeric', minute: '2-digit', hour12: true };
+                                const timeStr = notif.timestamp ? new Date(typeof notif.timestamp.toMillis === 'function' ? notif.timestamp.toMillis() : (notif.timestamp.getTime ? notif.timestamp.getTime() : 0)).toLocaleString('en-MY', timeOptions) : '';
                                 alertsHtml += `
                                     <div class="alert-item info" style="cursor:pointer; background: #f8f9fa; border-left-color: #2d72d2; padding: 15px;" onclick="openNotification('${notif.id}')">
                                         <div style="flex:1;">
@@ -1041,8 +1089,9 @@
 
                 let htmlContent = '<div style="text-align: left; max-height: 300px; overflow-y: auto;">';
                 unreadNotifications.forEach(notif => {
+                    const timeOptions = { day: 'numeric', month: 'short', year: 'numeric', hour: 'numeric', minute: '2-digit', hour12: true };
                     const dateObj = notif.timestamp ? notif.timestamp.toDate() : new Date();
-                    const dateStr = dateObj.toLocaleDateString('en-MY') + ' ' + dateObj.toLocaleTimeString('en-MY', {hour: '2-digit', minute:'2-digit'});
+                    const dateStr = dateObj.toLocaleString('en-MY', timeOptions);
                     htmlContent += '<div style="background: #f8fafc; padding: 15px; border-radius: 8px; margin-bottom: 10px; border-left: 4px solid #2d72d2;">';
                     htmlContent += '<div style="display: flex; justify-content: space-between; margin-bottom: 5px;">';
                     htmlContent += '<strong>' + (notif.sender || 'Warden') + '</strong>';

@@ -298,6 +298,8 @@
             font-size: 12px;
             font-weight: 600;
             display: inline-block;
+            min-width: 105px;
+            text-align: center;
         }
 
         .status-badge {
@@ -1016,8 +1018,7 @@
                 
                 // Block filter
                 if (blockFilter !== 'all') {
-                    const roomBlock = student.roomNumber?.charAt(0) || '';
-                    if (roomBlock !== blockFilter) {
+                    if (!student.roomNumber || !student.roomNumber.startsWith(blockFilter)) {
                         return false;
                     }
                 }
@@ -1219,8 +1220,22 @@
             }).then(async (result) => {
                 if (result.isConfirmed) {
                     try {
-                        const studentRef = doc(db, "students", id);
-                        await updateDoc(studentRef, result.value);
+                        let collectionName = "students";
+                        let updateData = result.value;
+                        
+                        if (currentTab === 'registered') {
+                            collectionName = "users";
+                            // Map 'phone' to 'phoneNumber' for users collection
+                            updateData = {
+                                course: result.value.course,
+                                phoneNumber: result.value.phone,
+                                emergencyContact: result.value.emergencyContact,
+                                status: result.value.status
+                            };
+                        }
+                        
+                        const studentRef = doc(db, collectionName, id);
+                        await updateDoc(studentRef, updateData);
                         Swal.fire('Saved!', 'Student details have been updated.', 'success');
                     } catch (error) {
                         Swal.fire('Error', 'Failed to update student: ' + error.message, 'error');
