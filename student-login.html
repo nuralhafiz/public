@@ -541,6 +541,7 @@
         }
     </style>
     <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
 <div class="floating-bg" id="particlesContainer"></div>
@@ -671,17 +672,17 @@
         const password = passwordInput.value;
 
         if (!email) {
-            alert("📧 Please enter your email address.");
+            Swal.fire({ title: 'Missing Email', text: 'Please enter your email address.', icon: 'warning', confirmButtonColor: '#2d72d2', heightAuto: false });
             emailInput.focus();
             return;
         }
         if (!email.endsWith('@student.gmi.edu.my')) {
-            alert("❌ Invalid email format! Please use your official @student.gmi.edu.my email address.");
+            Swal.fire({ title: 'Invalid Email', text: 'Please use your official @student.gmi.edu.my email address.', icon: 'error', confirmButtonColor: '#f44336', heightAuto: false });
             emailInput.focus();
             return;
         }
         if (password.length === 0) {
-            alert("🔒 Please enter your password.");
+            Swal.fire({ title: 'Missing Password', text: 'Please enter your password.', icon: 'warning', confirmButtonColor: '#2d72d2', heightAuto: false });
             passwordInput.focus();
             return;
         }
@@ -714,7 +715,7 @@
                 default:
                     errorMessage += error.message;
             }
-            alert(errorMessage);
+            Swal.fire({ title: 'Login Failed', text: errorMessage, icon: 'error', confirmButtonColor: '#f44336', heightAuto: false });
         } finally {
             loginBtn.classList.remove('btn-loading');
             loginBtn.disabled = false;
@@ -727,13 +728,13 @@
         const emailAddress = emailInput.value.trim();
 
         if (!emailAddress) {
-            alert("📧 Please enter your email address first to reset your password.");
+            Swal.fire({ title: 'Missing Email', text: 'Please enter your email address first to reset your password.', icon: 'warning', confirmButtonColor: '#2d72d2', heightAuto: false });
             emailInput.focus();
             return;
         }
 
         if (!emailAddress.endsWith('@student.gmi.edu.my')) {
-            alert("❌ Invalid email format! Password reset requires your @student.gmi.edu.my email address.");
+            Swal.fire({ title: 'Invalid Email', text: 'Password reset requires your @student.gmi.edu.my email address.', icon: 'error', confirmButtonColor: '#f44336', heightAuto: false });
             emailInput.focus();
             return;
         }
@@ -747,7 +748,7 @@
 
         try {
             await sendPasswordResetEmail(auth, emailAddress);
-            alert(`✅ Password reset email sent!\nWe've sent a secure link to ${emailAddress}.\n\n📬 Please check your inbox (and spam folder) to reset your password.`);
+            Swal.fire({ title: 'Email Sent!', html: `We've sent a secure link to <strong>${emailAddress}</strong>.<br><br>Please check your inbox (and spam folder) to reset your password.`, icon: 'success', confirmButtonColor: '#4caf50', heightAuto: false });
         } catch (error) {
             let errorMsg = "Reset Error: ";
             switch (error.code) {
@@ -760,7 +761,7 @@
                 default:
                     errorMsg += error.message;
             }
-            alert(errorMsg);
+            Swal.fire({ title: 'Reset Failed', text: errorMsg, icon: 'error', confirmButtonColor: '#f44336', heightAuto: false });
         } finally {
             forgotBtn.innerText = originalText;
             forgotBtn.style.opacity = "1";

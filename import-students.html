@@ -143,12 +143,15 @@
         onAuthStateChanged(auth, (user) => {
             if (user) {
                 const isSuperAdmin = (user.email === 'admin.gmihostelku@gmail.com');
-                if (!isSuperAdmin && (!user.email.endsWith('@gmi.edu.my') || user.email.includes('@student.'))) {
-                    Swal.fire('Access Denied', 'Only wardens can use this tool.', 'error');
+                if (!isSuperAdmin) {
+                    Swal.fire('Access Denied', 'Only Super Admin can use this tool.', 'error');
                     btnAnalyze.disabled = true;
+                    setTimeout(() => {
+                        window.location.href = 'warden-students.html';
+                    }, 2000);
                     return;
                 }
-                setStatus("Ready. Connected to Firebase as Warden.");
+                setStatus("Ready. Connected to Firebase as Super Admin.");
             } else {
                 window.location.href = "warden-login.html";
             }
