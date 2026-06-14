@@ -954,6 +954,19 @@
         onAuthStateChanged(auth, (user) => {
             if (user) {
                 const isSuperAdmin = (user.email === 'admin.gmihostelku@gmail.com');
+                if (!isSuperAdmin && (!user.email.endsWith('@gmi.edu.my') || user.email.includes('@student.'))) {
+                    alert("Access Denied: This portal is for wardens only.");
+                    signOut(auth).then(() => window.location.href = "warden-login.html");
+                    return;
+                }
+                if (isSuperAdmin) {
+                    const importBtn = document.getElementById('importStudentsBtn');
+                    if (importBtn) importBtn.style.display = 'inline-flex';
+                }
+                loadStudents();
+                setupRealtimeListener();
+            } else { window.location.href = "warden-login.html"; }
+        });
         document.getElementById('logoutBtn').addEventListener('click', (e) => {
             e.preventDefault();
             signOut(auth).then(() => window.location.href = "index.html");
