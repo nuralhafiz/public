@@ -1620,7 +1620,8 @@
             loadWardenDashboardData();
             
             // Validate email domain
-            if (!user.email.endsWith('@gmi.edu.my') || user.email.includes('@student.')) {
+            const isSuperAdmin = (user.email === 'admin.gmihostelku@gmail.com');
+            if (!isSuperAdmin && (!user.email.endsWith('@gmi.edu.my') || user.email.includes('@student.'))) {
                 alert("Access Denied: This portal is for wardens only.");
                 signOut(auth).then(() => {
                     window.location.href = "warden-login.html";

@@ -197,6 +197,32 @@
             text-align: left;
             font-weight: 500;
         }
+
+        .password-criteria {
+            font-size: 11.5px;
+            margin-top: 8px;
+            margin-left: 5px;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        .criteria-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            color: #999;
+            transition: all 0.3s;
+        }
+        .criteria-item.valid {
+            color: #4caf50;
+        }
+        .criteria-item.invalid {
+            color: #f44336;
+        }
+        .criteria-item i {
+            width: 14px;
+            text-align: center;
+        }
     </style>
 
     <style>
@@ -307,8 +333,15 @@
             <div class="form-group">
                 <label>Password</label>
                 <div class="password-container">
-                    <input type="password" id="password" placeholder="Minimum 6 characters" minlength="6" autocomplete="new-password" required>
+                    <input type="password" id="password" placeholder="Create a strong password" minlength="8" autocomplete="new-password" required>
                     <i class="fas fa-eye toggle-password" id="togglePassword"></i>
+                </div>
+                <div class="password-criteria" id="passwordCriteria">
+                    <div class="criteria-item invalid" id="lengthCriteria"><i class="fas fa-times"></i> Minimum 8 characters</div>
+                    <div class="criteria-item invalid" id="uppercaseCriteria"><i class="fas fa-times"></i> 1 Uppercase letter</div>
+                    <div class="criteria-item invalid" id="lowercaseCriteria"><i class="fas fa-times"></i> 1 Lowercase letter</div>
+                    <div class="criteria-item invalid" id="numberCriteria"><i class="fas fa-times"></i> 1 Number</div>
+                    <div class="criteria-item invalid" id="specialCriteria"><i class="fas fa-times"></i> 1 Special character (!@#$%^&*)</div>
                 </div>
             </div>
             <button type="submit" class="btn-submit">Sign Up</button>
@@ -322,6 +355,25 @@
         import { getFirestore, doc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         import { auth, db } from "./js/firebase-config.js";
+        // Real-time password validation
+        const passwordInput = document.getElementById('password');
+        const criteria = {
+            length: { regex: /.{8,}/, el: document.getElementById('lengthCriteria'), text: 'Minimum 8 characters' },
+            uppercase: { regex: /[A-Z]/, el: document.getElementById('uppercaseCriteria'), text: '1 Uppercase letter' },
+            lowercase: { regex: /[a-z]/, el: document.getElementById('lowercaseCriteria'), text: '1 Lowercase letter' },
+            number: { regex: /[0-9]/, el: document.getElementById('numberCriteria'), text: '1 Number' },
+            special: { regex: /[^A-Za-z0-9]/, el: document.getElementById('specialCriteria'), text: '1 Special character (!@#$%^&*)' }
+        };
+
+        passwordInput.addEventListener('input', () => {
+            const val = passwordInput.value;
+            for (const key in criteria) {
+                const item = criteria[key];
+                const isValid = item.regex.test(val);
+                item.el.className = `criteria-item ${isValid ? 'valid' : 'invalid'}`;
+                item.el.innerHTML = `<i class="fas ${isValid ? 'fa-check' : 'fa-times'}"></i> ${item.text}`;
+            }
+        });
 
         document.getElementById('registerForm').addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -338,6 +390,13 @@
             // Double-check email domain (additional validation)
             if (!email.endsWith('@student.gmi.edu.my')) {
                 alert("Please use your official @student.gmi.edu.my email address.");
+                return;
+            }
+
+            // Strong password final validation
+            const isStrongPassword = Object.values(criteria).every(item => item.regex.test(password));
+            if (!isStrongPassword) {
+                alert("Your password is not strong enough. Please ensure all password criteria are met (green).");
                 return;
             }
 
@@ -387,7 +446,7 @@
     
         // Toggle password visibility
         const togglePassword = document.getElementById('togglePassword');
-        const passwordInput = document.getElementById('password');
+        // passwordInput is already declared above
         if (togglePassword && passwordInput) {
             togglePassword.addEventListener('click', function() {
                 const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';

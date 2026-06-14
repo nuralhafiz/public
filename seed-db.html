@@ -54,7 +54,8 @@
 
         onAuthStateChanged(auth, (user) => {
             if (user) {
-                if (!user.email.endsWith('@gmi.edu.my') || user.email.includes('@student.')) {
+                const isSuperAdmin = (user.email === 'admin.gmihostelku@gmail.com');
+                if (!isSuperAdmin && (!user.email.endsWith('@gmi.edu.my') || user.email.includes('@student.'))) {
                     setStatus("❌ Error: Access Denied. Wardens only.");
                 } else {
                     setStatus("✅ Authenticated as Warden. Ready.");

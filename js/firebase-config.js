@@ -57,6 +57,27 @@ import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/fi
 onAuthStateChanged(auth, async (user) => {
     if (user) {
         localStorage.setItem('currentUserUid', user.uid);
+        
+        // Super Admin Link Injection
+        if (user.email === 'admin.gmihostelku@gmail.com') {
+            const navMenu = document.querySelector('.nav-menu');
+            if (navMenu && !document.getElementById('superAdminLink')) {
+                const adminLink = document.createElement('a');
+                adminLink.href = 'warden-management.html';
+                adminLink.className = 'nav-item';
+                adminLink.id = 'superAdminLink';
+                if(window.location.pathname.includes('warden-management.html')) {
+                    adminLink.classList.add('active');
+                }
+                adminLink.style.background = 'linear-gradient(135deg, #FF9800 0%, #F44336 100%)';
+                adminLink.style.color = 'white';
+                adminLink.style.marginTop = '20px';
+                adminLink.style.boxShadow = '0 5px 15px rgba(244, 67, 54, 0.4)';
+                adminLink.innerHTML = '<i class="fas fa-user-shield"></i> Warden Admin';
+                navMenu.appendChild(adminLink);
+            }
+        }
+        
         try {
             // 2. Fetch fresh avatar from Firestore in background
             const docRef = doc(db, "users", user.uid);
@@ -88,4 +109,4 @@ onAuthStateChanged(auth, async (user) => {
     }
 });
 
-export { app, auth, db, storage };
+export { app, auth, db, storage, firebaseConfig };

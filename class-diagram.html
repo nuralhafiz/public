@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GMI HostelKu - Class Diagram</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+        .container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            max-width: 1000px;
+            width: 100%;
+            overflow-x: auto;
+        }
+        h2 {
+            text-align: center;
+            color: #2d72d2;
+        }
+        .instruction {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #555;
+            padding: 15px;
+            background-color: #e3f2fd;
+            border-radius: 8px;
+            border-left: 5px solid #2d72d2;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h2>GMI HostelKu - Class Diagram</h2>
+        
+        <div class="instruction">
+            <strong>Cara muat turun (Download):</strong><br>
+            Tekan kekunci <b>Windows + Shift + S</b> serentak pada keyboard komputer awak. Skrin akan menjadi sedikit gelap. 
+            Tarik *mouse* untuk 'crop' kotak gambar rajah di bawah. Kemudian buka Microsoft Word dan tekan <b>Ctrl + V (Paste)</b>.
+        </div>
+
+        <div class="mermaid">
+            classDiagram
+                direction TB
+
+                class User {
+                    +String uid
+                    +String email
+                    +String role
+                    +Timestamp createdAt
+                    +login()
+                    +logout()
+                    +resetPassword()
+                }
+
+                class Student {
+                    +String studentId
+                    +String fullName
+                    +String phoneNumber
+                    +String emergencyContact
+                    +String course
+                    +String gender
+                    +String status
+                    +String room
+                    +updateProfile()
+                    +viewDashboard()
+                }
+
+                class Warden {
+                    +String staffId
+                    +String name
+                    +String department
+                    +manageStudents()
+                    +manageRooms()
+                    +processApplications()
+                    +generateReports()
+                }
+
+                class Room {
+                    +String roomNumber
+                    +String block
+                    +String level
+                    +String type
+                    +Number price
+                    +Number beds
+                    +String status
+                    +Map occupants
+                    +assignStudent()
+                    +removeStudent()
+                    +updateStatus()
+                }
+
+                class RoomApplication {
+                    +String applicationId
+                    +String studentId
+                    +String block
+                    +String roomType
+                    +Timestamp applicationDate
+                    +String status
+                    +submitApplication()
+                    +approveApplication()
+                    +rejectApplication()
+                }
+
+                class MaintenanceRequest {
+                    +String ticketId
+                    +String room
+                    +String category
+                    +String description
+                    +String priority
+                    +String photoData
+                    +String status
+                    +submitReport()
+                    +updateStatus()
+                }
+
+                class MoveOutRequest {
+                    +String requestId
+                    +String studentId
+                    +String room
+                    +Date moveOutDate
+                    +String reason
+                    +Boolean roomCleaned
+                    +String status
+                    +submitRequest()
+                    +processClearance()
+                }
+
+                class Notification {
+                    +String notificationId
+                    +String recipientEmail
+                    +String title
+                    +String message
+                    +Boolean isRead
+                    +sendNotification()
+                    +markAsRead()
+                }
+
+                %% Relationships
+                User <|-- Student : inherits
+                User <|-- Warden : inherits
+
+                Student "1" -- "0..*" RoomApplication : makes
+                Student "1" -- "0..*" MaintenanceRequest : reports
+                Student "1" -- "0..1" MoveOutRequest : requests
+                Student "1" -- "0..*" Notification : receives
+                
+                Warden "1" -- "0..*" Room : manages
+                Warden "1" -- "0..*" Student : oversees
+                Warden "1" -- "0..*" RoomApplication : processes
+                Warden "1" -- "0..*" MaintenanceRequest : oversees
+                Warden "1" -- "0..*" MoveOutRequest : processes
+                Warden "1" -- "0..*" Notification : sends
+
+                RoomApplication "*" -- "1" Room : assigns to
+                Room "1" -- "0..6" Student : houses
+        </div>
+    </div>
+
+    <script>
+        mermaid.initialize({ startOnLoad: true, theme: 'default' });
+    </script>
+</body>
+</html>

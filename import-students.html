@@ -142,7 +142,8 @@
 
         onAuthStateChanged(auth, (user) => {
             if (user) {
-                if (!user.email.endsWith('@gmi.edu.my') || user.email.includes('@student.')) {
+                const isSuperAdmin = (user.email === 'admin.gmihostelku@gmail.com');
+                if (!isSuperAdmin && (!user.email.endsWith('@gmi.edu.my') || user.email.includes('@student.'))) {
                     Swal.fire('Access Denied', 'Only wardens can use this tool.', 'error');
                     btnAnalyze.disabled = true;
                     return;

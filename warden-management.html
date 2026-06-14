@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GMI HostelKu - Super Admin Panel</title>
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="css/global.css?v=5">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Poppins', sans-serif; display: flex; flex-direction: column; height: 100vh; background: #f0f3fa; overflow: hidden; }
+        
+        /* Header */
+        header { background: linear-gradient(135deg, #1e3a8a 0%, #2d72d2 100%); backdrop-filter: blur(10px); color: white; padding: 0 25px; display: flex; align-items: center; justify-content: space-between; z-index: 1000; flex-shrink: 0; height: 70px; box-shadow: 0 2px 20px rgba(0,0,0,0.1); }
+        .brand-container { display: flex; align-items: center; font-size: 24px; font-weight: 800; cursor: pointer; position: relative; margin-left: 10px; letter-spacing: -0.5px; }
+        .menu-toggle { cursor: pointer; font-size: 22px; color: white; margin-right: 15px; transition: transform 0.3s; }
+        
+        .avatar-container { cursor: pointer; transition: all 0.4s; display: flex; align-items: center; justify-content: center; width: 48px; height: 48px; border-radius: 50%; background: linear-gradient(135deg, #ff3131 0%, #cc0000 100%); border: 2px solid rgba(255, 255, 255, 0.9); position: relative; overflow: hidden; }
+        
+        .container { display: flex; flex: 1; overflow: hidden; position: relative; }
+        
+        /* Sidebar */
+        nav { width: 280px; background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); border-right: 1px solid rgba(255,255,255,0.2); padding: 25px 0; display: flex; flex-direction: column; transition: transform 0.3s ease; z-index: 900; overflow-y: auto; box-shadow: 5px 0 25px rgba(0,0,0,0.1); }
+        .nav-menu { padding: 0 20px; flex: 1; }
+        .nav-item { display: flex; align-items: center; padding: 14px 20px; margin-bottom: 8px; text-decoration: none; color: #333; border-radius: 12px; font-size: 15px; font-weight: 500; transition: all 0.3s; cursor: pointer; }
+        .nav-item:hover, .nav-item.active { background: linear-gradient(135deg, #1e3a8a 0%, #2d72d2 100%); color: white; box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4); }
+        .nav-item:hover { transform: translateX(5px); }
+        .nav-item i { margin-right: 12px; font-size: 20px; width: 24px; text-align: center; }
+        
+        main { flex: 1; padding: 30px; display: flex; flex-direction: column; gap: 25px; overflow-y: auto; background: #f0f3fa; }
+
+        /* Super Admin Specific Styling */
+        .admin-banner { background: linear-gradient(135deg, #FF9800 0%, #F44336 100%); color: white; padding: 25px 30px; border-radius: 20px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 10px 30px rgba(244, 67, 54, 0.3); }
+        .content-grid { display: grid; grid-template-columns: 1fr 2fr; gap: 25px; }
+        
+        .card { background: white; border-radius: 20px; padding: 25px; box-shadow: 0 5px 20px rgba(0,0,0,0.05); }
+        .card h3 { margin-bottom: 20px; color: #1e3a8a; border-bottom: 2px solid #f0f3fa; padding-bottom: 10px; display: flex; align-items: center; gap: 10px; }
+        
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; margin-bottom: 8px; font-weight: 500; font-size: 14px; color: #444; }
+        .form-group input { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; font-family: inherit; transition: border-color 0.3s; }
+        .form-group input:focus { border-color: #2d72d2; outline: none; }
+        
+        .btn-submit { background: linear-gradient(135deg, #1e3a8a 0%, #2d72d2 100%); color: white; border: none; padding: 12px; border-radius: 8px; width: 100%; font-weight: 600; cursor: pointer; transition: all 0.3s; margin-top: 10px; }
+        .btn-submit:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(45, 114, 210, 0.4); }
+        
+        table { width: 100%; border-collapse: collapse; }
+        th, td { text-align: left; padding: 12px; border-bottom: 1px solid #eee; }
+        th { font-size: 13px; color: #666; text-transform: uppercase; }
+        td { font-size: 14px; color: #333; }
+        .badge { background: #e3f2fd; color: #1e88e5; padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: bold; }
+
+        @media (max-width: 1024px) {
+            .content-grid { grid-template-columns: 1fr; }
+            nav { position: absolute; left: 0; top: 0; bottom: 0; transform: translateX(-100%); width: 280px; }
+            nav.open { transform: translateX(0); }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div style="display: flex; align-items: center;">
+        <i class="fas fa-bars menu-toggle" id="hamburger"></i>
+        <div class="brand-container" onclick="window.location.href='warden-dashboard.html'">
+            <img src="images/logo-modern.png" alt="GMI HostelKu" style="height: 130px; object-fit: contain;">
+        </div>
+    </div>
+</header>
+
+<div class="container">
+    <nav id="sidebar">
+        <div class="nav-menu">
+            <a href="warden-profile.html" class="nav-item"><i class="fas fa-user"></i> My Profile</a>
+            <a href="warden-dashboard.html" class="nav-item"><i class="fas fa-home"></i> Dashboard</a>
+            <a href="warden-applications.html" class="nav-item"><i class="fas fa-file-alt"></i> Room Applications</a>
+            <a href="warden-moveout.html" class="nav-item"><i class="fas fa-box-open"></i> Move-Out Requests</a>
+            <a href="warden-maintenance.html" class="nav-item"><i class="fas fa-tools"></i> Maintenance Logs</a>
+            <a href="warden-students.html" class="nav-item"><i class="fas fa-users"></i> Student Records</a>
+            <a href="warden-rooms.html" class="nav-item"><i class="fas fa-bed"></i> Room Management</a>
+            <a href="warden-reports.html" class="nav-item"><i class="fas fa-chart-bar"></i> Analytics & Reports</a>
+            <a href="warden-settings.html" class="nav-item"><i class="fas fa-cog"></i> Settings</a>
+            
+        </div>
+        <a href="#" class="nav-item logout-btn" id="logoutBtn" style="color: #f44336; margin: 20px;"><i class="fas fa-sign-out-alt"></i> Logout</a>
+    </nav>
+
+    <main>
+        <div class="admin-banner">
+            <div>
+                <h2 style="margin-bottom: 5px;">Super Admin Panel</h2>
+                <p style="opacity: 0.9;">Manage Warden Access and Registrations</p>
+            </div>
+            <i class="fas fa-shield-alt" style="font-size: 40px; opacity: 0.8;"></i>
+        </div>
+
+        <div class="content-grid">
+            <!-- Add Warden Form -->
+            <div class="card">
+                <h3><i class="fas fa-user-plus"></i> Register New Warden</h3>
+                <form id="addWardenForm" autocomplete="off">
+                    <div class="form-group">
+                        <label>Warden Full Name</label>
+                        <input type="text" id="wardenName" placeholder="e.g. En. Ahmad Ali" autocomplete="off" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Official Email</label>
+                        <input type="email" id="wardenEmail" placeholder="warden@gmi.edu.my" autocomplete="off" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Temporary Password</label>
+                        <div style="position: relative;">
+                            <input type="password" id="wardenPassword" placeholder="Min 6 characters" minlength="6" autocomplete="new-password" required style="padding-right: 40px;">
+                            <i class="fas fa-eye" id="togglePassword" style="position: absolute; right: 15px; top: 50%; transform: translateY(-50%); cursor: pointer; color: #666;"></i>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn-submit" id="btnSubmit">Create Warden Account</button>
+                </form>
+            </div>
+
+            <!-- List Wardens Table -->
+            <div class="card">
+                <h3><i class="fas fa-users-cog"></i> Active Wardens</h3>
+                <div style="overflow-x: auto;">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Role</th>
+                                <th>Registered On</th>
+                            </tr>
+                        </thead>
+                        <tbody id="wardenListBody">
+                            <tr><td colspan="4" style="text-align: center;">Loading data...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getAuth, onAuthStateChanged, signOut, getAuth as getSecondaryAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+    import { getFirestore, collection, query, where, getDocs, setDoc, doc, serverTimestamp, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+    
+    import { app, auth, db, firebaseConfig } from "./js/firebase-config.js";
+
+    // 1. Initialize Secondary Firebase App (To register users without logging out Admin)
+    const secondaryApp = initializeApp(firebaseConfig, "Secondary");
+    const secondaryAuth = getSecondaryAuth(secondaryApp);
+
+    // 2. Protect Page (Only admin.gmihostelku@gmail.com)
+    onAuthStateChanged(auth, async (user) => {
+        if (!user) {
+            window.location.href = 'warden-login.html';
+        } else {
+            // Verify email
+            if (user.email !== 'admin.gmihostelku@gmail.com') {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Access Denied',
+                    text: 'Only Super Admin can access this page.',
+                    confirmButtonText: 'Return to Dashboard'
+                }).then(() => {
+                    window.location.href = 'warden-dashboard.html';
+                });
+            } else {
+                // Verified. Load warden list.
+                loadWardens();
+            }
+        }
+    });
+
+    // 3. Form Submission Handling (Secondary App)
+    document.getElementById('addWardenForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        const name = document.getElementById('wardenName').value;
+        const email = document.getElementById('wardenEmail').value;
+        const password = document.getElementById('wardenPassword').value;
+        const btn = document.getElementById('btnSubmit');
+
+        btn.disabled = true;
+        btn.innerText = "Registering...";
+
+        try {
+            // Create user in secondary auth so main auth isn't logged out
+            const userCredential = await createUserWithEmailAndPassword(secondaryAuth, email, password);
+            
+            // Save to Firestore using MAIN db connection
+            await setDoc(doc(db, "users", userCredential.user.uid), {
+                displayName: name,
+                email: email,
+                role: "warden",
+                createdAt: serverTimestamp()
+            });
+
+            // Sign out the secondary app immediately to prevent session issues
+            await signOut(secondaryAuth);
+
+            Swal.fire('Success', 'Warden account created successfully!', 'success');
+            document.getElementById('addWardenForm').reset();
+            loadWardens(); // Refresh table
+
+        } catch (error) {
+            Swal.fire('Error', error.message, 'error');
+        } finally {
+            btn.disabled = false;
+            btn.innerText = "Create Warden Account";
+        }
+    });
+
+    // 4. Load Warden List
+    async function loadWardens() {
+        const tbody = document.getElementById('wardenListBody');
+        try {
+            const q = query(collection(db, "users"), where("role", "==", "warden"));
+            const snapshot = await getDocs(q);
+            
+            tbody.innerHTML = '';
+            
+            if (snapshot.empty) {
+                tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;">No wardens found.</td></tr>';
+                return;
+            }
+
+            snapshot.forEach(docSnap => {
+                const data = docSnap.data();
+                const date = data.createdAt ? data.createdAt.toDate().toLocaleDateString('en-GB') : 'Unknown';
+                
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td><strong>${data.displayName || 'No Name'}</strong></td>
+                    <td>${data.email}</td>
+                    <td><span class="badge">Warden</span></td>
+                    <td>${date}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+        } catch (error) {
+            tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; color: red;">Failed to load data</td></tr>`;
+            console.error(error);
+        }
+    }
+
+    // Toggle Password Visibility
+    document.getElementById('togglePassword').addEventListener('click', function() {
+        const passwordInput = document.getElementById('wardenPassword');
+        const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+        passwordInput.setAttribute('type', type);
+        this.classList.toggle('fa-eye');
+        this.classList.toggle('fa-eye-slash');
+    });
+
+    // Logout
+    document.getElementById('logoutBtn').addEventListener('click', () => {
+        signOut(auth).then(() => {
+            window.location.href = 'index.html';
+        });
+    });
+
+    // Mobile Menu
+    document.getElementById('hamburger').addEventListener('click', () => {
+        document.getElementById('sidebar').classList.toggle('open');
+    });
+</script>
+
+</body>
+</html>

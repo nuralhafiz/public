@@ -672,7 +672,8 @@
             emailInput.focus();
             return;
         }
-        if (!email.endsWith('@gmi.edu.my') || email.includes('@student.')) {
+        const isSuperAdmin = (email === 'admin.gmihostelku@gmail.com');
+        if (!isSuperAdmin && (!email.endsWith('@gmi.edu.my') || email.includes('@student.'))) {
             alert("❌ Invalid email format! Please use your official @gmi.edu.my email address.");
             emailInput.focus();
             return;
@@ -729,7 +730,8 @@
             return;
         }
 
-        if (!emailAddress.endsWith('@gmi.edu.my') || emailAddress.includes('@student.')) {
+        const isSuperAdmin = (emailAddress === 'admin.gmihostelku@gmail.com');
+        if (!isSuperAdmin && (!emailAddress.endsWith('@gmi.edu.my') || emailAddress.includes('@student.'))) {
             alert("❌ Invalid email format! Password reset requires your official @gmi.edu.my email address.");
             emailInput.focus();
             return;
