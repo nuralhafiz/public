@@ -733,6 +733,9 @@
                 <button class="quick-action-btn" id="importStudentsBtn" style="display: none;" onclick="location.href='import-students.html'">
                     <i class="fas fa-file-import"></i> Smart Importer
                 </button>
+                <button class="quick-action-btn" id="importHistoryBtn" style="display: none;" onclick="openHistoryModal()">
+                    <i class="fas fa-history"></i> Import History
+                </button>
                 <button class="refresh-btn" id="refreshBtn">
                     <i class="fas fa-sync-alt"></i> Refresh
                 </button>
@@ -875,6 +878,37 @@
         </div>
     </div>
 
+    <!-- Import History Modal -->
+    <div class="modal-overlay" id="historyModal">
+        <div class="modal-content" style="max-width: 800px;">
+            <div class="modal-header">
+                <h2><i class="fas fa-history" style="color: #2d72d2;"></i> Import History</h2>
+                <button class="close-modal" onclick="closeHistoryModal()">&times;</button>
+            </div>
+            
+            <div style="padding: 20px; overflow-x: auto;">
+                <table class="students-table">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Batch ID</th>
+                            <th>Total Assigned</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="historyTableBody">
+                        <tr><td colspan="5" style="text-align: center;">Loading history...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <div style="display: flex; justify-content: flex-end; padding: 20px; border-top: 1px solid #e0e0e0;">
+                <button class="quick-action-btn" onclick="closeHistoryModal()">Close</button>
+            </div>
+        </div>
+    </div>
+
     <script type="module">
         import { getAuth, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
         import { getFirestore, collection, query, where, orderBy, getDocs, onSnapshot, doc, updateDoc, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
@@ -917,6 +951,8 @@
                 if (isSuperAdmin) {
                     const importBtn = document.getElementById('importStudentsBtn');
                     if (importBtn) importBtn.style.display = 'inline-flex';
+                    const historyBtn = document.getElementById('importHistoryBtn');
+                    if (historyBtn) historyBtn.style.display = 'inline-flex';
                 }
                 loadStudents();
                 setupRealtimeListener();
@@ -1465,6 +1501,160 @@
                 renderStudents();
             }
         });
+
+        // ==========================================
+        // IMPORT HISTORY & UNDO LOGIC
+        // ==========================================
+        window.openHistoryModal = async function() {
+            document.getElementById('historyModal').classList.add('active');
+            const tbody = document.getElementById('historyTableBody');
+            tbody.innerHTML = '<tr><td colspan="5" style="text-align: center;"><i class="fas fa-spinner fa-spin"></i> Loading...</td></tr>';
+            
+            try {
+                const q = query(collection(db, "import_history"), orderBy("date", "desc"));
+                const snap = await getDocs(q);
+                tbody.innerHTML = '';
+                
+                if (snap.empty) {
+                    tbody.innerHTML = '<tr><td colspan="5" style="text-align: center;">No import history found.</td></tr>';
+                    return;
+                }
+                
+                snap.forEach(docSnap => {
+                    const data = docSnap.data();
+                    const date = data.date ? data.date.toDate().toLocaleString() : 'N/A';
+                    const tr = document.createElement('tr');
+                    
+                    let statusBadge = '';
+                    if (data.status === 'completed') statusBadge = '<span style="background:#ecfdf5; color:#059669; padding:4px 8px; border-radius:4px; font-weight:600; font-size:11px;">COMPLETED</span>';
+                    else if (data.status === 'reverted') statusBadge = '<span style="background:#fef2f2; color:#ef4444; padding:4px 8px; border-radius:4px; font-weight:600; font-size:11px;">REVERTED</span>';
+                    
+                    let actionBtn = '';
+                    if (data.status === 'completed') {
+                        actionBtn = `<button class="btn-outline" style="padding: 5px 10px; font-size: 11px; border-color: #ef4444; color: #ef4444;" onclick="undoImport('${docSnap.id}', '${data.batchId}')"><i class="fas fa-undo"></i> Undo</button>`;
+                    }
+                    
+                    tr.innerHTML = `
+                        <td>${date}</td>
+                        <td><span style="font-family: monospace; font-size: 11px; background: #f1f5f9; padding: 2px 6px; border-radius: 4px;">${data.batchId}</span></td>
+                        <td>${data.totalAssigned} Students</td>
+                        <td>${statusBadge}</td>
+                        <td>${actionBtn}</td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+            } catch (err) {
+                console.error(err);
+                tbody.innerHTML = `<tr><td colspan="5" style="text-align: center; color: red;">Error: ${err.message}</td></tr>`;
+            }
+        };
+
+        window.closeHistoryModal = function() {
+            document.getElementById('historyModal').classList.remove('active');
+        };
+
+        window.undoImport = async function(historyDocId, batchId) {
+            const confirm = await Swal.fire({
+                title: 'Undo Import?',
+                text: "This will delete ALL students from this batch and free up their assigned rooms. This cannot be undone!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#ef4444',
+                cancelButtonColor: '#64748b',
+                confirmButtonText: 'Yes, Undo Import!'
+            });
+            
+            if (!confirm.isConfirmed) return;
+            
+            Swal.fire({
+                title: 'Reverting...',
+                html: 'Deleting students and updating rooms.<br>Please wait...',
+                allowOutsideClick: false,
+                didOpen: () => Swal.showLoading()
+            });
+            
+            try {
+                // Find all students in this batch
+                const q = query(collection(db, "students"), where("batchId", "==", batchId));
+                const snap = await getDocs(q);
+                
+                if (snap.empty) {
+                    Swal.fire('Notice', 'No students found for this batch. Perhaps they were already deleted manually?', 'info');
+                    // Mark as reverted anyway
+                    await updateDoc(doc(db, "import_history", historyDocId), { status: 'reverted' });
+                    openHistoryModal();
+                    return;
+                }
+                
+                // Group by room to update rooms efficiently
+                let roomUpdates = {}; // roomId -> array of occupant IDs to remove
+                let studentRefsToDelete = [];
+                
+                snap.forEach(docSnap => {
+                    studentRefsToDelete.push(docSnap.ref);
+                    const sData = docSnap.data();
+                    // We need to fetch the room to remove them from occupants array
+                    // Since we don't store roomId directly in student (we stored roomNumber),
+                    // we actually need to query rooms by roomNumber, OR we can just fetch all rooms and map them.
+                    // To be robust, let's fetch the room using a query.
+                });
+                
+                // Fetch all rooms once to make it easier to map roomNumber -> roomId
+                const roomsSnap = await getDocs(collection(db, "rooms"));
+                let roomsMap = {};
+                roomsSnap.forEach(r => roomsMap[r.data().roomNumber] = { id: r.id, occupants: r.data().occupants || [], beds: r.data().beds });
+                
+                // Now figure out which occupants to remove
+                let batch = writeBatch(db);
+                let ops = 0;
+                
+                snap.forEach(docSnap => {
+                    const sData = docSnap.data();
+                    const roomInfo = roomsMap[sData.roomNumber];
+                    if (roomInfo) {
+                        // Remove this student from room occupants
+                        roomInfo.occupants = roomInfo.occupants.filter(o => o.id !== docSnap.id);
+                    }
+                    // Delete student
+                    batch.delete(docSnap.ref);
+                    ops++;
+                });
+                
+                // Update rooms
+                for (const rNum in roomsMap) {
+                    const rInfo = roomsMap[rNum];
+                    let status = 'available';
+                    if (rInfo.occupants.length >= rInfo.beds) status = 'occupied';
+                    else if (rInfo.occupants.length > 0) status = 'partial';
+                    
+                    batch.update(doc(db, "rooms", rInfo.id), {
+                        occupants: rInfo.occupants,
+                        status: status,
+                        lastUpdated: serverTimestamp()
+                    });
+                    ops++;
+                    
+                    if (ops > 400) {
+                        await batch.commit();
+                        batch = writeBatch(db);
+                        ops = 0;
+                    }
+                }
+                
+                // Update history doc
+                batch.update(doc(db, "import_history", historyDocId), { status: 'reverted' });
+                ops++;
+                
+                if (ops > 0) await batch.commit();
+                
+                Swal.fire('Reverted!', 'The batch import has been successfully undone.', 'success');
+                openHistoryModal();
+                
+            } catch (err) {
+                console.error(err);
+                Swal.fire('Error', err.message, 'error');
+            }
+        };
     </script>
     <!-- Initialize Choices.js -->
     <script>
